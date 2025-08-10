@@ -1,0 +1,17 @@
+# Ignore artifacts:
+build
+coverage
+
+# Ignore all HTML files:
+*.html
+
+# Ignore lock file
+pnpm-lock.yaml
+
+*.config.ts
+*.config.js
+
+package.json
+
+tsconfig.json
+tsconfig.node.json
