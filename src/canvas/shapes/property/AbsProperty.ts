@@ -1,6 +1,6 @@
 import { BaseShape } from '../BaseShape';
 
-export abstract class AbsProperty<T = unknown> {
+export abstract class AbsProperty<T extends Record<string, any> = {}> {
   shape: BaseShape;
 
   value: T;
@@ -16,6 +16,11 @@ export abstract class AbsProperty<T = unknown> {
   set(value: T) {
     this.value = value;
     this.draw();
+  }
+
+  update(value: Partial<T>) {
+    this.value = {  ...this.value, ...value }
+    this.draw()
   }
 
   get() {

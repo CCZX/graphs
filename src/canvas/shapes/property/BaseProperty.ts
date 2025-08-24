@@ -1,11 +1,12 @@
 import { AbsProperty } from './AbsProperty';
-import { BaseProperty as IBaseProperty, ShapeTypeEnum } from '../../../types/shape';
+import { BasePropertyValue, ShapePropertyEnum, ShapeTypeEnum } from '../../../types/shape';
 import { BaseShape } from '../BaseShape';
+import { FillProperty } from './FillProperty';
 
-const DEFAULT_VALUE: IBaseProperty = { x: 0, y: 0, width: 100, height: 100 };
+const DEFAULT_VALUE: BasePropertyValue = { x: 0, y: 0, width: 100, height: 100 };
 
-export class BaseProperty extends AbsProperty<IBaseProperty> {
-  constructor(shape: BaseShape, value?: IBaseProperty) {
+export class BaseProperty extends AbsProperty<BasePropertyValue> {
+  constructor(shape: BaseShape, value?: BasePropertyValue) {
     super(shape, value || DEFAULT_VALUE);
   }
 
@@ -24,7 +25,9 @@ export class BaseProperty extends AbsProperty<IBaseProperty> {
 
     if (this.shape.type === ShapeTypeEnum.Circle) {
       this.shape.graphics.position.set(this.value.width / 2, this.value.height / 2);
-      // this.shape.graphics.drawCircle(0, 0, this.value.width)
     }
+
+    const fill = this.shape.getProperty<FillProperty>(ShapePropertyEnum.Fill)
+    fill?.draw()
   }
 }

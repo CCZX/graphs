@@ -1,15 +1,20 @@
+import { Point } from '@/types/geometry';
 import { BaseShape } from '../canvas/shapes/BaseShape';
 import { shapeManager } from '../canvas/shapes/shapeManager';
 import { viewportStore } from '../store/viewport';
-import { ShapeStateEnum } from '../types/shape';
+import { BasePropertyValue, ShapePropertyEnum, ShapeStateEnum } from '../types/shape';
 import { throttle } from '../utils/decorate';
 import { transformCanvasCoordinateToViewport } from '../utils/viewport';
+import { BaseProperty } from '@/canvas/shapes/property/BaseProperty';
 
 export class Events {
   constructor() {}
 
   hoveredShape: BaseShape | null = null;
   selectedShape: BaseShape | null = null;
+
+  private startDownPoint: Point | null = null
+  private originBaseProps: BasePropertyValue | null = null
 
   private getViewportPoint(e: PointerEvent) {
     const { clientX, clientY } = e;
@@ -47,6 +52,8 @@ export class Events {
 
   @throttle<Events>(17)
   private onPointerdown(e: PointerEvent) {
+    this.startDownPoint = { x: e.pageX, y: e.pageY }
+
     const viewportPoint = this.getViewportPoint(e);
 
     const nextShape = shapeManager.getShapeByPoint(viewportPoint);
@@ -73,9 +80,38 @@ export class Events {
     }
 
     this.selectedShape = nextShape || null;
+
+    const p = this.selectedShape?.getProperty<BaseProperty>(ShapePropertyEnum.Base).get()
+    this.originBaseProps = p || null;
+
+    document.addEventListener('pointermove', this.downAndMove);
   }
 
-  private onPointerup(e: PointerEvent) {}
+  private onPointerup(e: PointerEvent) {
+    document.removeEventListener('pointermove', this.downAndMove)
+  }
+
+  private downAndMove = (e: PointerEvent) => {
+    if (this.selectedShape) {
+      
+      // console.log(`ccdebug downAndMove x: ${e.pageX - (this.startDownPoint?.x || 0)}, y: ${e.pageY - (this.startDownPoint?.y || 0)}`, e)
+      this.downAndMoveWhenSelectedShape(e)
+    }
+  }
+
+  private downAndMoveWhenSelectedShape(e: PointerEvent) {
+    if (this.selectedShape && this.originBaseProps) {
+      const offsetX = e.pageX - (this.startDownPoint?.x || 0)
+      const offsetY = e.pageY - (this.startDownPoint?.y || 0)
+      const p = this.selectedShape.getProperty<BaseProperty>(ShapePropertyEnum.Base).get()
+      console.log(`ccdebug downAndMove x: ${offsetX}, ${this.originBaseProps.x}`)
+      this.selectedShape.updateProperty(ShapePropertyEnum.Base, {
+        x: this.originBaseProps.x + offsetX,
+        y: this.originBaseProps.y + offsetY,
+      })
+    }
+    
+  }
 
   _onPointermove = this.onPointermove.bind(this);
 

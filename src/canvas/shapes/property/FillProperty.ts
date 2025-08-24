@@ -1,12 +1,11 @@
 import { AbsProperty } from './AbsProperty';
-import { FillProperty as IFillProperty, ShapeTypeEnum } from '../../../types/shape';
+import { FillPropertyValue, ShapeTypeEnum } from '../../../types/shape';
 import { BaseShape } from '../BaseShape';
-import { Graphics } from 'pixi.js';
 
-const DEFAULT_VALUE: IFillProperty = { color: 0x000, alpha: 1 };
+const DEFAULT_VALUE: FillPropertyValue = { color: 0x000, alpha: 1 };
 
-export class FillProperty extends AbsProperty<IFillProperty> {
-  constructor(shape: BaseShape, value?: IFillProperty) {
+export class FillProperty extends AbsProperty<FillPropertyValue> {
+  constructor(shape: BaseShape, value?: FillPropertyValue) {
     super(shape, value || DEFAULT_VALUE);
   }
 

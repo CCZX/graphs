@@ -16,8 +16,6 @@ import { FillProperty } from './property/FillProperty';
 import { SelectedBorder } from './decorate/SelectedBorder';
 import { shapeManager } from './shapeManager';
 import { log } from '../../utils/log';
-import { Shader } from 'pixi.js'
-import { BaseProperty as IBaseProperty } from '@/types/shape'
 
 export abstract class BaseShape<T extends Graphics = Graphics> {
   /**
@@ -67,9 +65,14 @@ export abstract class BaseShape<T extends Graphics = Graphics> {
     this.propertyMap.set(ShapePropertyEnum.Fill, new FillProperty(this));
   }
 
-  setProperty<T>(type: ShapePropertyEnum, value: T) {
+  setProperty<T extends Record<string, any>>(type: ShapePropertyEnum, value: T) {
     const property = this.propertyMap.get(type)!;
     property.set(value);
+  }
+
+  updateProperty<T extends Record<string, any>>(type: ShapePropertyEnum, value: T) {
+    const property = this.propertyMap.get(type)!;
+    property.update(value)
   }
 
   getProperty<T>(type: ShapePropertyEnum) {

@@ -40,14 +40,14 @@ export enum ShapePropertyEnum {
   Text = 'text',
 }
 
-export interface BaseProperty {
+export interface BasePropertyValue {
   x: number;
   y: number;
   width: number;
   height: number;
 }
 
-export interface FillProperty {
+export interface FillPropertyValue {
   color: number;
   /**
    * 透明度
@@ -55,7 +55,7 @@ export interface FillProperty {
   alpha: number;
 }
 
-export interface TextProperty {
+export interface TextPropertyValue {
   text: string;
 }
 
@@ -63,8 +63,8 @@ export interface ShapeData {
   id: string;
   type: ShapeTypeEnum;
   properties: {
-    base: BaseProperty;
-    fill: FillProperty;
-    text?: TextProperty;
+    base: BasePropertyValue;
+    fill: FillPropertyValue;
+    text?: TextPropertyValue;
   };
 }
