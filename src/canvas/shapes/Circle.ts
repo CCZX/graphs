@@ -8,9 +8,9 @@ export class Circle extends BaseShape<Graphics> {
   constructor(id: string) {
     super(id, new Graphics());
 
-    this.graphics.beginFill(0x000);
-    this.graphics.drawCircle(0, 0, 10);
-    this.graphics.endFill();
+    // this.graphics.beginFill(0x000);
+    // this.graphics.drawCircle(0, 0, 10);
+    // this.graphics.endFill();
 
     this.graphics.interactive = true;
   }

@@ -11,16 +11,18 @@ export class FillProperty extends AbsProperty<IFillProperty> {
   }
 
   draw(): void {
+    const { width, height } = this.shape.getWH()
+
     if (this.shape.type === ShapeTypeEnum.Circle) {
-      (this.shape.graphics as Graphics).beginFill(this.value.color);
-      (this.shape.graphics as Graphics).drawCircle(0, 0, 10);
-      (this.shape.graphics as Graphics).endFill();
+      this.shape.graphics.beginFill(this.value.color);
+      this.shape.graphics.drawCircle(0, 0, width / 2);
+      this.shape.graphics.endFill();
     }
 
     if (this.shape.type === ShapeTypeEnum.Rectangle) {
-      (this.shape.graphics as Graphics).beginFill(this.value.color);
-      (this.shape.graphics as Graphics).drawRect(0, 0, 10, 10);
-      (this.shape.graphics as Graphics).endFill();
+      this.shape.graphics.beginFill(this.value.color);
+      this.shape.graphics.drawRect(0, 0, width, height);
+      this.shape.graphics.endFill();
     }
   }
 }

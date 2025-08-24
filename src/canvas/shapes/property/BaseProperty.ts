@@ -12,12 +12,19 @@ export class BaseProperty extends AbsProperty<IBaseProperty> {
   draw(): void {
     this.shape.container.x = this.value.x;
     this.shape.container.y = this.value.y;
+    this.shape.container.width = this.value.width;
+    this.shape.container.height = this.value.height;
 
-    this.shape.graphics.width = this.value.width;
-    this.shape.graphics.height = this.value.height;
-    this.shape.graphics.position.set(0, 0);
+    if (this.shape.type === ShapeTypeEnum.Rectangle) {
+      this.shape.graphics.position.set(0, 0);
+      this.shape.graphics.beginFill()
+      this.shape.graphics.drawRect(0, 0, this.value.width, this.value.height)
+      this.shape.graphics.endFill()
+    }
+
     if (this.shape.type === ShapeTypeEnum.Circle) {
       this.shape.graphics.position.set(this.value.width / 2, this.value.height / 2);
+      // this.shape.graphics.drawCircle(0, 0, this.value.width)
     }
   }
 }

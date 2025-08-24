@@ -16,8 +16,10 @@ import { FillProperty } from './property/FillProperty';
 import { SelectedBorder } from './decorate/SelectedBorder';
 import { shapeManager } from './shapeManager';
 import { log } from '../../utils/log';
+import { Shader } from 'pixi.js'
+import { BaseProperty as IBaseProperty } from '@/types/shape'
 
-export abstract class BaseShape<T extends Container<DisplayObject> = Container<DisplayObject>> {
+export abstract class BaseShape<T extends Graphics = Graphics> {
   /**
    * 图形、图形装饰的容器节点
    */
@@ -70,6 +72,10 @@ export abstract class BaseShape<T extends Container<DisplayObject> = Container<D
     property.set(value);
   }
 
+  getProperty<T>(type: ShapePropertyEnum) {
+    return this.propertyMap.get(type) as T
+  }
+ 
   initDecorate() {
     this.decorateMap.set(ShapeDecorateTypeEnum.HoverBorder, new HoverBorder(this));
     this.decorateMap.set(ShapeDecorateTypeEnum.SelectedBorder, new SelectedBorder(this));
@@ -114,9 +120,10 @@ export abstract class BaseShape<T extends Container<DisplayObject> = Container<D
   }
 
   getWH() {
+    const p = this.getProperty<BaseProperty>(ShapePropertyEnum.Base).get()
     return {
-      width: this.graphics.width,
-      height: this.graphics.height,
+      width: p.width,
+      height: p.height,
     };
   }
 

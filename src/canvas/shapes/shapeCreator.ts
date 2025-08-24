@@ -26,8 +26,8 @@ export class ShapeCreator {
         shape.setProperty(ShapePropertyEnum.Fill, shapeDataItem.properties.fill);
       } else if (shapeDataItem.type === ShapeTypeEnum.Rectangle) {
         shape = new Rectangle(shapeDataItem.id);
-        shape.setProperty(ShapePropertyEnum.Fill, shapeDataItem.properties.fill);
         shape.setProperty(ShapePropertyEnum.Base, shapeDataItem.properties.base);
+        shape.setProperty(ShapePropertyEnum.Fill, shapeDataItem.properties.fill);
       }
 
       if (shape) {
