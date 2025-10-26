@@ -66,13 +66,17 @@ export abstract class BaseShape<T extends Graphics = Graphics> {
   }
 
   setProperty<T extends Record<string, any>>(type: ShapePropertyEnum, value: T) {
-    const property = this.propertyMap.get(type)!;
-    property.set(value);
+    const property = this.propertyMap.get(type);
+    if (property) {
+      property.set(value);
+    }
   }
 
   updateProperty<T extends Record<string, any>>(type: ShapePropertyEnum, value: T) {
-    const property = this.propertyMap.get(type)!;
-    property.update(value)
+    const property = this.propertyMap.get(type);
+    if (property) {
+      property.update(value)
+    }
   }
 
   getProperty<T>(type: ShapePropertyEnum) {

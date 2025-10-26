@@ -5,7 +5,7 @@ import { AbsState } from './AbsState';
 export class SelectedState extends AbsState {
   type: ShapeStateEnum = ShapeStateEnum.Selected;
 
-  allowNextStateTypes: ShapeStateEnum[] = [ShapeStateEnum.Normal];
+  allowNextStateTypes: ShapeStateEnum[] = [ShapeStateEnum.Normal, ShapeStateEnum.Moving];
 
   onActivate() {
     const selectedBorder = this.shape.getDecorate(ShapeDecorateTypeEnum.SelectedBorder);

@@ -20,6 +20,11 @@ export enum ShapeStateEnum {
    * 编辑态，只有文字拥有此状态
    */
   Edit = 'edit',
+
+  /**
+   * 移动中
+   */
+  Moving = 'moving'
 }
 
 /**
