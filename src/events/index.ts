@@ -12,6 +12,7 @@ export class Events {
 
   hoveredShape: BaseShape | null = null;
   selectedShape: BaseShape | null = null;
+  movingShape: BaseShape | null = null;
 
   private startDownPoint: Point | null = null
   private originBaseProps: BasePropertyValue | null = null
@@ -60,10 +61,12 @@ export class Events {
     const currentShape = this.selectedShape;
 
     if (!nextShape && !currentShape) {
+      document.addEventListener('pointermove', this.downAndMove);
       return;
     }
 
     if (nextShape?.id === currentShape?.id) {
+      document.addEventListener('pointermove', this.downAndMove);
       return;
     }
 
@@ -85,29 +88,35 @@ export class Events {
     this.originBaseProps = p || null;
 
     document.addEventListener('pointermove', this.downAndMove);
-    console.log('ccdebug onPointerdown')
   }
 
   private onPointerup(e: PointerEvent) {
-    console.log('ccdebug onPointerup')
     document.removeEventListener('pointermove', this.downAndMove)
-  }
-
-  private downAndMove = (e: PointerEvent) => {
-    console.log(`ccdebug start downAndMove`)
-    if (this.selectedShape) {
-      console.log(`ccdebug downAndMove x: ${e.pageX - (this.startDownPoint?.x || 0)}, y: ${e.pageY - (this.startDownPoint?.y || 0)}`)
-      this.downAndMoveWhenSelectedShape(e)
-      this.selectedShape.setState(ShapeStateEnum.Moving)
+    if (this.movingShape) {
+      this.movingShape.setState(ShapeStateEnum.Selected)
+      this.movingShape = null
     }
   }
 
+  private downAndMove = (e: PointerEvent) => {
+    if (!this.selectedShape && !this.movingShape) {
+      return
+    }
+
+    if (this.selectedShape && !this.movingShape) {
+      this.selectedShape.setState(ShapeStateEnum.Moving)
+      this.movingShape = this.selectedShape
+      this.selectedShape = null
+    }
+
+    this.downAndMoveWhenSelectedShape(e)
+  }
+
   private downAndMoveWhenSelectedShape(e: PointerEvent) {
-    if (this.selectedShape && this.originBaseProps) {
+    if (this.movingShape && this.originBaseProps) {
       const offsetX = e.pageX - (this.startDownPoint?.x || 0)
       const offsetY = e.pageY - (this.startDownPoint?.y || 0)
-      const p = this.selectedShape.getProperty<BaseProperty>(ShapePropertyEnum.Base).get()
-      this.selectedShape.updateProperty(ShapePropertyEnum.Base, {
+      this.movingShape.updateProperty(ShapePropertyEnum.Base, {
         x: this.originBaseProps.x + offsetX,
         y: this.originBaseProps.y + offsetY,
       })

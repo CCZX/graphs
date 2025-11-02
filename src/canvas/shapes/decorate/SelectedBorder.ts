@@ -15,7 +15,6 @@ export class SelectedBorder extends AbsDecorate {
   }
 
   onActivate() {
-    console.log('SelectedBorder onActivate');
     const { width, height } = this.shape.getBounds();
 
     const graphics = new Graphics();
@@ -34,7 +33,6 @@ export class SelectedBorder extends AbsDecorate {
   }
 
   onDeactivate() {
-    console.log('SelectedBorder onDeactivate');
     this.shape.container.removeChild(this.graphics);
   }
 }

@@ -93,7 +93,7 @@ export abstract class BaseShape<T extends Graphics = Graphics> {
   }
 
   setState(stateType: ShapeStateEnum, onSuccess?: () => void, onError?: () => void) {
-    log(`setState from ${this.getState()} to ${stateType}`);
+    // log(`setState from ${this.getState()} to ${stateType}`);
 
     if (stateType === this.getState()) {
       return;
