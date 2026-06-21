@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>图形属性面板 — 设计稿</title>
+<style>
+  :root {
+    --bg: #f5f5f5;
+    --surface: #ffffff;
+    --text: #1e1e1e;
+    --text-secondary: #5e5e5e;
+    --muted: #999;
+    --border: #e0e0e0;
+    --accent: #5b5ea6;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    padding: 48px 64px;
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+
+  .spec-header { margin-bottom: 48px; }
+  .spec-header h1 { font-size: 28px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 8px; }
+  .spec-header p { font-size: 15px; color: var(--text-secondary); line-height: 1.6; }
+
+  .spec-section { margin-bottom: 56px; }
+  .spec-section h2 { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+  .spec-section > .desc { font-size: 13px; color: var(--text-secondary); margin-bottom: 24px; }
+
+  .demo-row { display: flex; gap: 40px; flex-wrap: wrap; align-items: flex-start; }
+
+  .demo-card {
+    background: var(--surface); border-radius: 16px; padding: 36px 32px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    display: flex; flex-direction: column; align-items: center; gap: 20px;
+  }
+
+  .demo-label {
+    font-size: 12px; font-weight: 500; color: var(--muted);
+    letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 12px;
+  }
+
+  /* Mock canvas with dot grid */
+  .mock-canvas {
+    width: 420px; height: 280px; background: #fafafa;
+    background-image: radial-gradient(circle, #d8d8d8 1px, transparent 1px);
+    background-size: 20px 20px;
+    border-radius: 12px; border: 1px solid var(--border);
+    position: relative; overflow: visible;
+  }
+
+  .mock-el {
+    position: absolute;
+    border: 2px dashed var(--accent);
+    background: rgba(91,94,166,0.06);
+  }
+
+  .mock-handle {
+    position: absolute; width: 8px; height: 8px;
+    background: #fff; border: 1.5px solid var(--accent); border-radius: 2px;
+  }
+
+  /* ── Left fixed property panel ── */
+  .ctx-demo {
+    position: fixed;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 8px 32px rgba(0,0,0,0.14);
+    white-space: nowrap;
+    z-index: 10;
+  }
+
+  .ctx-inner { display: flex; flex-direction: column; padding: 4px 0; gap: 0; min-width: 184px; }
+
+  .ctx-section {
+    display: flex; flex-direction: column; align-items: flex-start;
+    gap: 4px; padding: 5px 10px;
+  }
+
+  .ctx-label {
+    font-size: 11px; font-weight: 500; color: var(--text-secondary);
+  }
+
+  .ctx-colors { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+
+  .ctx-dot {
+    width: 20px; height: 20px; border-radius: 50%; border: none;
+    cursor: pointer; flex-shrink: 0; position: relative;
+  }
+
+  .ctx-dot::after {
+    content: ''; position: absolute; inset: 0; border-radius: 50%;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.15); pointer-events: none;
+  }
+
+  .ctx-dot[data-color="#ffffff"]::after {
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12);
+  }
+  .ctx-dot[data-color="transparent"]::after {
+    box-shadow: none;
+  }
+
+  .ctx-dot.active {
+    box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--accent);
+  }
+
+  .ctx-sep {
+    height: 1px; width: auto; background: #eee;
+    margin: 2px 10px; border-radius: 1px; flex-shrink: 0;
+  }
+
+  .ctx-stroke { display: flex; align-items: center; gap: 8px; flex: 1; }
+
+  .ctx-stroke input[type=range] {
+    flex: 1; accent-color: var(--accent); cursor: pointer; height: 4px;
+  }
+
+  /* ── Spec token cards ── */
+  .specs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .spec-item {
+    background: var(--surface); border-radius: 10px; padding: 16px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+
+  .spec-swatch {
+    width: 42px; height: 42px; border-radius: 10px; flex-shrink: 0;
+    border: 1px solid rgba(0,0,0,0.08);
+  }
+
+  .spec-info h4 { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  .spec-info code {
+    font-size: 11px; font-family: 'SF Mono', 'JetBrains Mono', ui-monospace, monospace;
+    color: var(--text-secondary); background: #f3f3f3; padding: 1px 6px; border-radius: 3px;
+  }
+  .spec-info .note { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+
+  /* ── Color chip grid ── */
+  .color-grid { display: flex; gap: 12px; flex-wrap: wrap; }
+  .color-chip { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .color-chip .swatch {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.08);
+  }
+  .color-chip .swatch.sel {
+    box-shadow: 0 0 0 2px var(--surface), 0 0 0 4.5px var(--accent);
+  }
+  .color-chip .name { font-size: 11px; color: var(--text-secondary); }
+  .color-chip .hex {
+    font-size: 10px; font-family: 'SF Mono', 'JetBrains Mono', ui-monospace, monospace;
+    color: var(--muted);
+  }
+
+  /* ── Dimension table ── */
+  .dim-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .dim-table th, .dim-table td { padding: 9px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+  .dim-table th {
+    font-weight: 500; color: var(--muted); font-size: 11px;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .dim-table td:last-child {
+    font-family: 'SF Mono', 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12px; color: var(--text-secondary);
+  }
+</style>
+</head>
+<body>
+
+<div class="spec-header">
+  <h1>图形属性面板 · 设计稿</h1>
+  <p>选中画布上的图形后出现在左侧的固定属性面板。竖向排列：描边颜色、描边宽度、背景色、背景透明度。</p>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- States                                      -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="spec-section">
+  <h2>面板结构</h2>
+  <p class="desc">面板竖向排列，共 4 行：描边颜色、描边宽度、背景色、背景透明度。每行左侧为标签，右侧为控件。</p>
+
+  <div class="demo-row">
+    <div>
+      <div class="demo-label">完整面板</div>
+      <div class="demo-card" style="position:relative;">
+        <div class="ctx-demo" style="position:relative; left:0; top:0; transform:none;">
+          <div class="ctx-inner">
+            <div class="ctx-section">
+              <span class="ctx-label">描边</span>
+              <div class="ctx-colors">
+                <span class="ctx-dot active" data-color="#1e1e1e" style="background:#1e1e1e"></span>
+                <span class="ctx-dot" data-color="#e03131" style="background:#e03131"></span>
+                <span class="ctx-dot" data-color="#f08c00" style="background:#f08c00"></span>
+                <span class="ctx-dot" data-color="#2f9e44" style="background:#2f9e44"></span>
+                <span class="ctx-dot" data-color="#1971c2" style="background:#1971c2"></span>
+                <span class="ctx-dot" data-color="#9c36b5" style="background:#9c36b5"></span>
+                <span class="ctx-dot" data-color="#ffffff" style="background:#ffffff"></span>
+              </div>
+            </div>
+            <div class="ctx-sep"></div>
+            <div class="ctx-section">
+              <span class="ctx-label">描边宽度</span>
+              <div class="ctx-stroke">
+                <svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="3" fill="#1e1e1e"/></svg>
+                <select class="ctx-select" style="flex:1;border:1px solid var(--border);border-radius:6px;padding:4px 6px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);cursor:pointer;outline:none;-webkit-appearance:none;appearance:none;">
+                  <option value="0">无 (0)</option>
+                  <option value="1">小 (1)</option>
+                  <option value="3" selected>中 (3)</option>
+                  <option value="5">大 (5)</option>
+                </select>
+              </div>
+            </div>
+            <div class="ctx-sep"></div>
+            <div class="ctx-section">
+              <span class="ctx-label">背景色</span>
+              <div class="ctx-colors">
+                <span class="ctx-dot active" data-color="transparent" style="background:repeating-linear-gradient(45deg,#ddd,#ddd 2px,transparent 2px,transparent 5px);"></span>
+                <span class="ctx-dot" data-color="#ffffff" style="background:#ffffff"></span>
+                <span class="ctx-dot" data-color="#1e1e1e" style="background:#1e1e1e"></span>
+                <span class="ctx-dot" data-color="#e03131" style="background:#e03131"></span>
+                <span class="ctx-dot" data-color="#f08c00" style="background:#f08c00"></span>
+                <span class="ctx-dot" data-color="#2f9e44" style="background:#2f9e44"></span>
+                <span class="ctx-dot" data-color="#1971c2" style="background:#1971c2"></span>
+                <span class="ctx-dot" data-color="#9c36b5" style="background:#9c36b5"></span>
+              </div>
+            </div>
+            <div class="ctx-sep"></div>
+            <div class="ctx-section">
+              <span class="ctx-label">背景透明度</span>
+              <div class="ctx-stroke">
+                <input type="range" min="0" max="100" value="100">
+                <span style="font-size:11px;color:var(--text-secondary);min-width:32px;text-align:right;">100%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="demo-label">蓝色描边 + 绿色背景 · 50% 透明</div>
+      <div class="demo-card" style="position:relative;">
+        <div class="ctx-demo" style="position:relative; left:0; top:0; transform:none;">
+          <div class="ctx-inner">
+            <div class="ctx-section">
+              <span class="ctx-label">描边</span>
+              <div class="ctx-colors">
+                <span class="ctx-dot" data-color="#1e1e1e" style="background:#1e1e1e"></span>
+                <span class="ctx-dot" data-color="#e03131" style="background:#e03131"></span>
+                <span class="ctx-dot" data-color="#f08c00" style="background:#f08c00"></span>
+                <span class="ctx-dot" data-color="#2f9e44" style="background:#2f9e44"></span>
+                <span class="ctx-dot active" data-color="#1971c2" style="background:#1971c2"></span>
+                <span class="ctx-dot" data-color="#9c36b5" style="background:#9c36b5"></span>
+                <span class="ctx-dot" data-color="#ffffff" style="background:#ffffff"></span>
+              </div>
+            </div>
+            <div class="ctx-sep"></div>
+            <div class="ctx-section">
+              <span class="ctx-label">描边宽度</span>
+              <div class="ctx-stroke">
+                <svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="6" fill="#1971c2"/></svg>
+                <select class="ctx-select" style="flex:1;border:1px solid var(--border);border-radius:6px;padding:4px 6px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);cursor:pointer;outline:none;-webkit-appearance:none;appearance:none;">
+                  <option value="0">无 (0)</option>
+                  <option value="1">小 (1)</option>
+                  <option value="3">中 (3)</option>
+                  <option value="5" selected>大 (5)</option>
+                </select>
+              </div>
+            </div>
+            <div class="ctx-sep"></div>
+            <div class="ctx-section">
+              <span class="ctx-label">背景色</span>
+              <div class="ctx-colors">
+                <span class="ctx-dot" data-color="transparent" style="background:repeating-linear-gradient(45deg,#ddd,#ddd 2px,transparent 2px,transparent 5px);"></span>
+                <span class="ctx-dot" data-color="#ffffff" style="background:#ffffff"></span>
+                <span class="ctx-dot" data-color="#1e1e1e" style="background:#1e1e1e"></span>
+                <span class="ctx-dot" data-color="#e03131" style="background:#e03131"></span>
+                <span class="ctx-dot" data-color="#f08c00" style="background:#f08c00"></span>
+                <span class="ctx-dot active" data-color="#2f9e44" style="background:#2f9e44"></span>
+                <span class="ctx-dot" data-color="#1971c2" style="background:#1971c2"></span>
+                <span class="ctx-dot" data-color="#9c36b5" style="background:#9c36b5"></span>
+              </div>
+            </div>
+            <div class="ctx-sep"></div>
+            <div class="ctx-section">
+              <span class="ctx-label">背景透明度</span>
+              <div class="ctx-stroke">
+                <input type="range" min="0" max="100" value="50">
+                <span style="font-size:11px;color:var(--text-secondary);min-width:32px;text-align:right;">50%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- Color variants                              -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="spec-section">
+  <h2>颜色色板</h2>
+  <p class="desc">描边与背景色各 8 种预设（含透明）。当前选中色显示紫色强调环（2px 白色间隙 + 3.5px 紫色环）。</p>
+
+  <div class="demo-card" style="padding:32px 44px;">
+    <div class="color-grid">
+      <div class="color-chip">
+        <span class="swatch sel" style="background:#1e1e1e;"></span>
+        <span class="name">黑色</span>
+        <span class="hex">#1e1e1e</span>
+      </div>
+      <div class="color-chip">
+        <span class="swatch" style="background:#e03131;"></span>
+        <span class="name">红色</span>
+        <span class="hex">#e03131</span>
+      </div>
+      <div class="color-chip">
+        <span class="swatch" style="background:#f08c00;"></span>
+        <span class="name">橙色</span>
+        <span class="hex">#f08c00</span>
+      </div>
+      <div class="color-chip">
+        <span class="swatch" style="background:#2f9e44;"></span>
+        <span class="name">绿色</span>
+        <span class="hex">#2f9e44</span>
+      </div>
+      <div class="color-chip">
+        <span class="swatch" style="background:#1971c2;"></span>
+        <span class="name">蓝色</span>
+        <span class="hex">#1971c2</span>
+      </div>
+      <div class="color-chip">
+        <span class="swatch" style="background:#9c36b5;"></span>
+        <span class="name">紫色</span>
+        <span class="hex">#9c36b5</span>
+      </div>
+      <div class="color-chip">
+        <span class="swatch" style="background:#ffffff; border-color:#ccc;"></span>
+        <span class="name">白色</span>
+        <span class="hex">#ffffff</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- Stroke width                                -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="spec-section">
+  <h2>笔触粗细</h2>
+  <p class="desc">4 档预设宽度：无 (0)、小 (1)、中 (3)、大 (5)。通过 select 下拉选择，左侧圆点实时预览。</p>
+
+  <div class="demo-row">
+    <div class="demo-card" style="min-width:180px;">
+      <div class="demo-label">无 (0)</div>
+      <div class="ctx-stroke">
+        <svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="1" fill="#999"/></svg>
+        <select class="ctx-select" style="flex:1;border:1px solid var(--border);border-radius:6px;padding:4px 6px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);cursor:pointer;outline:none;-webkit-appearance:none;appearance:none;">
+          <option value="0" selected>无 (0)</option>
+          <option value="1">小 (1)</option>
+          <option value="3">中 (3)</option>
+          <option value="5">大 (5)</option>
+        </select>
+      </div>
+    </div>
+    <div class="demo-card" style="min-width:180px;">
+      <div class="demo-label">小 (1)</div>
+      <div class="ctx-stroke">
+        <svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="2" fill="#1e1e1e"/></svg>
+        <select class="ctx-select" style="flex:1;border:1px solid var(--border);border-radius:6px;padding:4px 6px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);cursor:pointer;outline:none;-webkit-appearance:none;appearance:none;">
+          <option value="0">无 (0)</option>
+          <option value="1" selected>小 (1)</option>
+          <option value="3">中 (3)</option>
+          <option value="5">大 (5)</option>
+        </select>
+      </div>
+    </div>
+    <div class="demo-card" style="min-width:180px;">
+      <div class="demo-label">中 (3)</div>
+      <div class="ctx-stroke">
+        <svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="5" fill="#1e1e1e"/></svg>
+        <select class="ctx-select" style="flex:1;border:1px solid var(--border);border-radius:6px;padding:4px 6px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);cursor:pointer;outline:none;-webkit-appearance:none;appearance:none;">
+          <option value="0">无 (0)</option>
+          <option value="1">小 (1)</option>
+          <option value="3" selected>中 (3)</option>
+          <option value="5">大 (5)</option>
+        </select>
+      </div>
+    </div>
+    <div class="demo-card" style="min-width:180px;">
+      <div class="demo-label">大 (5)</div>
+      <div class="ctx-stroke">
+        <svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="7" fill="#1e1e1e"/></svg>
+        <select class="ctx-select" style="flex:1;border:1px solid var(--border);border-radius:6px;padding:4px 6px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);cursor:pointer;outline:none;-webkit-appearance:none;appearance:none;">
+          <option value="0">无 (0)</option>
+          <option value="1">小 (1)</option>
+          <option value="3">中 (3)</option>
+          <option value="5" selected>大 (5)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- Design tokens                               -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="spec-section">
+  <h2>设计规范</h2>
+
+  <div class="specs">
+    <div class="spec-item">
+      <div class="spec-swatch" style="background:#ffffff; border:1px solid #ddd;"></div>
+      <div class="spec-info">
+        <h4>面板背景</h4>
+        <code>#ffffff</code>
+        <p class="note">双层阴影：1px 细描边 rgba(0,0,0,0.06) + 8px 32px 投影</p>
+      </div>
+    </div>
+
+    <div class="spec-item">
+      <div class="spec-swatch" style="background:#5b5ea6;"></div>
+      <div class="spec-info">
+        <h4>强调色</h4>
+        <code>#5b5ea6 (--accent)</code>
+        <p class="note">选中环、滑块轨道 accent-color</p>
+      </div>
+    </div>
+
+    <div class="spec-item">
+      <div class="spec-swatch" style="background:#fff; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:600;">12</div>
+      <div class="spec-info">
+        <h4>面板圆角</h4>
+        <code>border-radius: 12px</code>
+        <p class="note">外层容器圆角</p>
+      </div>
+    </div>
+
+    <div class="spec-item">
+      <div class="spec-swatch" style="background:#fff; display:flex; align-items:center; justify-content:center; font-size:11px;">10px</div>
+      <div class="spec-info">
+        <h4>标签字号</h4>
+        <code>10px / weight 500</code>
+        <p class="note">颜色、粗细 分组标签</p>
+      </div>
+    </div>
+
+    <div class="spec-item">
+      <div class="spec-swatch" style="background:#fff; display:flex; align-items:center; justify-content:center; font-size:11px;">20px</div>
+      <div class="spec-info">
+        <h4>颜色圆点</h4>
+        <code>20×20px / border-radius 50%</code>
+        <p class="note">内阴影增加立体感，间距 5px</p>
+      </div>
+    </div>
+
+    <div class="spec-item">
+      <div class="spec-swatch" style="background:#fff; display:flex; align-items:center; justify-content:center; font-size:11px;">3.5px</div>
+      <div class="spec-info">
+        <h4>选中环</h4>
+        <code>2px 白间隙 + 3.5px 紫环</code>
+        <p class="note">box-shadow 多重阴影</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:36px;">
+    <h4 style="font-size:14px; font-weight:600; margin-bottom:14px;">间距规格</h4>
+    <table class="dim-table">
+      <thead><tr><th>属性</th><th>用途</th><th>值</th></tr></thead>
+      <tbody>
+        <tr><td>面板内边距</td><td>.ctx-inner padding</td><td>4px 0</td></tr>
+        <tr><td>行内边距</td><td>.ctx-section padding</td><td>5px 10px</td></tr>
+        <tr><td>标签与控件间距</td><td>.ctx-section gap</td><td>4px</td></tr>
+        <tr><td>颜色圆点间距</td><td>.ctx-colors gap</td><td>4px</td></tr>
+        <tr><td>分隔线边距</td><td>.ctx-sep margin</td><td>2px 10px</td></tr>
+        <tr><td>控件间距</td><td>.ctx-stroke gap</td><td>8px</td></tr>
+        <tr><td>面板距左边缘</td><td>fixed left</td><td>16px</td></tr>
+        <tr><td>垂直定位</td><td>top + transform</td><td>50% / translateY(-50%)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="margin-top:36px;">
+    <h4 style="font-size:14px; font-weight:600; margin-bottom:14px;">动画参数</h4>
+    <table class="dim-table">
+      <thead><tr><th>属性</th><th>说明</th><th>值</th></tr></thead>
+      <tbody>
+        <tr><td>opacity</td><td>入场淡入</td><td>0 → 1</td></tr>
+        <tr><td>duration</td><td>过渡时长</td><td>180ms</td></tr>
+        <tr><td>easing</td><td>缓动曲线</td><td>cubic-bezier(0.2, 0, 0, 1)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="margin-top:36px;">
+    <h4 style="font-size:14px; font-weight:600; margin-bottom:14px;">交互行为</h4>
+    <table class="dim-table">
+      <thead><tr><th>操作</th><th>行为</th></tr></thead>
+      <tbody>
+        <tr><td>选择工具点击图形</td><td>选中图形，面板在左侧淡入显示，同步描边/填充属性</td></tr>
+        <tr><td>选择工具点击空白处</td><td>取消选中，面板淡出消失</td></tr>
+        <tr><td>按 Escape</td><td>取消选中</td></tr>
+        <tr><td>点击描边颜色圆点</td><td>更新被选图形的描边颜色，同步为后续绘制的默认色</td></tr>
+        <tr><td>选择描边宽度</td><td>下拉切换（无/小/中/大），更新被选图形的描边宽度，同步为后续绘制的默认值</td></tr>
+        <tr><td>点击背景色圆点</td><td>更新被选图形的填充颜色（含透明选项），同步为后续默认值</td></tr>
+        <tr><td>拖动背景透明度滑块</td><td>实时更新被选图形的填充透明度（0–100%），同步为后续默认值</td></tr>
+        <tr><td>Delete / Backspace</td><td>删除被选图形</td></tr>
+        <tr><td>平移 / 缩放画布</td><td>面板固定在左侧，不受画布操作影响</td></tr>
+        <tr><td>切换到绘制工具</td><td>自动取消选中，面板消失</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</body>
+</html>

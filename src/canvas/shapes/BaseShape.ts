@@ -46,22 +46,9 @@ export abstract class BaseShape<T extends Graphics = Graphics> {
     this.stateMachine = new StateMachine(this);
     this.initDecorate();
     this.initProperty();
-    this.initEvent();
   }
 
-  initEvent() {
-    // this.graphics.on('pointerenter', () => {
-    //   this.setState(ShapeStateEnum.Hover);
-    // });
-    // this.graphics.on('pointerout', () => {
-    //   this.getState() === ShapeStateEnum.Hover && this.setState(ShapeStateEnum.Normal);
-    // });
-    // this.graphics.on('pointerdown', () => {
-    //   this.setState(ShapeStateEnum.Selected);
-    // });
-  }
-
-  initProperty() {
+  private initProperty() {
     this.propertyMap.set(ShapePropertyEnum.Base, new BaseProperty(this));
     this.propertyMap.set(ShapePropertyEnum.Fill, new FillProperty(this));
     this.propertyMap.set(ShapePropertyEnum.Stroke, new StrokeProperty(this));
