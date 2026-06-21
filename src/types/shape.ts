@@ -24,7 +24,12 @@ export enum ShapeStateEnum {
   /**
    * 移动中
    */
-  Moving = 'moving'
+  Moving = 'moving',
+
+  /**
+   * 调整尺寸中
+   */
+  Resizing = 'resizing'
 }
 
 /**

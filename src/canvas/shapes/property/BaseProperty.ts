@@ -16,6 +16,8 @@ export class BaseProperty extends AbsProperty<BasePropertyValue> {
     this.shape.container.width = this.value.width;
     this.shape.container.height = this.value.height;
 
+    this.shape.graphics.clear();
+
     if (this.shape.type === ShapeTypeEnum.Rectangle) {
       this.shape.graphics.position.set(0, 0);
       this.shape.graphics.beginFill()
