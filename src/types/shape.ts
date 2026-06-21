@@ -29,7 +29,12 @@ export enum ShapeStateEnum {
   /**
    * 调整尺寸中
    */
-  Resizing = 'resizing'
+  Resizing = 'resizing',
+
+  /**
+   * 旋转中
+   */
+  Rotating = 'rotating',
 }
 
 /**
@@ -56,6 +61,7 @@ export interface BasePropertyValue {
   y: number;
   width: number;
   height: number;
+  rotation?: number;
 }
 
 export interface FillPropertyValue {

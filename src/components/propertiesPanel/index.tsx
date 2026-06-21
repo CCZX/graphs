@@ -23,6 +23,7 @@ export function PropertiesPanel() {
   const [height, setHeight] = useState(0);
   const [strokeColor, setStrokeColor] = useState('#000000');
   const [strokeWidth, setStrokeWidth] = useState(0);
+  const [rotation, setRotation] = useState(0);
 
   const syncFromShape = useCallback((shape: BaseShape) => {
     const base = shape.getProperty<any>(ShapePropertyEnum.Base)?.get() as BasePropertyValue;
@@ -32,6 +33,7 @@ export function PropertiesPanel() {
     if (base) {
       setWidth(base.width);
       setHeight(base.height);
+      setRotation(base.rotation || 0);
     }
     if (fill) {
       setFillColor(numberToHex(fill.color));
@@ -100,6 +102,12 @@ export function PropertiesPanel() {
     shape.updateProperty(ShapePropertyEnum.Stroke, { width: w });
   };
 
+  const handleRotationChange = (r: number) => {
+    const normalized = ((r % 360) + 360) % 360;
+    setRotation(normalized);
+    shape.updateProperty(ShapePropertyEnum.Base, { rotation: normalized });
+  };
+
   const strokeWidthPresets = [
     { label: '无', value: 0 },
     { label: '小', value: 1 },
@@ -158,6 +166,19 @@ export function PropertiesPanel() {
               onChange={(e) => handleHeightChange(parseInt(e.target.value) || 1)}
             />
           </div>
+        </div>
+      </div>
+
+      <div className="properties-panel__section">
+        <label className="properties-panel__label">旋转</label>
+        <div className="properties-panel__row">
+          <input
+            type="number"
+            className="properties-panel__number-input"
+            value={Math.round(rotation)}
+            onChange={(e) => handleRotationChange(parseInt(e.target.value) || 0)}
+          />
+          <span className="properties-panel__value">°</span>
         </div>
       </div>
 

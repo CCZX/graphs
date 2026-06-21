@@ -1,3 +1,4 @@
+import { Point as PixiPoint } from 'pixi.js';
 import { Point } from '@/types/geometry';
 import { BaseShape } from '@/canvas/shapes/BaseShape';
 import { BaseProperty } from '@/canvas/shapes/property/BaseProperty';
@@ -104,9 +105,12 @@ export class ResizeHandler extends Handler {
   private applyResize(state: InteractionState, viewportPoint: Point) {
     if (!this.resizingShape || !this.originBaseProps || !this.direction) return;
 
+    // 转换到容器本地坐标，适配旋转后的 resize
     const start = this.startViewportPoint!;
-    const dx = viewportPoint.x - start.x;
-    const dy = viewportPoint.y - start.y;
+    const localPoint = this.resizingShape.container.toLocal(new PixiPoint(viewportPoint.x, viewportPoint.y));
+    const localStart = this.resizingShape.container.toLocal(new PixiPoint(start.x, start.y));
+    const dx = localPoint.x - localStart.x;
+    const dy = localPoint.y - localStart.y;
 
     const { x, y, width, height } = this.originBaseProps;
     let newX = x;
@@ -151,7 +155,7 @@ export class ResizeHandler extends Handler {
   }
 
   private detectHandle(shape: BaseShape, vp: Point, scale: number): Dir | null {
-    const { x, y, width, height } = shape.getBounds();
+    const { width, height } = shape.getBounds();
     const threshold = HANDLE_HIT_RADIUS / scale;
 
     const stroke = shape.getProperty<any>(ShapePropertyEnum.Stroke)
@@ -159,15 +163,18 @@ export class ResizeHandler extends Handler {
     const strokeWidth = stroke?.width || 0;
     const offset = strokeWidth / 2 + BORDER_PADDING;
 
+    // 转换到容器本地坐标，适配旋转后的 resize 热区检测
+    const local = shape.container.toLocal(new PixiPoint(vp.x, vp.y));
+
     const corners: { px: number; py: number; dir: Dir }[] = [
-      { px: x - offset, py: y - offset, dir: Dir.TL },
-      { px: x + width + offset, py: y - offset, dir: Dir.TR },
-      { px: x + width + offset, py: y + height + offset, dir: Dir.BR },
-      { px: x - offset, py: y + height + offset, dir: Dir.BL },
+      { px: 0 - offset, py: 0 - offset, dir: Dir.TL },
+      { px: width + offset, py: 0 - offset, dir: Dir.TR },
+      { px: width + offset, py: height + offset, dir: Dir.BR },
+      { px: 0 - offset, py: height + offset, dir: Dir.BL },
     ];
 
     for (const c of corners) {
-      if (Math.abs(vp.x - c.px) < threshold && Math.abs(vp.y - c.py) < threshold) {
+      if (Math.abs(local.x - c.px) < threshold && Math.abs(local.y - c.py) < threshold) {
         return c.dir;
       }
     }

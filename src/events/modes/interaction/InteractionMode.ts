@@ -1,6 +1,7 @@
 import { EventModeEnum } from '../../types';
 import { Handler } from '../../Handler';
 import { ResizeHandler } from './handlers/ResizeHandler';
+import { RotateHandler } from './handlers/RotateHandler';
 import { MoveHandler } from './handlers/MoveHandler';
 import { SelectHandler } from './handlers/SelectHandler';
 import { HoverHandler } from './handlers/HoverHandler';
@@ -11,6 +12,7 @@ export class InteractionMode extends AbsEventMode {
 
   handlerList: Handler[] = [
     new ResizeHandler(),
+    new RotateHandler(),
     new MoveHandler(),
     new SelectHandler(),
     new HoverHandler(),

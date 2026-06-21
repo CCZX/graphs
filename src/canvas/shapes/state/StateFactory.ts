@@ -6,6 +6,7 @@ import { HoverState } from './HoverState';
 import { MovingState } from './MovingState';
 import { NormalState } from './NormalState';
 import { ResizingState } from './ResizingState';
+import { RotatingState } from './RotatingState';
 import { SelectedState } from './SelectedState';
 
 export class StateFactory {
@@ -22,6 +23,8 @@ export class StateFactory {
       return new MovingState(shape);
     } else if (state === ShapeStateEnum.Resizing) {
       return new ResizingState(shape);
+    } else if (state === ShapeStateEnum.Rotating) {
+      return new RotatingState(shape);
     }
 
     warn('没有找到对应的 state, 回退到 normal state');

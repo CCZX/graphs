@@ -137,9 +137,8 @@ export abstract class BaseShape<T extends Graphics = Graphics> {
   }
 
   getBounds() {
-    return {
-      ...this.getPosition(),
-      ...this.getWH(),
-    };
+    const { width, height } = this.getWH();
+    // container 的 pivot 设为中心后，local 坐标系下 shape 始终从 (0,0) 开始
+    return { x: 0, y: 0, width, height };
   }
 }

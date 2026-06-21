@@ -8,6 +8,7 @@ export enum EventModeEnum {
 
 export enum HandlerEnum {
   Resize = 'resize',
+  Rotate = 'rotate',
   Move = 'move',
   Select = 'select',
   Hover = 'hover',

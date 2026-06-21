@@ -12,22 +12,25 @@ export class BaseProperty extends AbsProperty<BasePropertyValue> {
   }
 
   draw(): void {
-    this.shape.container.x = this.value.x;
-    this.shape.container.y = this.value.y;
-    this.shape.container.width = this.value.width;
-    this.shape.container.height = this.value.height;
+    const { x, y, width, height, rotation = 0 } = this.value;
+
+    // pivot 设为图形中心，position 也设为中心，rotation 绕中心旋转
+    this.shape.container.x = x + width / 2;
+    this.shape.container.y = y + height / 2;
+    this.shape.container.pivot.set(width / 2, height / 2);
+    this.shape.container.angle = rotation;
 
     this.shape.graphics.clear();
 
     if (this.shape.type === ShapeTypeEnum.Rectangle) {
       this.shape.graphics.position.set(0, 0);
       this.shape.graphics.beginFill()
-      this.shape.graphics.drawRect(0, 0, this.value.width, this.value.height)
+      this.shape.graphics.drawRect(0, 0, width, height)
       this.shape.graphics.endFill()
     }
 
     if (this.shape.type === ShapeTypeEnum.Circle) {
-      this.shape.graphics.position.set(this.value.width / 2, this.value.height / 2);
+      this.shape.graphics.position.set(width / 2, height / 2);
     }
 
     const fill = this.shape.getProperty<FillProperty>(ShapePropertyEnum.Fill)
