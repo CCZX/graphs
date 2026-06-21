@@ -1,0 +1,31 @@
+import { Point } from '@/types/geometry';
+import { BaseShape } from '@/canvas/shapes/BaseShape';
+
+export enum EventModeEnum {
+  InteractionMode = 'interactionMode',
+  CreatorMode = 'creatorMode',
+}
+
+export enum HandlerEnum {
+  Resize = 'resize',
+  Move = 'move',
+  Select = 'select',
+  Hover = 'hover',
+}
+
+/**
+ * 跨 handler 共享的可变状态
+ */
+export interface InteractionState {
+  hoveredShape: BaseShape | null;
+  selectedShape: BaseShape | null;
+}
+
+/**
+ * EventManager 每次事件预计算的外部数据，handler 只读
+ */
+export interface EventPayload {
+  viewportPoint: Point;
+  screenPoint: Point;
+  scale: number;
+}

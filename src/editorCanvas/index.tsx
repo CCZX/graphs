@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import './index.less';
 import { MOCK_SHAPE_DATA } from '../mock/shapeData';
-import { Events } from '../events';
+import { EventManager } from '../events';
 import { Stage } from '@/canvas/core/Stage';
 import { shapeManager } from '../canvas/shapes/shapeManager';
 import { ShapeCreator } from '../canvas/shapes/shapeCreator';
@@ -41,8 +41,8 @@ function EditorCanvas() {
       true,
     );
 
-    const events = new Events();
-    events.start();
+    const eventManager = new EventManager();
+    eventManager.start();
 
     return () => {
       stage.destory();
