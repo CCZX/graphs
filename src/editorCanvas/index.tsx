@@ -7,29 +7,29 @@ import { stageRef } from '@/canvas/core/stageRef';
 import { ShapeCreator } from '../canvas/shapes/shapeCreator';
 
 function EditorCanvas() {
-  const containerRef = useRef<HTMLDivElement>(null);
+	const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!containerRef.current) {
-      return;
-    }
+	useEffect(() => {
+		if (!containerRef.current) {
+			return;
+		}
 
-    const stage = Stage.createStage(containerRef.current);
-    stageRef.current = stage;
+		const stage = Stage.createStage(containerRef.current);
+		stageRef.current = stage;
 
-    const shapeCreator = new ShapeCreator(stage, MOCK_SHAPE_DATA);
-    shapeCreator.create();
+		const shapeCreator = new ShapeCreator(stage, MOCK_SHAPE_DATA);
+		shapeCreator.create();
 
-    const eventManager = new EventManager();
-    eventManager.start(containerRef.current);
+		const eventManager = new EventManager();
+		eventManager.start(containerRef.current);
 
-    return () => {
-      stageRef.current = null;
-      stage.destory();
-    };
-  }, []);
+		return () => {
+			stageRef.current = null;
+			stage.destory();
+		};
+	}, []);
 
-  return <div ref={containerRef} className='editor-canvas-container' />;
+	return <div ref={containerRef} className='editor-canvas-container' />;
 }
 
 export default EditorCanvas;

@@ -2,15 +2,15 @@ import { ShapeDecorateTypeEnum } from '../../types/shape';
 import { BaseShape } from '../BaseShape';
 
 export abstract class AbsDecorate {
-  abstract type: ShapeDecorateTypeEnum;
+	abstract type: ShapeDecorateTypeEnum;
 
-  protected shape: BaseShape;
+	protected shape: BaseShape;
 
-  constructor(shape: BaseShape) {
-    this.shape = shape;
-  }
+	constructor(shape: BaseShape) {
+		this.shape = shape;
+	}
 
-  abstract onActivate(): void;
+	abstract onActivate(): void;
 
-  abstract onDeactivate(): void;
+	abstract onDeactivate(): void;
 }

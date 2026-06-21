@@ -3,7 +3,7 @@
  * @returns
  */
 export function getResolution() {
-  return window.devicePixelRatio;
+	return window.devicePixelRatio;
 }
 
 /**
@@ -11,7 +11,7 @@ export function getResolution() {
  * @returns
  */
 export function isDev() {
-  return import.meta.env.DEV;
+	return import.meta.env.DEV;
 }
 
 /**
@@ -19,5 +19,5 @@ export function isDev() {
  * @returns
  */
 export function isProd() {
-  return import.meta.env.PROD;
+	return import.meta.env.PROD;
 }

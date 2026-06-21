@@ -3,5 +3,5 @@
  * @returns
  */
 export function getEditorCanvas() {
-  return document.querySelector('.editor-canvas-container canvas');
+	return document.querySelector('.editor-canvas-container canvas');
 }

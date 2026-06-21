@@ -2,9 +2,9 @@ import { ShapeStateEnum } from '../../../types/shape';
 import { AbsState } from './AbsState';
 
 export class EditState extends AbsState {
-  type: ShapeStateEnum = ShapeStateEnum.Edit;
+	type: ShapeStateEnum = ShapeStateEnum.Edit;
 
-  onActivate() {}
+	onActivate() {}
 
-  onDeactivate(): void {}
+	onDeactivate(): void {}
 }

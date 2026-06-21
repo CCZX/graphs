@@ -8,20 +8,20 @@ import { Viewport } from '../types/stage';
  * @returns
  */
 export function formatZoomScale(sclae: number) {
-  if (sclae < MIN_ZOOM_SCALE) {
-    sclae = MIN_ZOOM_SCALE;
-  }
+	if (sclae < MIN_ZOOM_SCALE) {
+		sclae = MIN_ZOOM_SCALE;
+	}
 
-  if (sclae > MAX_ZOOM_SCALE) {
-    sclae = MAX_ZOOM_SCALE;
-  }
+	if (sclae > MAX_ZOOM_SCALE) {
+		sclae = MAX_ZOOM_SCALE;
+	}
 
-  return floor(sclae, 2);
+	return floor(sclae, 2);
 }
 
 interface Param {
-  viewport: Viewport;
-  point: { x: number; y: number };
+	viewport: Viewport;
+	point: { x: number; y: number };
 }
 
 /**
@@ -30,14 +30,14 @@ interface Param {
  * @returns
  */
 export function transformCanvasCoordinateToViewport(param: Param) {
-  const { viewport, point } = param;
+	const { viewport, point } = param;
 
-  const matrix = new window.DOMMatrix();
-  matrix.scaleSelf(1 / viewport.scale);
-  matrix.translateSelf(-viewport.x, -viewport.y);
+	const matrix = new window.DOMMatrix();
+	matrix.scaleSelf(1 / viewport.scale);
+	matrix.translateSelf(-viewport.x, -viewport.y);
 
-  const transformX = matrix.a * point.x + matrix.c * point.y + matrix.e;
-  const transformY = matrix.b * point.x + matrix.d * point.y + matrix.f;
+	const transformX = matrix.a * point.x + matrix.c * point.y + matrix.e;
+	const transformY = matrix.b * point.x + matrix.d * point.y + matrix.f;
 
-  return { x: transformX, y: transformY };
+	return { x: transformX, y: transformY };
 }

@@ -8,38 +8,34 @@ import { AbsDecorate } from './AbsDecorate';
 const BORDER_PADDING = 2;
 
 export class HoverBorder extends AbsDecorate {
-  type: ShapeDecorateTypeEnum = ShapeDecorateTypeEnum.HoverBorder;
+	type: ShapeDecorateTypeEnum = ShapeDecorateTypeEnum.HoverBorder;
 
-  graphics: Graphics;
+	graphics: Graphics;
 
-  constructor(shape: BaseShape) {
-    super(shape);
-    this.graphics = new Graphics();
-  }
+	constructor(shape: BaseShape) {
+		super(shape);
+		this.graphics = new Graphics();
+	}
 
-  onActivate() {
-    const { width, height } = this.shape.getBounds();
+	onActivate() {
+		const { width, height } = this.shape.getBounds();
 
-    const stroke = this.shape.getProperty<any>(ShapePropertyEnum.Stroke)
-      ?.get() as StrokePropertyValue;
-    const strokeWidth = stroke?.width || 0;
-    const offset = strokeWidth / 2 + BORDER_PADDING;
+		const stroke = this.shape
+			.getProperty<any>(ShapePropertyEnum.Stroke)
+			?.get() as StrokePropertyValue;
+		const strokeWidth = stroke?.width || 0;
+		const offset = strokeWidth / 2 + BORDER_PADDING;
 
-    const graphics = new Graphics();
-    this.graphics = graphics;
-    this.graphics.lineStyle(2, HOVER_BORDER, 1);
-    this.graphics.beginFill(0xfff, 0);
-    this.graphics.drawRect(
-      0 - offset,
-      0 - offset,
-      width + offset * 2,
-      height + offset * 2,
-    );
+		const graphics = new Graphics();
+		this.graphics = graphics;
+		this.graphics.lineStyle(2, HOVER_BORDER, 1);
+		this.graphics.beginFill(0xfff, 0);
+		this.graphics.drawRect(0 - offset, 0 - offset, width + offset * 2, height + offset * 2);
 
-    this.shape.container.addChild(this.graphics);
-  }
+		this.shape.container.addChild(this.graphics);
+	}
 
-  onDeactivate() {
-    this.shape.container.removeChild(this.graphics);
-  }
+	onDeactivate() {
+		this.shape.container.removeChild(this.graphics);
+	}
 }

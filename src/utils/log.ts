@@ -3,7 +3,7 @@
  * @param message
  */
 export function log(message?: string) {
-  console.log(`[log]: ${message}`);
+	console.log(`[log]: ${message}`);
 }
 
 /**
@@ -11,7 +11,7 @@ export function log(message?: string) {
  * @param message
  */
 export function warn(message?: string) {
-  console.warn(`[warn]: ${message}`);
+	console.warn(`[warn]: ${message}`);
 }
 
 /**
@@ -19,7 +19,7 @@ export function warn(message?: string) {
  * @param message
  */
 export function error(message?: string) {
-  console.error(`[error]: ${message}`);
+	console.error(`[error]: ${message}`);
 }
 
 /**
@@ -27,7 +27,7 @@ export function error(message?: string) {
  * @param message
  */
 export function devLog(message?: string) {
-  console.log(`[log]: ${message}`);
+	console.log(`[log]: ${message}`);
 }
 
 /**
@@ -35,7 +35,7 @@ export function devLog(message?: string) {
  * @param message
  */
 export function devWarn(message?: string) {
-  console.warn(`[warn]: ${message}`);
+	console.warn(`[warn]: ${message}`);
 }
 
 /**
@@ -43,7 +43,7 @@ export function devWarn(message?: string) {
  * @param message
  */
 export function devError(message?: string) {
-  console.error(`[error]: ${message}`);
+	console.error(`[error]: ${message}`);
 }
 
 /**
@@ -51,7 +51,7 @@ export function devError(message?: string) {
  * @param message
  */
 export function prodLog(message?: string) {
-  console.log(`[log]: ${message}`);
+	console.log(`[log]: ${message}`);
 }
 
 /**
@@ -59,7 +59,7 @@ export function prodLog(message?: string) {
  * @param message
  */
 export function prodWarn(message?: string) {
-  console.warn(`[warn]: ${message}`);
+	console.warn(`[warn]: ${message}`);
 }
 
 /**
@@ -67,5 +67,5 @@ export function prodWarn(message?: string) {
  * @param message
  */
 export function prodError(message?: string) {
-  console.error(`[error]: ${message}`);
+	console.error(`[error]: ${message}`);
 }

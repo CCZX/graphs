@@ -7,32 +7,32 @@ import { NormalState } from './NormalState';
  * shape 状态管理
  */
 export class StateMachine {
-  private state: AbsState;
+	private state: AbsState;
 
-  constructor(shape: BaseShape) {
-    this.state = new NormalState(shape);
-  }
+	constructor(shape: BaseShape) {
+		this.state = new NormalState(shape);
+	}
 
-  setState(state: AbsState, onSuccess?: () => void, onError?: () => void) {
-    const nextStateType = state.type;
-    const allowNextStateTypes = this.state.allowNextStateTypes;
+	setState(state: AbsState, onSuccess?: () => void, onError?: () => void) {
+		const nextStateType = state.type;
+		const allowNextStateTypes = this.state.allowNextStateTypes;
 
-    if (!allowNextStateTypes.includes(nextStateType)) {
-      warn(`状态切换失败：${this.state.type} -> ${nextStateType}`);
-      onError && onError();
-      return;
-    }
+		if (!allowNextStateTypes.includes(nextStateType)) {
+			warn(`状态切换失败：${this.state.type} -> ${nextStateType}`);
+			onError && onError();
+			return;
+		}
 
-    this.state.onDeactivate();
+		this.state.onDeactivate();
 
-    state.onActivate();
+		state.onActivate();
 
-    this.state = state;
+		this.state = state;
 
-    onSuccess && onSuccess();
-  }
+		onSuccess && onSuccess();
+	}
 
-  getState() {
-    return this.state.type;
-  }
+	getState() {
+		return this.state.type;
+	}
 }

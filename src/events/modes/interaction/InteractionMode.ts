@@ -9,19 +9,18 @@ import { AbsEventMode } from '../AbsEventMode';
 import { toolStore, ToolType } from '@/store/tool';
 
 export class InteractionMode extends AbsEventMode {
-  mode = EventModeEnum.InteractionMode;
+	mode = EventModeEnum.InteractionMode;
 
-  handlerList: Handler[] = [
-    new ResizeHandler(),
-    new RotateHandler(),
-    new MoveHandler(),
-    new SelectHandler(),
-    new HoverHandler(),
-  ];
+	handlerList: Handler[] = [
+		new ResizeHandler(),
+		new RotateHandler(),
+		new MoveHandler(),
+		new SelectHandler(),
+		new HoverHandler(),
+	];
 
-  enable(): boolean {
-    const tool = toolStore.getState().activeTool;
-    return tool === ToolType.Select;
-  }
+	enable(): boolean {
+		const tool = toolStore.getState().activeTool;
+		return tool === ToolType.Select;
+	}
 }
-

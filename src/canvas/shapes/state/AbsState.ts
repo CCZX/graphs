@@ -2,17 +2,17 @@ import { ShapeStateEnum } from '../../types/shape';
 import { BaseShape } from '../BaseShape';
 
 export abstract class AbsState {
-  abstract type: ShapeStateEnum;
+	abstract type: ShapeStateEnum;
 
-  protected shape: BaseShape;
+	protected shape: BaseShape;
 
-  constructor(shape: BaseShape) {
-    this.shape = shape;
-  }
+	constructor(shape: BaseShape) {
+		this.shape = shape;
+	}
 
-  abstract onActivate(): void;
+	abstract onActivate(): void;
 
-  abstract onDeactivate(): void;
+	abstract onDeactivate(): void;
 
-  allowNextStateTypes: ShapeStateEnum[] = [];
+	allowNextStateTypes: ShapeStateEnum[] = [];
 }

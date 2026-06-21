@@ -3,25 +3,30 @@ import { warn } from '../../../utils/log';
 import { AbsState } from './AbsState';
 
 export class SelectedState extends AbsState {
-  type: ShapeStateEnum = ShapeStateEnum.Selected;
+	type: ShapeStateEnum = ShapeStateEnum.Selected;
 
-  allowNextStateTypes: ShapeStateEnum[] = [ShapeStateEnum.Normal, ShapeStateEnum.Moving, ShapeStateEnum.Resizing, ShapeStateEnum.Rotating];
+	allowNextStateTypes: ShapeStateEnum[] = [
+		ShapeStateEnum.Normal,
+		ShapeStateEnum.Moving,
+		ShapeStateEnum.Resizing,
+		ShapeStateEnum.Rotating,
+	];
 
-  onActivate() {
-    const selectedBorder = this.shape.getDecorate(ShapeDecorateTypeEnum.SelectedBorder);
-    if (!selectedBorder) {
-      warn(`没有找到 ${ShapeDecorateTypeEnum.SelectedBorder} 对应的装饰`);
-      return;
-    }
-    selectedBorder.onActivate();
-  }
+	onActivate() {
+		const selectedBorder = this.shape.getDecorate(ShapeDecorateTypeEnum.SelectedBorder);
+		if (!selectedBorder) {
+			warn(`没有找到 ${ShapeDecorateTypeEnum.SelectedBorder} 对应的装饰`);
+			return;
+		}
+		selectedBorder.onActivate();
+	}
 
-  onDeactivate(): void {
-    const selectedBorder = this.shape.getDecorate(ShapeDecorateTypeEnum.SelectedBorder);
-    if (!selectedBorder) {
-      warn(`没有找到 ${ShapeDecorateTypeEnum.SelectedBorder} 对应的装饰`);
-      return;
-    }
-    selectedBorder.onDeactivate();
-  }
+	onDeactivate(): void {
+		const selectedBorder = this.shape.getDecorate(ShapeDecorateTypeEnum.SelectedBorder);
+		if (!selectedBorder) {
+			warn(`没有找到 ${ShapeDecorateTypeEnum.SelectedBorder} 对应的装饰`);
+			return;
+		}
+		selectedBorder.onDeactivate();
+	}
 }
