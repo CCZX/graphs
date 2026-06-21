@@ -3,7 +3,7 @@ import './index.less';
 import { MOCK_SHAPE_DATA } from '../mock/shapeData';
 import { EventManager } from '../events';
 import { Stage } from '@/canvas/core/Stage';
-import { shapeManager } from '../canvas/shapes/shapeManager';
+import { stageRef } from '@/canvas/core/stageRef';
 import { ShapeCreator } from '../canvas/shapes/shapeCreator';
 
 function EditorCanvas() {
@@ -15,36 +15,16 @@ function EditorCanvas() {
     }
 
     const stage = Stage.createStage(containerRef.current);
+    stageRef.current = stage;
 
     const shapeCreator = new ShapeCreator(stage, MOCK_SHAPE_DATA);
     shapeCreator.create();
-
-    // const circle = new Circle();
-    // stage.appendShape(circle.container);
-
-    // const text = new Text();
-    // stage.appendShape(text.container);
-
-    // const pixiText = new PixiText('hello', { fontSize: 12 });
-    // pixiText.x = 400;
-    // pixiText.y = 400;
-    // pixiText.resolution = 128
-    // stage.appendShape(pixiText);
-
-    window.addEventListener(
-      'pointerdown',
-      () => {
-        for (const [k, v] of shapeManager.getSelectedShapes()) {
-          // v.setState(ShapeStateEnum.Normal)
-        }
-      },
-      true,
-    );
 
     const eventManager = new EventManager();
     eventManager.start(containerRef.current);
 
     return () => {
+      stageRef.current = null;
       stage.destory();
     };
   }, []);

@@ -6,6 +6,7 @@ import { MoveHandler } from './handlers/MoveHandler';
 import { SelectHandler } from './handlers/SelectHandler';
 import { HoverHandler } from './handlers/HoverHandler';
 import { AbsEventMode } from '../AbsEventMode';
+import { toolStore, ToolType } from '@/store/tool';
 
 export class InteractionMode extends AbsEventMode {
   mode = EventModeEnum.InteractionMode;
@@ -19,6 +20,8 @@ export class InteractionMode extends AbsEventMode {
   ];
 
   enable(): boolean {
-    return true;
+    const tool = toolStore.getState().activeTool;
+    return tool === ToolType.Select;
   }
 }
+
