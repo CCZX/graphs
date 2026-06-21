@@ -42,7 +42,7 @@ function EditorCanvas() {
     );
 
     const eventManager = new EventManager();
-    eventManager.start();
+    eventManager.start(containerRef.current);
 
     return () => {
       stage.destory();

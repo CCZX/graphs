@@ -7,12 +7,14 @@ import {
   ShapeDecorateTypeEnum,
   ShapePropertyEnum,
   ShapeStateEnum,
+  StrokePropertyValue,
 } from '@/types/shape';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
 import { Handler } from '../../../Handler';
 
 const MIN_SIZE = 10;
 const HANDLE_HIT_RADIUS = 8;
+const BORDER_PADDING = 2;
 
 enum Dir {
   TL = 'TL',
@@ -152,11 +154,16 @@ export class ResizeHandler extends Handler {
     const { x, y, width, height } = shape.getBounds();
     const threshold = HANDLE_HIT_RADIUS / scale;
 
+    const stroke = shape.getProperty<any>(ShapePropertyEnum.Stroke)
+      ?.get() as StrokePropertyValue;
+    const strokeWidth = stroke?.width || 0;
+    const offset = strokeWidth / 2 + BORDER_PADDING;
+
     const corners: { px: number; py: number; dir: Dir }[] = [
-      { px: x, py: y, dir: Dir.TL },
-      { px: x + width, py: y, dir: Dir.TR },
-      { px: x + width, py: y + height, dir: Dir.BR },
-      { px: x, py: y + height, dir: Dir.BL },
+      { px: x - offset, py: y - offset, dir: Dir.TL },
+      { px: x + width + offset, py: y - offset, dir: Dir.TR },
+      { px: x + width + offset, py: y + height + offset, dir: Dir.BR },
+      { px: x - offset, py: y + height + offset, dir: Dir.BL },
     ];
 
     for (const c of corners) {

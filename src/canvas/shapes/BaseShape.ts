@@ -13,6 +13,7 @@ import { StateMachine } from './state/StateMachine';
 import { AbsProperty } from './property/AbsProperty';
 import { BaseProperty } from './property/BaseProperty';
 import { FillProperty } from './property/FillProperty';
+import { StrokeProperty } from './property/StrokeProperty';
 import { SelectedBorder } from './decorate/SelectedBorder';
 import { shapeManager } from './shapeManager';
 import { log } from '../../utils/log';
@@ -63,6 +64,7 @@ export abstract class BaseShape<T extends Graphics = Graphics> {
   initProperty() {
     this.propertyMap.set(ShapePropertyEnum.Base, new BaseProperty(this));
     this.propertyMap.set(ShapePropertyEnum.Fill, new FillProperty(this));
+    this.propertyMap.set(ShapePropertyEnum.Stroke, new StrokeProperty(this));
   }
 
   setProperty<T extends Record<string, any>>(type: ShapePropertyEnum, value: T) {

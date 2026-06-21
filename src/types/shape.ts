@@ -47,6 +47,7 @@ export enum ShapePropertyEnum {
    */
   Base = 'base',
   Fill = 'fill',
+  Stroke = 'stroke',
   Text = 'text',
 }
 
@@ -62,6 +63,12 @@ export interface FillPropertyValue {
   /**
    * 透明度
    */
+  alpha: number;
+}
+
+export interface StrokePropertyValue {
+  color: number;
+  width: number;
   alpha: number;
 }
 

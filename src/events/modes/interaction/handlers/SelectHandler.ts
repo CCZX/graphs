@@ -1,5 +1,6 @@
 import { ShapeStateEnum } from '@/types/shape';
 import { shapeManager } from '@/canvas/shapes/shapeManager';
+import { selectionStore } from '@/store/selection';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
 import { Handler } from '../../../Handler';
 
@@ -31,6 +32,7 @@ export class SelectHandler extends Handler {
     }
 
     state.selectedShape = nextShape || null;
+    selectionStore.getState().setSelectedShapeId(nextShape?.id || null);
 
     return true;
   }

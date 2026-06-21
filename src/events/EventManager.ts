@@ -15,6 +15,7 @@ export class EventManager {
 
   private eventModeList: AbsEventMode[] = [new InteractionMode(), new CreatorMode()];
   private activeMode: AbsEventMode | null = null;
+  private canvasEl: HTMLElement | null = null;
 
   private getEventPayload(e: PointerEvent): EventPayload {
     return {
@@ -54,6 +55,8 @@ export class EventManager {
 
   @throttle<EventManager>(17)
   private onPointerdown(e: PointerEvent) {
+    // 仅响应画布区域内的 pointerdown，避免点击属性面板等外部 UI 时触发选中逻辑
+    if (this.canvasEl && !this.canvasEl.contains(e.target as Node)) return;
     this.dispatch(e);
   }
 
@@ -63,7 +66,8 @@ export class EventManager {
 
   _onPointermove = this.onPointermove.bind(this);
 
-  start() {
+  start(canvasEl: HTMLElement) {
+    this.canvasEl = canvasEl;
     document.addEventListener('pointermove', this._onPointermove);
     document.addEventListener('pointerdown', this.onPointerdown.bind(this));
     document.addEventListener('pointerup', this.onPointerup.bind(this));

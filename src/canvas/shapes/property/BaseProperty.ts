@@ -2,6 +2,7 @@ import { AbsProperty } from './AbsProperty';
 import { BasePropertyValue, ShapePropertyEnum, ShapeTypeEnum } from '../../../types/shape';
 import { BaseShape } from '../BaseShape';
 import { FillProperty } from './FillProperty';
+import { StrokeProperty } from './StrokeProperty';
 
 const DEFAULT_VALUE: BasePropertyValue = { x: 0, y: 0, width: 100, height: 100 };
 
@@ -31,5 +32,8 @@ export class BaseProperty extends AbsProperty<BasePropertyValue> {
 
     const fill = this.shape.getProperty<FillProperty>(ShapePropertyEnum.Fill)
     fill?.draw()
+
+    const stroke = this.shape.getProperty<StrokeProperty>(ShapePropertyEnum.Stroke)
+    stroke?.draw()
   }
 }
