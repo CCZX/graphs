@@ -3,8 +3,8 @@ import './index.less';
 import { MOCK_SHAPE_DATA } from '../mock/shapeData';
 import { EventManager } from '../events';
 import { Stage } from '@/canvas/core/Stage';
-import { stageRef } from '@/canvas/core/stageRef';
 import { ShapeCreator } from '../canvas/shapes/shapeCreator';
+import { shapeManager } from '@/canvas/shapes/shapeManager';
 
 function EditorCanvas() {
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -15,7 +15,8 @@ function EditorCanvas() {
 		}
 
 		const stage = Stage.createStage(containerRef.current);
-		stageRef.current = stage;
+
+		shapeManager.setStage(stage);
 
 		const shapeCreator = new ShapeCreator(stage, MOCK_SHAPE_DATA);
 		shapeCreator.create();
@@ -24,7 +25,6 @@ function EditorCanvas() {
 		eventManager.start(containerRef.current);
 
 		return () => {
-			stageRef.current = null;
 			stage.destory();
 		};
 	}, []);

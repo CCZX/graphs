@@ -2,12 +2,21 @@ import { Point as PixiPoint } from 'pixi.js';
 import { Point } from '../../types/geometry';
 import { isPointInRect } from '../../utils/geometry';
 import { BaseShape } from './BaseShape';
+import { Stage } from '../core/Stage';
 
 class ShapeManager {
+	private stage!: Stage;
 	private shapes: Map<string, BaseShape> = new Map();
 	private selectedShapes: Map<string, BaseShape> = new Map();
 
-	setShape(shape: BaseShape) {
+	setStage(stage: Stage) {
+		this.stage = stage;
+	}
+
+	setShape(shape: BaseShape, appendToStage = true) {
+		if (appendToStage) {
+			this.stage.appendShape(shape.container);
+		}
 		this.shapes.set(shape.id, shape);
 	}
 

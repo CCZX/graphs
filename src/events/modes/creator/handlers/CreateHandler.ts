@@ -1,11 +1,13 @@
-import { ShapePropertyEnum } from '@/types/shape';
+import { ShapeData, ShapePropertyEnum, ShapeTypeEnum } from '@/types/shape';
 import { Rectangle } from '@/canvas/shapes/Rectangle';
 import { Circle } from '@/canvas/shapes/Circle';
 import { shapeManager } from '@/canvas/shapes/shapeManager';
-import { stageRef } from '@/canvas/core/stageRef';
 import { toolStore, ToolType } from '@/store/tool';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
 import { Handler } from '../../../Handler';
+import { actionManager } from '@/action/ActionManager';
+import { CreateShapeActionExecute } from '@/action/actionExecutes/CreateShpeActionExecute';
+import { CreateShapeAction } from '@/action/actions/CreateShpeAction';
 
 let _idCounter = 0;
 function nextId(): string {
@@ -30,34 +32,37 @@ export class CreateHandler extends Handler {
 	execute(e: PointerEvent, _state: InteractionState, payload: EventPayload): boolean {
 		if (e.type !== 'pointerdown') return true;
 
-		const stage = stageRef.current;
-		if (!stage) return true;
-
 		const tool = toolStore.getState().activeTool;
 		const id = nextId();
 		const { viewportPoint } = payload;
 
-		let shape: Rectangle | Circle;
+		let shapeType: ShapeTypeEnum = (() => {
+			switch (tool) {
+				case 'rect':
+					return ShapeTypeEnum.Rectangle;
+				case 'circle':
+					return ShapeTypeEnum.Circle;
+				default:
+					return ShapeTypeEnum.Rectangle;
+			}
+		})();
 
-		if (tool === 'rect') {
-			shape = new Rectangle(id);
-		} else if (tool === 'circle') {
-			shape = new Circle(id);
-		} else {
-			return true;
-		}
+		const shapeData: ShapeData = {
+			id,
+			type: shapeType,
+			properties: {
+				base: {
+					x: viewportPoint.x - DEFAULT_PROPS.width / 2,
+					y: viewportPoint.y - DEFAULT_PROPS.height / 2,
+					width: DEFAULT_PROPS.width,
+					height: DEFAULT_PROPS.height,
+				},
+				fill: { color: 0xffffff, alpha: 1 },
+				stroke: { color: 0x1e1e1e, width: 1, alpha: 1 },
+			},
+		};
 
-		shape.setProperty(ShapePropertyEnum.Base, {
-			x: viewportPoint.x - DEFAULT_PROPS.width / 2,
-			y: viewportPoint.y - DEFAULT_PROPS.height / 2,
-			width: DEFAULT_PROPS.width,
-			height: DEFAULT_PROPS.height,
-		});
-		shape.setProperty(ShapePropertyEnum.Fill, DEFAULT_PROPS.fill);
-		shape.setProperty(ShapePropertyEnum.Stroke, DEFAULT_PROPS.stroke);
-
-		stage.appendShape(shape.container);
-		shapeManager.setShape(shape);
+		actionManager.push(new CreateShapeAction(shapeData));
 
 		// 新建后退出创建模式，回到 select
 		toolStore.getState().setActiveTool(ToolType.Select);

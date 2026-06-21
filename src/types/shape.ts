@@ -87,7 +87,8 @@ export interface ShapeData {
 	type: ShapeTypeEnum;
 	properties: {
 		base: BasePropertyValue;
-		fill: FillPropertyValue;
+		fill?: FillPropertyValue;
+		stroke?: StrokePropertyValue;
 		text?: TextPropertyValue;
 	};
 }
