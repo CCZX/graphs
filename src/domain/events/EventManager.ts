@@ -1,10 +1,28 @@
 import { viewportStore } from '@/store/viewport';
 import { transformCanvasCoordinateToViewport } from '@/utils/viewport';
-import { throttle } from '@/utils/decorate';
 import { InteractionState, EventPayload } from './types';
 import { AbsEventMode } from './modes/AbsEventMode';
 import { InteractionMode } from './modes/interaction/InteractionMode';
 import { CreatorMode } from './modes/creator/CreatorMode';
+import { throttle as lodashThrottle } from 'lodash';
+
+/**
+ *
+ * @param delay
+ */
+export function throttle<T extends Object>(delay: number) {
+	return function (_target: T, _key: string, descriptor: PropertyDescriptor) {
+		let lastTime = 0;
+		let timer: number;
+
+		const originalValue = descriptor.value as (...args: any[]) => any;
+
+		descriptor.value = lodashThrottle(originalValue, delay);
+
+		return descriptor;
+	};
+}
+
 
 export class EventManager {
 	/** 跨 handler 共享的可变状态 */

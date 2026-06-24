@@ -1,6 +1,5 @@
 import { Point as PixiPoint } from 'pixi.js';
-import { Point } from '../../types/geometry';
-import { isPointInRect } from '../../utils/geometry';
+import { isPointInRect } from './geometry';
 import { BaseShape } from './BaseShape';
 import { Stage } from '../core/Stage';
 

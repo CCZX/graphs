@@ -3,8 +3,8 @@ import { selectionStore } from '@/store/selection';
 import { shapeManager } from '@/canvas/shapes/shapeManager';
 import { ShapePropertyEnum } from '@/types/shape';
 import type { FillPropertyValue, StrokePropertyValue } from '@/types/shape';
-import { STROKE_COLOR_PRESETS, FILL_COLOR_PRESETS } from '@/constant/color';
-import type { PresetColor } from '@/constant/color';
+import { STROKE_COLOR_PRESETS, FILL_COLOR_PRESETS } from './const';
+import type { PresetColor } from './const';
 import './index.less';
 
 function numberToHex(num: number): string {
@@ -20,7 +20,7 @@ const STROKE_WIDTH_OPTIONS = [
 
 const STROKE_RADIUS_MAP: Record<number, number> = { 0: 1, 1: 2, 3: 5, 5: 7 };
 
-export function PropertiesPanel() {
+export function Property() {
 	const selectedShapeId = selectionStore((s) => s.selectedShapeId);
 
 	const [strokeColor, setStrokeColor] = useState('#1e1e1e');

@@ -1,5 +1,3 @@
-export const HOVER_BORDER = 0xbacbfd;
-
 export interface PresetColor {
 	name: string;
 	hex: string;

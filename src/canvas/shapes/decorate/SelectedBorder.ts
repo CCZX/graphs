@@ -1,5 +1,5 @@
 import { Graphics } from 'pixi.js';
-import { HOVER_BORDER } from '../../../constant/color';
+import { HOVER_BORDER } from '../color';
 import { ShapeDecorateTypeEnum, ShapePropertyEnum } from '../../../types/shape';
 import type { StrokePropertyValue } from '../../../types/shape';
 import { BaseShape } from '../BaseShape';

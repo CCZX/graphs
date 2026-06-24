@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import EditorCanvas from './canvas/components/editorCanvas';
 import { Toolbar } from './widget/toolbar';
-import { PropertiesPanel } from './widget/propertiesPanel';
+import { Property } from './widget/property';
 
 interface DemoProps {}
 
@@ -10,7 +10,7 @@ const App: FC<DemoProps> = (_props) => {
 		<div className='app-layout'>
 			<Toolbar />
 			<EditorCanvas />
-			<PropertiesPanel />
+			<Property />
 		</div>
 	);
 };

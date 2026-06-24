@@ -1,4 +1,3 @@
-import { Point } from '@/types/geometry';
 import { BaseShape } from '@/canvas/shapes/BaseShape';
 import { BaseProperty } from '@/canvas/shapes/property/BaseProperty';
 import { BasePropertyValue, ShapePropertyEnum, ShapeStateEnum } from '@/types/shape';

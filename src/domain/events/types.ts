@@ -1,4 +1,3 @@
-import { Point } from '@/types/geometry';
 import { BaseShape } from '@/canvas/shapes/BaseShape';
 
 export enum EventModeEnum {

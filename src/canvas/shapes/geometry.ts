@@ -1,5 +1,3 @@
-import { Point, Rectangle } from '../types/geometry';
-
 /**
  * 点在矩形内
  * @param point

@@ -1,5 +1,4 @@
 import { Point as PixiPoint } from 'pixi.js';
-import { Point } from '@/types/geometry';
 import { BaseShape } from '@/canvas/shapes/BaseShape';
 import { BaseProperty } from '@/canvas/shapes/property/BaseProperty';
 import { SelectedBorder } from '@/canvas/shapes/decorate/SelectedBorder';

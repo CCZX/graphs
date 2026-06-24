@@ -1,6 +1,5 @@
 import { Application, Container, Graphics } from 'pixi.js';
 import { Viewport } from './Viewport';
-import { getResolution } from '../../utils/common';
 
 export class Stage {
 	app: Application;
@@ -17,7 +16,7 @@ export class Stage {
 			height: height,
 			autoDensity: true,
 			antialias: true,
-			resolution: getResolution(),
+			resolution: window.devicePixelRatio,
 			backgroundColor: '#ffffff',
 			preserveDrawingBuffer: true,
 		});
