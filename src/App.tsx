@@ -1,7 +1,7 @@
 import { FC } from 'react';
-import EditorCanvas from './editorCanvas';
-import { Toolbar } from './components/toolbar';
-import { PropertiesPanel } from './components/propertiesPanel';
+import EditorCanvas from './canvas/components/editorCanvas';
+import { Toolbar } from './widget/toolbar';
+import { PropertiesPanel } from './widget/propertiesPanel';
 
 interface DemoProps {}
 

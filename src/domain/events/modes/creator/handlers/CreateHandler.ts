@@ -5,9 +5,9 @@ import { shapeManager } from '@/canvas/shapes/shapeManager';
 import { toolStore, ToolType } from '@/store/tool';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
 import { Handler } from '../../../Handler';
-import { actionManager } from '@/action/ActionManager';
-import { CreateShapeActionExecute } from '@/action/actionExecutes/CreateShpeActionExecute';
-import { CreateShapeAction } from '@/action/actions/CreateShpeAction';
+import { actionManager } from '@/domain/action/ActionManager';
+import { CreateShapeActionExecute } from '@/domain/action/actionExecutes/CreateShpeActionExecute';
+import { CreateShapeAction } from '@/domain/action/actions/CreateShpeAction';
 
 let _idCounter = 0;
 function nextId(): string {
