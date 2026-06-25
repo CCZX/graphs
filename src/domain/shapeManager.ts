@@ -1,7 +1,7 @@
 import { Point as PixiPoint } from 'pixi.js';
-import { isPointInRect } from './geometry';
-import { BaseShape } from './BaseShape';
-import { Stage } from '../core/Stage';
+import { isPointInRect } from '../canvas/shapes/geometry';
+import { BaseShape } from '../canvas/shapes/BaseShape';
+import { Stage } from '../canvas/core/Stage';
 
 class ShapeManager {
 	private stage!: Stage;

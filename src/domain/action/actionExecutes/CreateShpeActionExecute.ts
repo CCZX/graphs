@@ -4,7 +4,7 @@ import { CreateShapeAction } from "../actions/CreateShpeAction";
 import { ShapePropertyEnum, ShapeTypeEnum } from "@/canvas/shapes/shape";
 import { Circle } from "@/canvas/shapes/Circle";
 import { Rectangle } from "@/canvas/shapes/Rectangle";
-import { shapeManager } from '@/canvas/shapes/shapeManager';
+import { shapeManager } from '@/domain/shapeManager';
 import { ActionTypeEnum } from "../type";
 
 export class CreateShapeActionExecute extends AbsActionExecute {

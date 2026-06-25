@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { selectionStore } from '@/store/selection';
-import { shapeManager } from '@/canvas/shapes/shapeManager';
+import { shapeManager } from '@/domain/shapeManager';
 import { ShapePropertyEnum } from '@/canvas/shapes/shape';
 import type { FillPropertyValue, StrokePropertyValue } from '@/canvas/shapes/shape';
 import { STROKE_COLOR_PRESETS, FILL_COLOR_PRESETS } from './const';

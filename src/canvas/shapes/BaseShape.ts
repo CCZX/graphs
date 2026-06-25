@@ -15,7 +15,7 @@ import { BaseProperty } from './property/BaseProperty';
 import { FillProperty } from './property/FillProperty';
 import { StrokeProperty } from './property/StrokeProperty';
 import { SelectedBorder } from './decorate/SelectedBorder';
-import { shapeManager } from './shapeManager';
+import { shapeManager } from '../../domain/shapeManager';
 
 export abstract class BaseShape<T extends Graphics = Graphics> {
 	/**

@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import EditorCanvas from './canvas/components/editorCanvas';
+import Editor from './widget/editor';
 import { Toolbar } from './widget/toolbar';
 import { Property } from './widget/property';
 
@@ -9,7 +9,7 @@ const App: FC<DemoProps> = (_props) => {
 	return (
 		<div className='app-layout'>
 			<Toolbar />
-			<EditorCanvas />
+			<Editor />
 			<Property />
 		</div>
 	);

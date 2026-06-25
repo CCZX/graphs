@@ -1,5 +1,5 @@
 import { ShapeStateEnum } from '@/canvas/shapes/shape';
-import { shapeManager } from '@/canvas/shapes/shapeManager';
+import { shapeManager } from '@/domain/shapeManager';
 import { selectionStore } from '@/store/selection';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
 import { Handler } from '../../../Handler';

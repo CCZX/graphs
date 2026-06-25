@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react';
 import './index.less';
 import { MOCK_SHAPE_DATA } from './shapeData';
-import { EventManager } from '../../../domain/events';
+import { EventManager } from '../../domain/events';
 import { Stage } from '@/canvas/core/Stage';
-import { ShapeCreator } from '../../shapes/shapeCreator';
-import { shapeManager } from '../../shapes/shapeManager';
+import { ShapeCreator } from '../../domain/shapeCreator';
+import { shapeManager } from '../../domain/shapeManager';
 
-function EditorCanvas() {
+function Editor() {
 	const containerRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -32,4 +32,4 @@ function EditorCanvas() {
 	return <div ref={containerRef} className='editor-canvas-container' />;
 }
 
-export default EditorCanvas;
+export default Editor;
