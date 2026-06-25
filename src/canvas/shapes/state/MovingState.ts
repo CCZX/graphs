@@ -1,4 +1,4 @@
-import { ShapeStateEnum } from '../../../types/shape';
+import { ShapeStateEnum } from '../shape';
 import { AbsState } from './AbsState';
 
 export class MovingState extends AbsState {

@@ -1,4 +1,4 @@
-import { ShapeData, ShapePropertyEnum, ShapeTypeEnum } from '@/types/shape';
+import { ShapeData, ShapePropertyEnum, ShapeTypeEnum } from '@/canvas/shapes/shape';
 import { Rectangle } from '@/canvas/shapes/Rectangle';
 import { Circle } from '@/canvas/shapes/Circle';
 import { shapeManager } from '@/canvas/shapes/shapeManager';

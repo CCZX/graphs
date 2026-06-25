@@ -1,5 +1,5 @@
 import { AbsProperty } from './AbsProperty';
-import { FillPropertyValue, ShapeTypeEnum } from '../../../types/shape';
+import { FillPropertyValue, ShapeTypeEnum } from '../shape';
 import { BaseShape } from '../BaseShape';
 
 const DEFAULT_VALUE: FillPropertyValue = { color: 0x000, alpha: 1 };

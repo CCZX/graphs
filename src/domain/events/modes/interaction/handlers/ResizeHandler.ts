@@ -8,7 +8,7 @@ import {
 	ShapePropertyEnum,
 	ShapeStateEnum,
 	StrokePropertyValue,
-} from '@/types/shape';
+} from '@/canvas/shapes/shape';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
 import { Handler } from '../../../Handler';
 

@@ -4,7 +4,7 @@ import {
 	ShapePropertyEnum,
 	ShapeStateEnum,
 	ShapeTypeEnum,
-} from '../../types/shape';
+} from './shape';
 import { AbsDecorate } from './decorate/AbsDecorate';
 import { HoverBorder } from './decorate/HoverBorder';
 import { AbsState } from './state/AbsState';

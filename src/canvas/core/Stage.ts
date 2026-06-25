@@ -2,9 +2,9 @@ import { Application, Container, Graphics } from 'pixi.js';
 import { Viewport } from './Viewport';
 
 export class Stage {
-	app: Application;
-	viewport: Viewport;
-	el: HTMLDivElement;
+	private app: Application;
+	private viewport: Viewport;
+	private el: HTMLDivElement;
 
 	constructor(el: HTMLDivElement) {
 		this.el = el;

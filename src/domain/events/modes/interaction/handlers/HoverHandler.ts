@@ -1,4 +1,4 @@
-import { ShapeStateEnum } from '@/types/shape';
+import { ShapeStateEnum } from '@/canvas/shapes/shape';
 import { shapeManager } from '@/canvas/shapes/shapeManager';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
 import { Handler } from '../../../Handler';

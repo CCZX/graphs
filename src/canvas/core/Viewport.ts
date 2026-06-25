@@ -1,7 +1,29 @@
 import { Container, IDestroyOptions, Point } from 'pixi.js';
 import floor from 'lodash/floor';
 import { viewportStore } from '../../store/viewport';
-import { formatZoomScale } from '../../utils/viewport';
+import { last } from 'lodash';
+
+const ZOOM_SCALE_LIST = [0.1, 0.3, 0.5, 1.0, 2.0, 3.0, 4.0];
+
+const MIN_ZOOM_SCALE = ZOOM_SCALE_LIST[0];
+const MAX_ZOOM_SCALE = last(ZOOM_SCALE_LIST)!;
+
+/**
+ *
+ * @param sclae
+ * @returns
+ */
+export function formatZoomScale(sclae: number) {
+	if (sclae < MIN_ZOOM_SCALE) {
+		sclae = MIN_ZOOM_SCALE;
+	}
+
+	if (sclae > MAX_ZOOM_SCALE) {
+		sclae = MAX_ZOOM_SCALE;
+	}
+
+	return floor(sclae, 2);
+}
 
 /**
  * 视口，所有节点的父级

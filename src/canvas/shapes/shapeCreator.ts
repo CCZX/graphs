@@ -1,5 +1,5 @@
 import { Stage } from '../core/Stage';
-import { ShapeData, ShapePropertyEnum, ShapeTypeEnum } from '../../types/shape';
+import { ShapeData, ShapePropertyEnum, ShapeTypeEnum } from './shape';
 import { BaseShape } from './BaseShape';
 import { Circle } from './Circle';
 import { Rectangle } from './Rectangle';

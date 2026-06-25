@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { selectionStore } from '@/store/selection';
 import { shapeManager } from '@/canvas/shapes/shapeManager';
-import { ShapePropertyEnum } from '@/types/shape';
-import type { FillPropertyValue, StrokePropertyValue } from '@/types/shape';
+import { ShapePropertyEnum } from '@/canvas/shapes/shape';
+import type { FillPropertyValue, StrokePropertyValue } from '@/canvas/shapes/shape';
 import { STROKE_COLOR_PRESETS, FILL_COLOR_PRESETS } from './const';
 import type { PresetColor } from './const';
 import './index.less';

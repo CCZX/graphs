@@ -1,4 +1,4 @@
-import { ShapeDecorateTypeEnum, ShapeStateEnum } from '../../../types/shape';
+import { ShapeDecorateTypeEnum, ShapeStateEnum } from '../shape';
 import { AbsState } from './AbsState';
 
 export class RotatingState extends AbsState {

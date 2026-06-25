@@ -1,10 +1,36 @@
 import { viewportStore } from '@/store/viewport';
-import { transformCanvasCoordinateToViewport } from '@/utils/viewport';
 import { InteractionState, EventPayload } from './types';
 import { AbsEventMode } from './modes/AbsEventMode';
 import { InteractionMode } from './modes/interaction/InteractionMode';
 import { CreatorMode } from './modes/creator/CreatorMode';
 import { throttle as lodashThrottle } from 'lodash';
+
+interface Param {
+	viewport: {
+		x: number;
+		y: number;
+		scale: number;
+	};
+	point: { x: number; y: number };
+}
+
+/**
+ * canvas 坐标转为 viewport 坐标
+ * @param param
+ * @returns
+ */
+export function transformCanvasCoordinateToViewport(param: Param) {
+	const { viewport, point } = param;
+
+	const matrix = new window.DOMMatrix();
+	matrix.scaleSelf(1 / viewport.scale);
+	matrix.translateSelf(-viewport.x, -viewport.y);
+
+	const transformX = matrix.a * point.x + matrix.c * point.y + matrix.e;
+	const transformY = matrix.b * point.x + matrix.d * point.y + matrix.f;
+
+	return { x: transformX, y: transformY };
+}
 
 /**
  *

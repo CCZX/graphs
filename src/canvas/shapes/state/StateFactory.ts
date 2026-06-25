@@ -1,4 +1,4 @@
-import { ShapeStateEnum } from '../../../types/shape';
+import { ShapeStateEnum } from '../shape';
 import { warn } from '../../../utils/log';
 import { BaseShape } from '../BaseShape';
 import { EditState } from './EditState';

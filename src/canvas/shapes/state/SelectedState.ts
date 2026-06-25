@@ -1,4 +1,4 @@
-import { ShapeDecorateTypeEnum, ShapeStateEnum } from '../../../types/shape';
+import { ShapeDecorateTypeEnum, ShapeStateEnum } from '../shape';
 import { warn } from '../../../utils/log';
 import { AbsState } from './AbsState';
 

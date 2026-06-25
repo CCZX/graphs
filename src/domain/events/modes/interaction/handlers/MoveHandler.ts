@@ -1,6 +1,6 @@
 import { BaseShape } from '@/canvas/shapes/BaseShape';
 import { BaseProperty } from '@/canvas/shapes/property/BaseProperty';
-import { BasePropertyValue, ShapePropertyEnum, ShapeStateEnum } from '@/types/shape';
+import { BasePropertyValue, ShapePropertyEnum, ShapeStateEnum } from '@/canvas/shapes/shape';
 import { shapeManager } from '@/canvas/shapes/shapeManager';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
 import { Handler } from '../../../Handler';

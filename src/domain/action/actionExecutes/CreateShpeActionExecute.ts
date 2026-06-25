@@ -1,7 +1,7 @@
 import { BaseShape } from "@/canvas/shapes/BaseShape";
 import { AbsActionExecute } from "../AbsActionExecute";
 import { CreateShapeAction } from "../actions/CreateShpeAction";
-import { ShapePropertyEnum, ShapeTypeEnum } from "@/types/shape";
+import { ShapePropertyEnum, ShapeTypeEnum } from "@/canvas/shapes/shape";
 import { Circle } from "@/canvas/shapes/Circle";
 import { Rectangle } from "@/canvas/shapes/Rectangle";
 import { shapeManager } from '@/canvas/shapes/shapeManager';
