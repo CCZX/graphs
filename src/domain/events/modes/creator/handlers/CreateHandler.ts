@@ -30,13 +30,15 @@ export class CreateHandler extends Handler {
 	}
 
 	execute(e: PointerEvent, _state: InteractionState, payload: EventPayload): boolean {
-		if (e.type !== 'pointerdown') return true;
+		if (e.type !== 'pointerdown') {
+			return true;
+		}
 
 		const tool = toolStore.getState().activeTool;
 		const id = nextId();
 		const { viewportPoint } = payload;
 
-		let shapeType: ShapeTypeEnum = (() => {
+		const shapeType: ShapeTypeEnum = (() => {
 			switch (tool) {
 				case 'rect':
 					return ShapeTypeEnum.Rectangle;

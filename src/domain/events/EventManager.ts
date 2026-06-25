@@ -36,9 +36,9 @@ export function transformCanvasCoordinateToViewport(param: Param) {
  *
  * @param delay
  */
-export function throttle<T extends Object>(delay: number) {
+export function throttle<T extends object>(delay: number) {
 	return function (_target: T, _key: string, descriptor: PropertyDescriptor) {
-		let lastTime = 0;
+		const lastTime = 0;
 		let timer: number;
 
 		const originalValue = descriptor.value as (...args: any[]) => any;
@@ -48,7 +48,6 @@ export function throttle<T extends Object>(delay: number) {
 		return descriptor;
 	};
 }
-
 
 export class EventManager {
 	/** 跨 handler 共享的可变状态 */
@@ -81,14 +80,20 @@ export class EventManager {
 			mode?.onActivate();
 		}
 
-		if (!this.activeMode) return;
+		if (!this.activeMode) {
+			return;
+		}
 
 		const payload = this.getEventPayload(e);
 
 		for (const handler of this.activeMode.handlerList) {
-			if (!handler.enable(this.state)) continue;
+			if (!handler.enable(this.state)) {
+				continue;
+			}
 			const shouldContinue = handler.execute(e, this.state, payload);
-			if (!shouldContinue) break;
+			if (!shouldContinue) {
+				break;
+			}
 		}
 	}
 
@@ -100,7 +105,9 @@ export class EventManager {
 	@throttle<EventManager>(17)
 	private onPointerdown(e: PointerEvent) {
 		// 仅响应画布区域内的 pointerdown，避免点击属性面板等外部 UI 时触发选中逻辑
-		if (this.canvasEl && !this.canvasEl.contains(e.target as Node)) return;
+		if (this.canvasEl && !this.canvasEl.contains(e.target as Node)) {
+			return;
+		}
 		this.dispatch(e);
 	}
 

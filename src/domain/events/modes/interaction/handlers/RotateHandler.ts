@@ -53,7 +53,9 @@ export class RotateHandler extends Handler {
 
 	private handlePointerDown(state: InteractionState, payload: EventPayload): boolean {
 		const shape = state.selectedShape!;
-		if (!this.isOverRotateHandle(shape, payload.viewportPoint, payload.scale)) return true;
+		if (!this.isOverRotateHandle(shape, payload.viewportPoint, payload.scale)) {
+			return true;
+		}
 
 		const p = shape.getProperty<BaseProperty>(ShapePropertyEnum.Base).get() as BasePropertyValue;
 		this.originRotation = p.rotation || 0;
@@ -66,7 +68,9 @@ export class RotateHandler extends Handler {
 	}
 
 	private handlePointerUp(state: InteractionState): boolean {
-		if (!this.isRotating) return true;
+		if (!this.isRotating) {
+			return true;
+		}
 
 		this.rotatingShape?.setState(ShapeStateEnum.Selected);
 		state.selectedShape = this.rotatingShape;
@@ -75,7 +79,9 @@ export class RotateHandler extends Handler {
 	}
 
 	private applyRotate(vp: Point) {
-		if (!this.rotatingShape) return;
+		if (!this.rotatingShape) {
+			return;
+		}
 
 		const center = this.getShapeWorldCenter(this.rotatingShape);
 		const angle = Math.atan2(vp.y - center.y, vp.x - center.x) * (180 / Math.PI) + 90;
@@ -90,7 +96,9 @@ export class RotateHandler extends Handler {
 
 	private isOverRotateHandle(shape: BaseShape, vp: Point, scale: number): boolean {
 		const border = shape.getDecorate(ShapeDecorateTypeEnum.SelectedBorder) as SelectedBorder;
-		if (!border) return false;
+		if (!border) {
+			return false;
+		}
 
 		const localCenter = border.getRotateHandleCenter();
 		// 转换到世界坐标

@@ -34,8 +34,12 @@ export class MoveHandler extends Handler {
 
 	private handlePointerDown(state: InteractionState, payload: EventPayload): boolean {
 		const shapeUnderCursor = shapeManager.getShapeByPoint(payload.viewportPoint);
-		if (shapeUnderCursor?.id !== state.selectedShape?.id) return true;
-		if (!state.selectedShape) return true;
+		if (shapeUnderCursor?.id !== state.selectedShape?.id) {
+			return true;
+		}
+		if (!state.selectedShape) {
+			return true;
+		}
 
 		const p = state.selectedShape.getProperty<BaseProperty>(ShapePropertyEnum.Base).get();
 		this.originBaseProps = p || null;
@@ -78,7 +82,9 @@ export class MoveHandler extends Handler {
 	}
 
 	private applyMove(screenPoint: Point) {
-		if (!this.movingShape || !this.originBaseProps || !this.startScreenPoint) return;
+		if (!this.movingShape || !this.originBaseProps || !this.startScreenPoint) {
+			return;
+		}
 
 		this.movingShape.updateProperty(ShapePropertyEnum.Base, {
 			x: this.originBaseProps.x + (screenPoint.x - this.startScreenPoint.x),

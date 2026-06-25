@@ -12,12 +12,16 @@ export class SelectHandler extends Handler {
 	}
 
 	execute(e: PointerEvent, state: InteractionState, payload: EventPayload): boolean {
-		if (e.type !== 'pointerdown') return true;
+		if (e.type !== 'pointerdown') {
+			return true;
+		}
 
 		const nextShape = shapeManager.getShapeByPoint(payload.viewportPoint);
 
 		// 新旧相同，放行给 MoveHandler
-		if (nextShape?.id === state.selectedShape?.id) return true;
+		if (nextShape?.id === state.selectedShape?.id) {
+			return true;
+		}
 
 		if (state.hoveredShape?.getState() === ShapeStateEnum.Hover) {
 			state.hoveredShape.setState(ShapeStateEnum.Normal);

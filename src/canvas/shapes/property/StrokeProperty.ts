@@ -17,7 +17,9 @@ export class StrokeProperty extends AbsProperty<StrokePropertyValue> {
 	}
 
 	draw(): void {
-		if (this.value.width <= 0) return;
+		if (this.value.width <= 0) {
+			return;
+		}
 
 		const { width, height } = this.shape.getWH();
 

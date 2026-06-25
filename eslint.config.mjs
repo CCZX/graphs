@@ -1,0 +1,32 @@
+import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import prettier from 'eslint-config-prettier';
+
+export default tseslint.config(
+	js.configs.recommended,
+	prettier,
+	{
+		files: ['src/**/*.{ts,tsx}'],
+		languageOptions: {
+			parser: tseslint.parser,
+			globals: {
+				document: 'readonly',
+				window: 'readonly',
+				console: 'readonly',
+				HTMLElement: 'readonly',
+				HTMLDivElement: 'readonly',
+				PointerEvent: 'readonly',
+				KeyboardEvent: 'readonly',
+				MouseEvent: 'readonly',
+				requestAnimationFrame: 'readonly',
+				cancelAnimationFrame: 'readonly',
+			},
+		},
+		rules: {
+			curly: ['error', 'all'],
+			'no-unused-vars': 'off',
+			'@typescript-eslint/no-unused-vars': 'off',
+			'no-undef': 'off',
+		},
+	}
+);

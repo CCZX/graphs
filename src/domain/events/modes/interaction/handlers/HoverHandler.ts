@@ -11,11 +11,15 @@ export class HoverHandler extends Handler {
 	}
 
 	execute(e: PointerEvent, state: InteractionState, payload: EventPayload): boolean {
-		if (e.type !== 'pointermove') return true;
+		if (e.type !== 'pointermove') {
+			return true;
+		}
 
 		const nextShape = shapeManager.getShapeByPoint(payload.viewportPoint);
 
-		if (nextShape?.id === state.hoveredShape?.id) return true;
+		if (nextShape?.id === state.hoveredShape?.id) {
+			return true;
+		}
 
 		if (state.hoveredShape?.getState() === ShapeStateEnum.Hover) {
 			state.hoveredShape.setState(ShapeStateEnum.Normal);

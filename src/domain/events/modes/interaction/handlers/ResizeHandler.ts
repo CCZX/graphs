@@ -75,7 +75,9 @@ export class ResizeHandler extends Handler {
 
 	private handlePointerDown(state: InteractionState, payload: EventPayload): boolean {
 		const handle = this.detectHandle(state.selectedShape!, payload.viewportPoint, payload.scale);
-		if (!handle) return true;
+		if (!handle) {
+			return true;
+		}
 
 		this.direction = handle;
 		this.startViewportPoint = payload.viewportPoint;
@@ -92,7 +94,9 @@ export class ResizeHandler extends Handler {
 	}
 
 	private handlePointerUp(state: InteractionState): boolean {
-		if (!this.isResizing) return true;
+		if (!this.isResizing) {
+			return true;
+		}
 
 		this.resizingShape?.setState(ShapeStateEnum.Selected);
 		state.selectedShape = this.resizingShape;
@@ -102,7 +106,9 @@ export class ResizeHandler extends Handler {
 	}
 
 	private applyResize(state: InteractionState, viewportPoint: Point) {
-		if (!this.resizingShape || !this.originBaseProps || !this.direction) return;
+		if (!this.resizingShape || !this.originBaseProps || !this.direction) {
+			return;
+		}
 
 		// 转换到容器本地坐标，适配旋转后的 resize
 		const start = this.startViewportPoint!;

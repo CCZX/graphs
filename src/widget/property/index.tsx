@@ -33,9 +33,13 @@ export function Property() {
 
 	const syncFromShape = useCallback(() => {
 		const id = selectionStore.getState().selectedShapeId;
-		if (!id) return;
+		if (!id) {
+			return;
+		}
 		const shape = shapeManager.getShapeById(id);
-		if (!shape) return;
+		if (!shape) {
+			return;
+		}
 
 		const stroke = shape.getProperty<any>(ShapePropertyEnum.Stroke)?.get() as StrokePropertyValue;
 		if (stroke) {
@@ -70,7 +74,9 @@ export function Property() {
 
 	useEffect(() => {
 		const onPointerUp = () => {
-			if (!visibleRef.current) return;
+			if (!visibleRef.current) {
+				return;
+			}
 			syncFromShape();
 		};
 		document.addEventListener('pointerup', onPointerUp);
@@ -140,7 +146,12 @@ export function Property() {
 					<span className='ctx-label'>描边宽度</span>
 					<div className='ctx-stroke'>
 						<svg width='22' height='22' viewBox='0 0 22 22'>
-							<circle cx='11' cy='11' r={previewR} fill={strokeWidth === 0 ? '#999' : strokeColor} />
+							<circle
+								cx='11'
+								cy='11'
+								r={previewR}
+								fill={strokeWidth === 0 ? '#999' : strokeColor}
+							/>
 						</svg>
 						<select
 							className='ctx-select'
