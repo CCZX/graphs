@@ -1,18 +1,18 @@
-import { BaseShape } from "@/canvas/shapes/BaseShape";
-import { AbsActionExecute } from "../AbsActionExecute";
-import { CreateShapeAction } from "../actions/CreateShpeAction";
-import { ShapePropertyEnum, ShapeTypeEnum } from "@/canvas/shapes/shape";
-import { Circle } from "@/canvas/shapes/Circle";
-import { Rectangle } from "@/canvas/shapes/Rectangle";
-import { shapeManager } from '@/domain/shapeManager';
-import { ActionTypeEnum } from "../type";
+import { BaseShape } from '@/canvas/shapes/BaseShape';
+import { AbsActionExecute } from '../AbsActionExecute';
+import { CreateShapeAction } from '../actions/CreateShpeAction';
+import { ShapePropertyEnum, ShapeTypeEnum } from '@/canvas/shapes/shape';
+import { Circle } from '@/canvas/shapes/Circle';
+import { Rectangle } from '@/canvas/shapes/Rectangle';
+import { shapeManager } from '@/domain/service/shapeManager';
+import { ActionTypeEnum } from '../type';
 
 export class CreateShapeActionExecute extends AbsActionExecute {
 	type = ActionTypeEnum.CreateShape;
-	
+
 	execute(action: CreateShapeAction): void {
 		console.log(action.data);
-		
+
 		let shape: BaseShape;
 
 		const { type, id, properties } = action.data;

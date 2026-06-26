@@ -1,6 +1,6 @@
-import { ShapeData } from "@/canvas/shapes/shape";
-import { AbsAction } from "../AbsAction";
-import { ActionTypeEnum } from "../type";
+import { ShapeData } from '@/canvas/shapes/shape';
+import { AbsAction } from '../AbsAction';
+import { ActionTypeEnum } from '../type';
 
 export class CreateShapeAction extends AbsAction<ShapeData> {
 	type: ActionTypeEnum.CreateShape = ActionTypeEnum.CreateShape;

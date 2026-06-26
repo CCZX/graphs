@@ -1,8 +1,8 @@
-import { Stage } from '../canvas/core/Stage';
-import { ShapeData, ShapePropertyEnum, ShapeTypeEnum } from '../canvas/shapes/shape';
-import { BaseShape } from '../canvas/shapes/BaseShape';
-import { Circle } from '../canvas/shapes/Circle';
-import { Rectangle } from '../canvas/shapes/Rectangle';
+import { Stage } from '@/canvas/core/Stage';
+import { ShapeData, ShapePropertyEnum, ShapeTypeEnum } from '@/canvas/shapes/shape';
+import { BaseShape } from '@/canvas/shapes/BaseShape';
+import { Circle } from '@/canvas/shapes/Circle';
+import { Rectangle } from '@/canvas/shapes/Rectangle';
 import { shapeManager } from './shapeManager';
 
 export class ShapeCreator {

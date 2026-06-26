@@ -1,10 +1,5 @@
 import { Graphics, Container, DisplayObject } from 'pixi.js';
-import {
-	ShapeDecorateTypeEnum,
-	ShapePropertyEnum,
-	ShapeStateEnum,
-	ShapeTypeEnum,
-} from './shape';
+import { ShapeDecorateTypeEnum, ShapePropertyEnum, ShapeStateEnum, ShapeTypeEnum } from './shape';
 import { AbsDecorate } from './decorate/AbsDecorate';
 import { HoverBorder } from './decorate/HoverBorder';
 import { AbsState } from './state/AbsState';
@@ -15,7 +10,7 @@ import { BaseProperty } from './property/BaseProperty';
 import { FillProperty } from './property/FillProperty';
 import { StrokeProperty } from './property/StrokeProperty';
 import { SelectedBorder } from './decorate/SelectedBorder';
-import { shapeManager } from '../../domain/shapeManager';
+import { shapeManager } from '@/domain/service/shapeManager';
 
 export abstract class BaseShape<T extends Graphics = Graphics> {
 	/**

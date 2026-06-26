@@ -1,13 +1,9 @@
-import { ShapeData, ShapePropertyEnum, ShapeTypeEnum } from '@/canvas/shapes/shape';
-import { Rectangle } from '@/canvas/shapes/Rectangle';
-import { Circle } from '@/canvas/shapes/Circle';
-import { shapeManager } from '@/domain/shapeManager';
+import { ShapeData, ShapeTypeEnum } from '@/canvas/shapes/shape';
 import { toolStore, ToolType } from '@/store/tool';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
 import { Handler } from '../../../Handler';
-import { actionManager } from '@/domain/action/ActionManager';
-import { CreateShapeActionExecute } from '@/domain/action/actionExecutes/CreateShpeActionExecute';
-import { CreateShapeAction } from '@/domain/action/actions/CreateShpeAction';
+import { actionManager } from '@/domain/service/action/ActionManager';
+import { CreateShapeAction } from '@/domain/service/action/actions/CreateShpeAction';
 
 let _idCounter = 0;
 function nextId(): string {

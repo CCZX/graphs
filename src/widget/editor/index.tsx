@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 import './index.less';
 import { MOCK_SHAPE_DATA } from './shapeData';
-import { EventManager } from '../../domain/events';
+import { EventManager } from '@/domain/service/events';
 import { Stage } from '@/canvas/core/Stage';
-import { ShapeCreator } from '../../domain/shapeCreator';
-import { shapeManager } from '../../domain/shapeManager';
+import { ShapeCreator } from '@/domain/service/shapeCreator';
+import { shapeManager } from '@/domain/service/shapeManager';
 
 function Editor() {
 	const containerRef = useRef<HTMLDivElement>(null);
