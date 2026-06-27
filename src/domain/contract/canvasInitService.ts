@@ -1,6 +1,6 @@
 import { ShapeData } from '@/shapes/contract';
 
 export interface ICanvasInitService {
-	init(data: ShapeData[], ioc: IocContainer): void;
+	init(data: ShapeData[]): void;
 }
 export const ICanvasInitService = Symbol('ICanvasInitService');

@@ -6,6 +6,8 @@ import { CreatorMode } from './modes/creator/CreatorMode';
 import { throttle as lodashThrottle } from 'lodash';
 import { provide } from 'inversify-binding-decorators';
 import { IEventManager } from '../../contract';
+import { IocContainerService } from '@/common/contract';
+import { inject } from 'inversify';
 
 interface Param {
 	viewport: {
@@ -63,7 +65,8 @@ export class EventManager implements IEventManager {
 	private activeMode: AbsEventMode | null = null;
 	private canvasEl: HTMLElement | null = null;
 
-	private ioc!: IocContainer;
+	@inject(IocContainerService)
+	private ioc!: IocContainerService;
 
 	private getEventPayload(e: PointerEvent): EventPayload {
 		return {
@@ -122,11 +125,9 @@ export class EventManager implements IEventManager {
 
 	private _onPointermove = this.onPointermove.bind(this);
 
-	public start(canvasEl: HTMLElement, ioc: IocContainer) {
+	public start(canvasEl: HTMLElement) {
 		this.canvasEl = canvasEl;
-		this.ioc = ioc;
-
-		this.eventModeList = [new InteractionMode(ioc), new CreatorMode(ioc)];
+		this.eventModeList = [new InteractionMode(this.ioc), new CreatorMode(this.ioc)];
 
 		document.addEventListener('pointermove', this._onPointermove);
 		document.addEventListener('pointerdown', this.onPointerdown.bind(this));

@@ -1,4 +1,4 @@
 export interface IEventManager {
-	start(canvasEl: HTMLElement, ioc: IocContainer): void;
+	start(canvasEl: HTMLElement): void;
 }
 export const IEventManager = Symbol('IEventManager');

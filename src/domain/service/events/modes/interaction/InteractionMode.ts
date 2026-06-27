@@ -7,13 +7,14 @@ import { SelectHandler } from './handlers/SelectHandler';
 import { HoverHandler } from './handlers/HoverHandler';
 import { AbsEventMode } from '../AbsEventMode';
 import { toolStore, ToolType } from '@/store/tool';
+import { IocContainerService } from '@/common/contract';
 
 export class InteractionMode extends AbsEventMode {
 	mode = EventModeEnum.InteractionMode;
 
 	handlerList: Handler[] = [];
 
-	constructor(ioc: IocContainer) {
+	constructor(ioc: IocContainerService) {
 		super(ioc);
 
 		this.handlerList = [

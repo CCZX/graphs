@@ -1,5 +1,5 @@
-import { Container } from 'inversify';
+import { IocContainerService } from '@/common/contract';
 
 export interface ShapeContext {
-	ioc: Container;
+	ioc: IocContainerService;
 }

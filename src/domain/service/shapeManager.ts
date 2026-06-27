@@ -3,13 +3,9 @@ import { isPointInRect } from '@/shapes/geometry';
 import { BaseShape } from '@/shapes/BaseShape';
 import { Stage } from '@/canvas/core/Stage';
 import { IShapeManager } from '../contract';
-import { fluentProvide, provide } from 'inversify-binding-decorators';
+import { provide } from 'inversify-binding-decorators';
 
-export const provideSingleton = (identifier: any) => {
-	return fluentProvide(identifier).inSingletonScope().done();
-};
-
-@provideSingleton(IShapeManager)
+@provide(IShapeManager)
 export class ShapeManager implements IShapeManager {
 	private stage!: Stage;
 	private shapes: Map<string, BaseShape> = new Map();

@@ -1,10 +1,11 @@
+import { IocContainerService } from '@/common/contract';
 import { HandlerEnum, InteractionState, EventPayload } from './types';
 
 export abstract class Handler {
 	abstract type: HandlerEnum;
-	protected ioc: IocContainer;
+	protected ioc: IocContainerService;
 
-	constructor(ioc: IocContainer) {
+	constructor(ioc: IocContainerService) {
 		this.ioc = ioc;
 	}
 
