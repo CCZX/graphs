@@ -7,7 +7,12 @@ import { toolStore } from '@/store/tool';
 export class CreatorMode extends AbsEventMode {
 	mode = EventModeEnum.CreatorMode;
 
-	handlerList: Handler[] = [new CreateHandler()];
+	handlerList: Handler[] = [];
+
+	constructor(ioc: IocContainer) {
+		super(ioc);
+		this.handlerList = [new CreateHandler(ioc)];
+	}
 
 	enable(): boolean {
 		const tool = toolStore.getState().activeTool;

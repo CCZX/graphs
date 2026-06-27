@@ -16,7 +16,7 @@ import { BaseProperty } from './property/BaseProperty';
 import { FillProperty } from './property/FillProperty';
 import { StrokeProperty } from './property/StrokeProperty';
 import { SelectedBorder } from './decorate/SelectedBorder';
-import { shapeManager } from '@/domain/service/shapeManager';
+import { IShapeManager } from '@/domain/contract';
 
 export abstract class BaseShape<T extends Graphics = Graphics> {
 	/**
@@ -89,6 +89,8 @@ export abstract class BaseShape<T extends Graphics = Graphics> {
 		if (stateType === this.getState()) {
 			return;
 		}
+
+		const shapeManager = this.context.ioc.get<IShapeManager>(IShapeManager);
 
 		if (stateType === ShapeStateEnum.Normal) {
 			shapeManager.removeSelectedShapeById(this.id);

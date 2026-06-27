@@ -1,8 +1,8 @@
 import { ShapeStateEnum } from '@/shapes/contract';
-import { shapeManager } from '@/domain/service/shapeManager';
 import { selectionStore } from '@/store/selection';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
 import { Handler } from '../../../Handler';
+import { IShapeManager } from '@/domain/contract';
 
 export class SelectHandler extends Handler {
 	type = HandlerEnum.Select;
@@ -15,6 +15,8 @@ export class SelectHandler extends Handler {
 		if (e.type !== 'pointerdown') {
 			return true;
 		}
+
+		const shapeManager = this.ioc.get<IShapeManager>(IShapeManager);
 
 		const nextShape = shapeManager.getShapeByPoint(payload.viewportPoint);
 

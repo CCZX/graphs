@@ -2,8 +2,7 @@ import { ShapeData, ShapePropertyEnum, ShapeTypeEnum } from '@/shapes/contract';
 import { BaseShape } from '@/shapes/BaseShape';
 import { Circle } from '@/shapes/Circle';
 import { Rectangle } from '@/shapes/Rectangle';
-import { shapeManager } from './shapeManager';
-import { ICanvasInitService } from '../contract';
+import { ICanvasInitService, IShapeManager } from '../contract';
 import { provide } from 'inversify-binding-decorators';
 import { inject } from 'inversify';
 import { ILoggerService } from '@/common/contract';
@@ -12,6 +11,9 @@ import { ILoggerService } from '@/common/contract';
 export class CanvasInitService implements ICanvasInitService {
 	@inject(ILoggerService)
 	private loggerService!: ILoggerService;
+
+	@inject(IShapeManager)
+	private shapeManager!: IShapeManager;
 
 	init(data: ShapeData[], ioc: IocContainer) {
 		for (let i = 0; i < data.length; i++) {
@@ -34,7 +36,7 @@ export class CanvasInitService implements ICanvasInitService {
 			}
 
 			if (shape) {
-				shapeManager.setShape(shape);
+				this.shapeManager.setShape(shape);
 			}
 		}
 	}

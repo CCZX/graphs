@@ -2,14 +2,14 @@ import { useEffect, useRef } from 'react';
 import './index.less';
 import { MOCK_SHAPE_DATA } from './shapeData';
 import { Stage } from '@/canvas/core/Stage';
-import { shapeManager } from '@/domain/service/shapeManager';
 import { useInject, useIOCContainer } from '@/common/context';
-import { ICanvasInitService, IEventManager } from '@/domain/contract';
+import { ICanvasInitService, IEventManager, IShapeManager } from '@/domain/contract';
 
 function Editor() {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const eventManager = useInject<IEventManager>(IEventManager);
 	const canvasInitService = useInject<ICanvasInitService>(ICanvasInitService);
+	const shapeManager = useInject<IShapeManager>(IShapeManager);
 	const ioc = useIOCContainer();
 
 	useEffect(() => {
@@ -22,7 +22,7 @@ function Editor() {
 		shapeManager.setStage(stage);
 
 		canvasInitService.init(MOCK_SHAPE_DATA, ioc);
-		eventManager.start(containerRef.current);
+		eventManager.start(containerRef.current, ioc);
 
 		return () => {
 			stage.destory();

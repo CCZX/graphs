@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { selectionStore } from '@/store/selection';
-import { shapeManager } from '@/domain/service/shapeManager';
 import { ShapePropertyEnum } from '@/shapes/contract';
 import type { FillPropertyValue, StrokePropertyValue } from '@/shapes/contract';
 import { STROKE_COLOR_PRESETS, FILL_COLOR_PRESETS } from './const';
 import type { PresetColor } from './const';
 import './index.less';
+import { useInject } from '@/common/context';
+import { IShapeManager } from '@/domain/contract';
 
 function numberToHex(num: number): string {
 	return '#' + num.toString(16).padStart(6, '0');
@@ -21,6 +22,7 @@ const STROKE_WIDTH_OPTIONS = [
 const STROKE_RADIUS_MAP: Record<number, number> = { 0: 1, 1: 2, 3: 5, 5: 7 };
 
 export function Property() {
+	const shapeManager = useInject<IShapeManager>(IShapeManager);
 	const selectedShapeId = selectionStore((s) => s.selectedShapeId);
 
 	const [strokeColor, setStrokeColor] = useState('#1e1e1e');

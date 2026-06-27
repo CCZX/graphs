@@ -59,9 +59,11 @@ export class EventManager implements IEventManager {
 		selectedShape: null,
 	};
 
-	private eventModeList: AbsEventMode[] = [new InteractionMode(), new CreatorMode()];
+	private eventModeList: AbsEventMode[] = [];
 	private activeMode: AbsEventMode | null = null;
 	private canvasEl: HTMLElement | null = null;
+
+	private ioc!: IocContainer;
 
 	private getEventPayload(e: PointerEvent): EventPayload {
 		return {
@@ -120,8 +122,12 @@ export class EventManager implements IEventManager {
 
 	private _onPointermove = this.onPointermove.bind(this);
 
-	public start(canvasEl: HTMLElement) {
+	public start(canvasEl: HTMLElement, ioc: IocContainer) {
 		this.canvasEl = canvasEl;
+		this.ioc = ioc;
+
+		this.eventModeList = [new InteractionMode(ioc), new CreatorMode(ioc)];
+
 		document.addEventListener('pointermove', this._onPointermove);
 		document.addEventListener('pointerdown', this.onPointerdown.bind(this));
 		document.addEventListener('pointerup', this.onPointerup.bind(this));

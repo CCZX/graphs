@@ -1,7 +1,7 @@
 import { ShapeStateEnum } from '@/shapes/contract';
-import { shapeManager } from '@/domain/service/shapeManager';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
 import { Handler } from '../../../Handler';
+import { IShapeManager } from '@/domain/contract';
 
 export class HoverHandler extends Handler {
 	type = HandlerEnum.Hover;
@@ -14,6 +14,8 @@ export class HoverHandler extends Handler {
 		if (e.type !== 'pointermove') {
 			return true;
 		}
+
+		const shapeManager = this.ioc.get<IShapeManager>(IShapeManager);
 
 		const nextShape = shapeManager.getShapeByPoint(payload.viewportPoint);
 

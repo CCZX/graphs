@@ -1,9 +1,9 @@
 import { BaseShape } from '@/shapes/BaseShape';
 import { BaseProperty } from '@/shapes/property/BaseProperty';
 import { BasePropertyValue, ShapePropertyEnum, ShapeStateEnum } from '@/shapes/contract';
-import { shapeManager } from '@/domain/service/shapeManager';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
 import { Handler } from '../../../Handler';
+import { IShapeManager } from '@/domain/contract';
 
 const DRAG_THRESHOLD = 3;
 
@@ -33,6 +33,7 @@ export class MoveHandler extends Handler {
 	}
 
 	private handlePointerDown(state: InteractionState, payload: EventPayload): boolean {
+		const shapeManager = this.ioc.get<IShapeManager>(IShapeManager);
 		const shapeUnderCursor = shapeManager.getShapeByPoint(payload.viewportPoint);
 		if (shapeUnderCursor?.id !== state.selectedShape?.id) {
 			return true;
