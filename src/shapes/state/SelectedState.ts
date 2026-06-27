@@ -1,5 +1,4 @@
 import { ShapeDecorateTypeEnum, ShapeStateEnum } from '../shape';
-import { warn } from '@/utils/log';
 import { AbsState } from './AbsState';
 
 export class SelectedState extends AbsState {
@@ -15,7 +14,6 @@ export class SelectedState extends AbsState {
 	onActivate() {
 		const selectedBorder = this.shape.getDecorate(ShapeDecorateTypeEnum.SelectedBorder);
 		if (!selectedBorder) {
-			warn(`没有找到 ${ShapeDecorateTypeEnum.SelectedBorder} 对应的装饰`);
 			return;
 		}
 		selectedBorder.onActivate();
@@ -24,7 +22,6 @@ export class SelectedState extends AbsState {
 	onDeactivate(): void {
 		const selectedBorder = this.shape.getDecorate(ShapeDecorateTypeEnum.SelectedBorder);
 		if (!selectedBorder) {
-			warn(`没有找到 ${ShapeDecorateTypeEnum.SelectedBorder} 对应的装饰`);
 			return;
 		}
 		selectedBorder.onDeactivate();

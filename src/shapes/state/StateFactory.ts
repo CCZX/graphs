@@ -1,5 +1,4 @@
 import { ShapeStateEnum } from '../shape';
-import { warn } from '@/utils/log';
 import { BaseShape } from '../BaseShape';
 import { EditState } from './EditState';
 import { HoverState } from './HoverState';
@@ -26,8 +25,6 @@ export class StateFactory {
 		} else if (state === ShapeStateEnum.Rotating) {
 			return new RotatingState(shape);
 		}
-
-		warn('没有找到对应的 state, 回退到 normal state');
 
 		return new NormalState(shape);
 	}

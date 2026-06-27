@@ -5,9 +5,14 @@ import { Rectangle } from '@/shapes/Rectangle';
 import { shapeManager } from './shapeManager';
 import { ICanvasInitService } from '../contract';
 import { provide } from 'inversify-binding-decorators';
+import { inject } from 'inversify';
+import { ILoggerService } from '@/common/contract';
 
 @provide(ICanvasInitService)
 export class CanvasInitService implements ICanvasInitService {
+	@inject(ILoggerService)
+	private loggerService!: ILoggerService;
+
 	init(data: ShapeData[]) {
 		for (let i = 0; i < data.length; i++) {
 			const shapeDataItem = data[i];

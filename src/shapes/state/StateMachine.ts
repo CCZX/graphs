@@ -1,4 +1,3 @@
-import { warn } from '@/utils/log';
 import { BaseShape } from '../BaseShape';
 import { AbsState } from './AbsState';
 import { NormalState } from './NormalState';
@@ -18,7 +17,6 @@ export class StateMachine {
 		const allowNextStateTypes = this.state.allowNextStateTypes;
 
 		if (!allowNextStateTypes.includes(nextStateType)) {
-			warn(`状态切换失败：${this.state.type} -> ${nextStateType}`);
 			onError && onError();
 			return;
 		}
