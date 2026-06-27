@@ -1,9 +1,13 @@
+import { IActionExecute, IActionManager } from '@/domain/contract/action';
 import { AbsAction } from './AbsAction';
-import { AbsActionExecute } from './AbsActionExecute';
 import { CreateShapeActionExecute } from './actionExecutes/CreateShpeActionExecute';
+import { provide } from 'inversify-binding-decorators';
+import { multiInject } from 'inversify';
 
-class ActionManager {
-	private executeList: AbsActionExecute[] = [new CreateShapeActionExecute()];
+@provide(IActionManager)
+export class ActionManager implements IActionManager {
+	@multiInject(IActionExecute)
+	private executeList: IActionExecute[] = [];
 
 	push(action: AbsAction) {
 		const execute = this.executeList.find((item) => item.type === action.type);
@@ -12,5 +16,3 @@ class ActionManager {
 		}
 	}
 }
-
-export const actionManager = new ActionManager();

@@ -1,7 +1,9 @@
+import { injectable } from 'inversify';
 import { AbsAction } from './AbsAction';
-import { ActionTypeEnum } from './type';
+import { ActionTypeEnum, IActionExecute } from '../../contract/action';
 
-export abstract class AbsActionExecute<T = unknown> {
+@injectable()
+export abstract class AbsActionExecute<T = unknown> implements IActionExecute {
 	abstract type: ActionTypeEnum;
 
 	abstract execute(action: AbsAction<T>): void;

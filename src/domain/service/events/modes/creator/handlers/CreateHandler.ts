@@ -2,8 +2,8 @@ import { ShapeData, ShapeTypeEnum } from '@/shapes/contract';
 import { toolStore, ToolType } from '@/store/tool';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
 import { Handler } from '../../../Handler';
-import { actionManager } from '@/domain/service/action/ActionManager';
 import { CreateShapeAction } from '@/domain/service/action/actions/CreateShpeAction';
+import { IActionManager } from '@/domain/contract/action';
 
 let _idCounter = 0;
 function nextId(): string {
@@ -60,6 +60,7 @@ export class CreateHandler extends Handler {
 			},
 		};
 
+		const actionManager = this.ioc.get<IActionManager>(IActionManager);
 		actionManager.push(new CreateShapeAction(shapeData));
 
 		// 新建后退出创建模式，回到 select
