@@ -4,6 +4,8 @@ import { BasePropertyValue, ShapePropertyEnum, ShapeStateEnum } from '@/shapes/c
 import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
 import { Handler } from '../../../Handler';
 import { IShapeManager } from '@/domain/contract';
+import { IActionManager } from '@/domain/contract/action';
+import { UpdatePropsAction } from '@/domain/service/action/actions/UpdatePropsAction';
 
 const DRAG_THRESHOLD = 3;
 
@@ -73,7 +75,19 @@ export class MoveHandler extends Handler {
 
 	private handlePointerUp(state: InteractionState): boolean {
 		if (this.isDragging) {
-			this.movingShape?.setState(ShapeStateEnum.Selected);
+			const shape = this.movingShape!;
+			const currentProps = shape.getProperty<BaseProperty>(ShapePropertyEnum.Base).get();
+
+			const actionManager = this.ioc.get<IActionManager>(IActionManager);
+			actionManager.push(
+				new UpdatePropsAction({
+					id: shape.id,
+					propertyType: ShapePropertyEnum.Base,
+					props: { x: currentProps.x, y: currentProps.y },
+				}),
+			);
+
+			shape.setState(ShapeStateEnum.Selected);
 			this.reset();
 			return false;
 		}

@@ -11,6 +11,8 @@ import {
 } from '@/shapes/contract';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
 import { Handler } from '../../../Handler';
+import { IActionManager } from '@/domain/contract/action';
+import { UpdatePropsAction } from '@/domain/service/action/actions/UpdatePropsAction';
 
 const MIN_SIZE = 10;
 const HANDLE_HIT_RADIUS = 8;
@@ -98,8 +100,25 @@ export class ResizeHandler extends Handler {
 			return true;
 		}
 
-		this.resizingShape?.setState(ShapeStateEnum.Selected);
-		state.selectedShape = this.resizingShape;
+		const shape = this.resizingShape!;
+		const currentProps = shape.getProperty<BaseProperty>(ShapePropertyEnum.Base).get();
+
+		const actionManager = this.ioc.get<IActionManager>(IActionManager);
+		actionManager.push(
+			new UpdatePropsAction({
+				id: shape.id,
+				propertyType: ShapePropertyEnum.Base,
+				props: {
+					x: currentProps.x,
+					y: currentProps.y,
+					width: currentProps.width,
+					height: currentProps.height,
+				},
+			}),
+		);
+
+		shape.setState(ShapeStateEnum.Selected);
+		state.selectedShape = shape;
 
 		this.reset();
 		return false;
