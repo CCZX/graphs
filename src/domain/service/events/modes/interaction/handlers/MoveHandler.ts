@@ -4,7 +4,7 @@ import { BasePropertyValue, ShapePropertyEnum, ShapeStateEnum } from '@/shapes/c
 import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
 import { Handler } from '../../../Handler';
 import { IShapeManager } from '@/domain/contract';
-import { IActionManager } from '@/domain/contract/action';
+import { IActionLogManager, IActionManager } from '@/domain/contract/action';
 import { UpdatePropsAction } from '@/domain/service/action/actions/UpdatePropsAction';
 
 const DRAG_THRESHOLD = 3;
@@ -64,6 +64,9 @@ export class MoveHandler extends Handler {
 				return true;
 			}
 
+			const actionLogManager = this.ioc.get<IActionLogManager>(IActionLogManager);
+			actionLogManager.setStreamStart();
+
 			this.isDragging = true;
 			this.movingShape = state.selectedShape!;
 			this.movingShape.setState(ShapeStateEnum.Moving);
@@ -73,24 +76,12 @@ export class MoveHandler extends Handler {
 		return true;
 	}
 
-	private handlePointerUp(state: InteractionState): boolean {
+	private handlePointerUp(_state: InteractionState): boolean {
 		if (this.isDragging) {
-			const shape = this.movingShape!;
-			const currentProps = shape.getProperty<BaseProperty>(ShapePropertyEnum.Base).get();
+			const actionLogManager = this.ioc.get<IActionLogManager>(IActionLogManager);
+			actionLogManager.setStreamEnd();
 
-			const actionManager = this.ioc.get<IActionManager>(IActionManager);
-			actionManager.push(
-				new UpdatePropsAction(
-					{
-						id: shape.id,
-						propertyType: ShapePropertyEnum.Base,
-						props: { x: currentProps.x, y: currentProps.y },
-					},
-					this.ioc,
-				),
-			);
-
-			shape.setState(ShapeStateEnum.Selected);
+			this.movingShape?.setState(ShapeStateEnum.Selected);
 			this.reset();
 			return false;
 		}
@@ -104,10 +95,20 @@ export class MoveHandler extends Handler {
 			return;
 		}
 
-		this.movingShape.updateProperty(ShapePropertyEnum.Base, {
-			x: this.originBaseProps.x + (screenPoint.x - this.startScreenPoint.x),
-			y: this.originBaseProps.y + (screenPoint.y - this.startScreenPoint.y),
-		});
+		const actionManager = this.ioc.get<IActionManager>(IActionManager);
+		actionManager.push(
+			new UpdatePropsAction(
+				{
+					id: this.movingShape.id,
+					propertyType: ShapePropertyEnum.Base,
+					props: {
+						x: this.originBaseProps.x + (screenPoint.x - this.startScreenPoint.x),
+						y: this.originBaseProps.y + (screenPoint.y - this.startScreenPoint.y),
+					},
+				},
+				this.ioc,
+			),
+		);
 	}
 
 	private reset() {

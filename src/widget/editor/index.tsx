@@ -31,6 +31,7 @@ function Editor() {
 		shortcutKeyManager.start();
 
 		return () => {
+			shortcutKeyManager.stop();
 			stage.destory();
 		};
 	}, []);

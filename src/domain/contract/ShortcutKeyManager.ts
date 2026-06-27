@@ -1,21 +1,18 @@
 export interface IShortcutKeyManager {
 	start(): void;
+	stop(): void;
 }
 
 export const IShortcutKeyManager = Symbol('IShortcutKeyManager');
 
 export interface IShortcutKey {
 	name: string;
-
 	key: string;
-
 	fnKeys: string[];
 
-	isMatch(): boolean;
-
-	onKeyDown(): void;
-
-	onKeyUp(): void;
+	isMatch(e: KeyboardEvent): boolean;
+	onKeyDown(e: KeyboardEvent): void;
+	onKeyUp(e: KeyboardEvent): void;
 }
 
 export const IShortcutKey = Symbol('IShortcutKey');

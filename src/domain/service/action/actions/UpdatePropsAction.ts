@@ -23,13 +23,16 @@ export class UpdatePropsAction extends AbsAction<UpdateShapePropsData> {
 		const shapeManager = this.ioc.get<IShapeManager>(IShapeManager);
 		const shape = shapeManager.getShapeById(this.data.id);
 
-		const props = shape?.getProperty(this.data.propertyType);
+		const property = shape?.getProperty(this.data.propertyType) as
+			| { value: Record<string, unknown> }
+			| undefined;
+		const props = property?.value ?? {};
 
 		return new UpdatePropsAction(
 			{
 				id: this.data.id,
 				propertyType: this.data.propertyType,
-				props: props?.value as Record<string, unknown>,
+				props: props as Record<string, unknown>,
 			},
 			this.ioc,
 		);

@@ -11,7 +11,7 @@ import {
 } from '@/shapes/contract';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
 import { Handler } from '../../../Handler';
-import { IActionManager } from '@/domain/contract/action';
+import { IActionLogManager, IActionManager } from '@/domain/contract/action';
 import { UpdatePropsAction } from '@/domain/service/action/actions/UpdatePropsAction';
 
 const MIN_SIZE = 10;
@@ -81,6 +81,9 @@ export class ResizeHandler extends Handler {
 			return true;
 		}
 
+		const actionLogManager = this.ioc.get<IActionLogManager>(IActionLogManager);
+		actionLogManager.setStreamStart();
+
 		this.direction = handle;
 		this.startViewportPoint = payload.viewportPoint;
 
@@ -100,28 +103,11 @@ export class ResizeHandler extends Handler {
 			return true;
 		}
 
-		const shape = this.resizingShape!;
-		const currentProps = shape.getProperty<BaseProperty>(ShapePropertyEnum.Base).get();
+		const actionLogManager = this.ioc.get<IActionLogManager>(IActionLogManager);
+		actionLogManager.setStreamEnd();
 
-		const actionManager = this.ioc.get<IActionManager>(IActionManager);
-		actionManager.push(
-			new UpdatePropsAction(
-				{
-					id: shape.id,
-					propertyType: ShapePropertyEnum.Base,
-					props: {
-						x: currentProps.x,
-						y: currentProps.y,
-						width: currentProps.width,
-						height: currentProps.height,
-					},
-				},
-				this.ioc,
-			),
-		);
-
-		shape.setState(ShapeStateEnum.Selected);
-		state.selectedShape = shape;
+		this.resizingShape?.setState(ShapeStateEnum.Selected);
+		state.selectedShape = this.resizingShape;
 
 		this.reset();
 		return false;
@@ -170,12 +156,17 @@ export class ResizeHandler extends Handler {
 				break;
 		}
 
-		this.resizingShape.updateProperty(ShapePropertyEnum.Base, {
-			x: newX,
-			y: newY,
-			width: newWidth,
-			height: newHeight,
-		});
+		const actionManager = this.ioc.get<IActionManager>(IActionManager);
+		actionManager.push(
+			new UpdatePropsAction(
+				{
+					id: this.resizingShape.id,
+					propertyType: ShapePropertyEnum.Base,
+					props: { x: newX, y: newY, width: newWidth, height: newHeight },
+				},
+				this.ioc,
+			),
+		);
 
 		const border = this.resizingShape.getDecorate(
 			ShapeDecorateTypeEnum.SelectedBorder,

@@ -12,14 +12,14 @@ export class UndoShortcutKey implements IShortcutKey {
 	key = 'z';
 	fnKeys = ['Ctrl+Z'];
 
-	isMatch(): boolean {
-		return true;
+	isMatch(e: KeyboardEvent): boolean {
+		return (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z';
 	}
 
-	onKeyDown(): void {
+	onKeyDown(_e: KeyboardEvent): void {
 		this.actionLogManager.undo();
 		console.log('撤销');
 	}
 
-	onKeyUp(): void {}
+	onKeyUp(_e: KeyboardEvent): void {}
 }
