@@ -1,4 +1,4 @@
-import { ShapeData } from '@/canvas/shapes/shape';
+import { ShapeData } from '@/shapes/shape';
 import { AbsAction } from '../AbsAction';
 import { ActionTypeEnum } from '../type';
 

@@ -1,5 +1,5 @@
 import { ShapeDecorateTypeEnum, ShapeStateEnum } from '../shape';
-import { warn } from '../../../utils/log';
+import { warn } from '@/utils/log';
 import { AbsState } from './AbsState';
 
 export class HoverState extends AbsState {

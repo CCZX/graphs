@@ -1,7 +1,7 @@
-import { ShapeData, ShapePropertyEnum, ShapeTypeEnum } from '@/canvas/shapes/shape';
-import { BaseShape } from '@/canvas/shapes/BaseShape';
-import { Circle } from '@/canvas/shapes/Circle';
-import { Rectangle } from '@/canvas/shapes/Rectangle';
+import { ShapeData, ShapePropertyEnum, ShapeTypeEnum } from '@/shapes/shape';
+import { BaseShape } from '@/shapes/BaseShape';
+import { Circle } from '@/shapes/Circle';
+import { Rectangle } from '@/shapes/Rectangle';
 import { shapeManager } from './shapeManager';
 import { ICanvasInitService } from '../contract';
 import { provide } from 'inversify-binding-decorators';

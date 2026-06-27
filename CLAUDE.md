@@ -51,6 +51,7 @@ Each `AbsState` defines `allowNextStateTypes` listing valid transitions. `StateF
 `EventManager` (`src/domain/events/EventManager.ts`) listens on `document` for `pointermove` (throttled ~60fps), `pointerdown` (throttled), and `pointerup`.
 
 On each event:
+
 1. Picks the first active `AbsEventMode` whose `enable()` returns true. `InteractionMode` activates when the active tool is `ToolType.Select`; `CreatorMode` activates otherwise.
 2. Pre-computes an `EventPayload` (viewport coordinates, screen coordinates, zoom scale).
 3. Iterates the mode's `Handler` list in order: **Resize → Rotate → Move → Select → Hover**. Each handler's `enable()` returns `true` to run it, and `execute()` returns `true` to continue the chain or `false` to stop (consuming the event).
@@ -80,25 +81,25 @@ Screen coordinates (`e.pageX/Y` or `e.clientX/Y`) are converted to viewport coor
 
 ### Key module paths (with `@/` alias → `src/`)
 
-| Concern | Path |
-|---|---|
-| PixiJS setup | `@/canvas/core/Stage.ts`, `Viewport.ts` |
-| Shapes | `@/canvas/shapes/BaseShape.ts`, `Circle.ts`, `Rectangle.ts`, `Text.ts` |
-| Shape properties | `@/canvas/shapes/property/AbsProperty.ts`, `BaseProperty.ts`, `FillProperty.ts`, `StrokeProperty.ts` |
-| Shape decorators | `@/canvas/shapes/decorate/AbsDecorate.ts`, `HoverBorder.ts`, `SelectedBorder.ts` |
-| State machine | `@/canvas/shapes/state/` |
-| Shape registry | `@/canvas/shapes/shapeManager.ts` (singleton) |
-| Shape factory | `@/canvas/shapes/shapeCreator.ts` |
-| React canvas UI | `@/canvas/components/editorCanvas/index.tsx` |
-| Event dispatch | `@/domain/events/EventManager.ts` |
-| Event types | `@/domain/events/types.ts` (enums, `InteractionState`, `EventPayload`) |
-| Handler base | `@/domain/events/Handler.ts` |
-| Handlers | `@/domain/events/modes/interaction/handlers/`, `modes/creator/handlers/` |
-| Action system | `@/domain/action/ActionManager.ts`, `AbsAction.ts`, `ActionLog.ts` |
-| React widgets | `@/widget/property/index.tsx`, `@/widget/toolbar/index.tsx` |
-| Stores | `@/store/viewport.ts`, `selection.ts`, `tool.ts` |
-| Types | `@/types/shape.ts`, `geometry.d.ts` |
-| Utils | `@/utils/decorate.ts`, `geometry.ts`, `viewport.ts`, `log.ts` |
+| Concern          | Path                                                                                          |
+| ---------------- | --------------------------------------------------------------------------------------------- |
+| PixiJS setup     | `@/canvas/core/Stage.ts`, `Viewport.ts`                                                       |
+| Shapes           | `@/shapes/BaseShape.ts`, `Circle.ts`, `Rectangle.ts`, `Text.ts`                               |
+| Shape properties | `@/shapes/property/AbsProperty.ts`, `BaseProperty.ts`, `FillProperty.ts`, `StrokeProperty.ts` |
+| Shape decorators | `@/shapes/decorate/AbsDecorate.ts`, `HoverBorder.ts`, `SelectedBorder.ts`                     |
+| State machine    | `@/shapes/state/`                                                                             |
+| Shape registry   | `@/shapes/shapeManager.ts` (singleton)                                                        |
+| Shape factory    | `@/shapes/shapeCreator.ts`                                                                    |
+| React canvas UI  | `@/canvas/components/editorCanvas/index.tsx`                                                  |
+| Event dispatch   | `@/domain/events/EventManager.ts`                                                             |
+| Event types      | `@/domain/events/types.ts` (enums, `InteractionState`, `EventPayload`)                        |
+| Handler base     | `@/domain/events/Handler.ts`                                                                  |
+| Handlers         | `@/domain/events/modes/interaction/handlers/`, `modes/creator/handlers/`                      |
+| Action system    | `@/domain/action/ActionManager.ts`, `AbsAction.ts`, `ActionLog.ts`                            |
+| React widgets    | `@/widget/property/index.tsx`, `@/widget/toolbar/index.tsx`                                   |
+| Stores           | `@/store/viewport.ts`, `selection.ts`, `tool.ts`                                              |
+| Types            | `@/types/shape.ts`, `geometry.d.ts`                                                           |
+| Utils            | `@/utils/decorate.ts`, `geometry.ts`, `viewport.ts`, `log.ts`                                 |
 
 ### Code style
 

@@ -1,4 +1,4 @@
-import { BaseShape } from '@/canvas/shapes/BaseShape';
+import { BaseShape } from '@/shapes/BaseShape';
 
 export enum EventModeEnum {
 	InteractionMode = 'interactionMode',

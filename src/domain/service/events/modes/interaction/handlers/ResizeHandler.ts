@@ -1,14 +1,14 @@
 import { Point as PixiPoint } from 'pixi.js';
-import { BaseShape } from '@/canvas/shapes/BaseShape';
-import { BaseProperty } from '@/canvas/shapes/property/BaseProperty';
-import { SelectedBorder } from '@/canvas/shapes/decorate/SelectedBorder';
+import { BaseShape } from '@/shapes/BaseShape';
+import { BaseProperty } from '@/shapes/property/BaseProperty';
+import { SelectedBorder } from '@/shapes/decorate/SelectedBorder';
 import {
 	BasePropertyValue,
 	ShapeDecorateTypeEnum,
 	ShapePropertyEnum,
 	ShapeStateEnum,
 	StrokePropertyValue,
-} from '@/canvas/shapes/shape';
+} from '@/shapes/shape';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
 import { Handler } from '../../../Handler';
 

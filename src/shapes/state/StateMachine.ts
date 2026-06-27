@@ -1,4 +1,4 @@
-import { warn } from '../../../utils/log';
+import { warn } from '@/utils/log';
 import { BaseShape } from '../BaseShape';
 import { AbsState } from './AbsState';
 import { NormalState } from './NormalState';

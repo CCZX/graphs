@@ -1,4 +1,4 @@
-import { ShapeData, ShapeTypeEnum } from '../../canvas/shapes/shape';
+import { ShapeData, ShapeTypeEnum } from '@/shapes/shape';
 
 export const MOCK_SHAPE_DATA: ShapeData[] = [
 	// {

@@ -1,5 +1,5 @@
 import { ShapeStateEnum } from '../shape';
-import { warn } from '../../../utils/log';
+import { warn } from '@/utils/log';
 import { BaseShape } from '../BaseShape';
 import { EditState } from './EditState';
 import { HoverState } from './HoverState';

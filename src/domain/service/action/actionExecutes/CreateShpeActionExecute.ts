@@ -1,9 +1,9 @@
-import { BaseShape } from '@/canvas/shapes/BaseShape';
+import { BaseShape } from '@/shapes/BaseShape';
 import { AbsActionExecute } from '../AbsActionExecute';
 import { CreateShapeAction } from '../actions/CreateShpeAction';
-import { ShapePropertyEnum, ShapeTypeEnum } from '@/canvas/shapes/shape';
-import { Circle } from '@/canvas/shapes/Circle';
-import { Rectangle } from '@/canvas/shapes/Rectangle';
+import { ShapePropertyEnum, ShapeTypeEnum } from '@/shapes/shape';
+import { Circle } from '@/shapes/Circle';
+import { Rectangle } from '@/shapes/Rectangle';
 import { shapeManager } from '@/domain/service/shapeManager';
 import { ActionTypeEnum } from '../type';
 
