@@ -1,4 +1,4 @@
-import { ShapeStateEnum } from '@/shapes/shape';
+import { ShapeStateEnum } from '@/shapes/contract';
 import { shapeManager } from '@/domain/service/shapeManager';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
 import { Handler } from '../../../Handler';

@@ -1,4 +1,4 @@
-import { ShapeStateEnum } from '../shape';
+import { ShapeStateEnum } from '../contract';
 import { BaseShape } from '../BaseShape';
 import { EditState } from './EditState';
 import { HoverState } from './HoverState';

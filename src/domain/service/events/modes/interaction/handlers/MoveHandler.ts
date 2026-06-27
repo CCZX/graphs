@@ -1,6 +1,6 @@
 import { BaseShape } from '@/shapes/BaseShape';
 import { BaseProperty } from '@/shapes/property/BaseProperty';
-import { BasePropertyValue, ShapePropertyEnum, ShapeStateEnum } from '@/shapes/shape';
+import { BasePropertyValue, ShapePropertyEnum, ShapeStateEnum } from '@/shapes/contract';
 import { shapeManager } from '@/domain/service/shapeManager';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
 import { Handler } from '../../../Handler';

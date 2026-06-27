@@ -1,5 +1,5 @@
 import { AbsProperty } from './AbsProperty';
-import { StrokePropertyValue, ShapePropertyEnum, ShapeTypeEnum } from '../shape';
+import { StrokePropertyValue, ShapePropertyEnum, ShapeTypeEnum } from '../contract';
 import { BaseShape } from '../BaseShape';
 import { BaseProperty } from './BaseProperty';
 

@@ -1,7 +1,7 @@
 import { Graphics } from 'pixi.js';
 import { HOVER_BORDER } from '../color';
-import { ShapeDecorateTypeEnum, ShapePropertyEnum } from '../shape';
-import type { StrokePropertyValue } from '../shape';
+import { ShapeDecorateTypeEnum, ShapePropertyEnum } from '../contract';
+import type { StrokePropertyValue } from '../contract';
 import { BaseShape } from '../BaseShape';
 import { AbsDecorate } from './AbsDecorate';
 

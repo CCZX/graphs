@@ -1,4 +1,4 @@
-import { ShapeData, ShapeTypeEnum } from '@/shapes/shape';
+import { ShapeData, ShapeTypeEnum } from '@/shapes/contract';
 import { toolStore, ToolType } from '@/store/tool';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
 import { Handler } from '../../../Handler';

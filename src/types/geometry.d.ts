@@ -1,3 +1,5 @@
+import { Container } from 'inversify';
+
 declare global {
 	interface Rectangle {
 		x: number;
@@ -11,6 +13,8 @@ declare global {
 		x: number;
 		y: number;
 	}
+
+	type IocContainer = Container;
 }
 
 export {};

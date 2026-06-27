@@ -1,4 +1,4 @@
-import { ShapeData, ShapePropertyEnum, ShapeTypeEnum } from '@/shapes/shape';
+import { ShapeData, ShapePropertyEnum, ShapeTypeEnum } from '@/shapes/contract';
 import { BaseShape } from '@/shapes/BaseShape';
 import { Circle } from '@/shapes/Circle';
 import { Rectangle } from '@/shapes/Rectangle';
@@ -13,20 +13,20 @@ export class CanvasInitService implements ICanvasInitService {
 	@inject(ILoggerService)
 	private loggerService!: ILoggerService;
 
-	init(data: ShapeData[]) {
+	init(data: ShapeData[], ioc: IocContainer) {
 		for (let i = 0; i < data.length; i++) {
 			const shapeDataItem = data[i];
 
 			let shape: BaseShape | null = null;
 
 			if (shapeDataItem.type === ShapeTypeEnum.Circle) {
-				shape = new Circle(shapeDataItem.id);
+				shape = new Circle(shapeDataItem.id, { ioc });
 				shape.setProperty(ShapePropertyEnum.Base, shapeDataItem.properties.base);
 				if (shapeDataItem.properties.fill) {
 					shape.setProperty(ShapePropertyEnum.Fill, shapeDataItem.properties.fill);
 				}
 			} else if (shapeDataItem.type === ShapeTypeEnum.Rectangle) {
-				shape = new Rectangle(shapeDataItem.id);
+				shape = new Rectangle(shapeDataItem.id, { ioc });
 				shape.setProperty(ShapePropertyEnum.Base, shapeDataItem.properties.base);
 				if (shapeDataItem.properties.fill) {
 					shape.setProperty(ShapePropertyEnum.Fill, shapeDataItem.properties.fill);

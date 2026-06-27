@@ -1,6 +1,6 @@
-import { Text as PixiText, TextStyle, TextMetrics, Graphics } from 'pixi.js';
+import { Text as PixiText, TextStyle } from 'pixi.js';
 import { viewportStore } from '../store/viewport';
-import { ShapeTypeEnum } from '../types/shape';
+import { ShapeContext, ShapeTypeEnum } from './contract';
 import { BaseShape } from './BaseShape';
 
 /**
@@ -16,8 +16,8 @@ export class Text extends BaseShape<PixiText> {
 		fontSize: 16,
 	});
 
-	constructor(id: string) {
-		super(id, new PixiText());
+	constructor(id: string, context: ShapeContext) {
+		super(id, new PixiText(), context);
 		this.initInputDOM();
 		this.addEventListener();
 

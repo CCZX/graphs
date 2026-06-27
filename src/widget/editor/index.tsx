@@ -3,13 +3,14 @@ import './index.less';
 import { MOCK_SHAPE_DATA } from './shapeData';
 import { Stage } from '@/canvas/core/Stage';
 import { shapeManager } from '@/domain/service/shapeManager';
-import { useInject } from '@/common/context';
+import { useInject, useIOCContainer } from '@/common/context';
 import { ICanvasInitService, IEventManager } from '@/domain/contract';
 
 function Editor() {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const eventManager = useInject<IEventManager>(IEventManager);
 	const canvasInitService = useInject<ICanvasInitService>(ICanvasInitService);
+	const ioc = useIOCContainer();
 
 	useEffect(() => {
 		if (!containerRef.current) {
@@ -20,7 +21,7 @@ function Editor() {
 
 		shapeManager.setStage(stage);
 
-		canvasInitService.init(MOCK_SHAPE_DATA);
+		canvasInitService.init(MOCK_SHAPE_DATA, ioc);
 		eventManager.start(containerRef.current);
 
 		return () => {

@@ -1,5 +1,11 @@
-import { Graphics, Container, DisplayObject } from 'pixi.js';
-import { ShapeDecorateTypeEnum, ShapePropertyEnum, ShapeStateEnum, ShapeTypeEnum } from './shape';
+import { Graphics, Container } from 'pixi.js';
+import {
+	ShapeContext,
+	ShapeDecorateTypeEnum,
+	ShapePropertyEnum,
+	ShapeStateEnum,
+	ShapeTypeEnum,
+} from './contract';
 import { AbsDecorate } from './decorate/AbsDecorate';
 import { HoverBorder } from './decorate/HoverBorder';
 import { AbsState } from './state/AbsState';
@@ -32,9 +38,13 @@ export abstract class BaseShape<T extends Graphics = Graphics> {
 	private propertyMap: Map<ShapePropertyEnum, AbsProperty> = new Map();
 	private stateMachine: StateMachine;
 
-	constructor(id: string, graphics: T) {
+	protected context: ShapeContext;
+
+	constructor(id: string, graphics: T, context: ShapeContext) {
 		this.id = id;
 		this.graphics = graphics;
+		this.context = context;
+
 		this.container.addChild(this.graphics);
 		this.container.name = 'SHAPE_CONTAINER';
 		this.stateMachine = new StateMachine(this);
@@ -76,8 +86,6 @@ export abstract class BaseShape<T extends Graphics = Graphics> {
 	}
 
 	setState(stateType: ShapeStateEnum, onSuccess?: () => void, onError?: () => void) {
-		// log(`setState from ${this.getState()} to ${stateType}`);
-
 		if (stateType === this.getState()) {
 			return;
 		}

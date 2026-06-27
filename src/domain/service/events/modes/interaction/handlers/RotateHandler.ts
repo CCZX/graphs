@@ -7,7 +7,7 @@ import {
 	ShapeDecorateTypeEnum,
 	ShapePropertyEnum,
 	ShapeStateEnum,
-} from '@/shapes/shape';
+} from '@/shapes/contract';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
 import { Handler } from '../../../Handler';
 
