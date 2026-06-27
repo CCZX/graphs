@@ -61,7 +61,7 @@ export class CreateHandler extends Handler {
 		};
 
 		const actionManager = this.ioc.get<IActionManager>(IActionManager);
-		actionManager.push(new CreateShapeAction(shapeData));
+		actionManager.push(new CreateShapeAction(shapeData, this.ioc));
 
 		// 新建后退出创建模式，回到 select
 		toolStore.getState().setActiveTool(ToolType.Select);

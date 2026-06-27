@@ -105,16 +105,19 @@ export class ResizeHandler extends Handler {
 
 		const actionManager = this.ioc.get<IActionManager>(IActionManager);
 		actionManager.push(
-			new UpdatePropsAction({
-				id: shape.id,
-				propertyType: ShapePropertyEnum.Base,
-				props: {
-					x: currentProps.x,
-					y: currentProps.y,
-					width: currentProps.width,
-					height: currentProps.height,
+			new UpdatePropsAction(
+				{
+					id: shape.id,
+					propertyType: ShapePropertyEnum.Base,
+					props: {
+						x: currentProps.x,
+						y: currentProps.y,
+						width: currentProps.width,
+						height: currentProps.height,
+					},
 				},
-			}),
+				this.ioc,
+			),
 		);
 
 		shape.setState(ShapeStateEnum.Selected);

@@ -2,6 +2,8 @@ export interface IAction<T> {
 	type: ActionTypeEnum;
 
 	data: T;
+
+	genBackAction(): IAction<T>;
 }
 
 export interface IActionExecute {

@@ -14,6 +14,10 @@ export interface IActionLogManager {
 
 	setStreamEnd(): void;
 
-	addAction(log: IAction<unknown>): void;
+	undo(): void;
+
+	redo(): void;
+
+	addAction(action: IAction<unknown>): void;
 }
 export const IActionLogManager = Symbol('IActionLogManager');

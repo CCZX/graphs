@@ -80,11 +80,14 @@ export class MoveHandler extends Handler {
 
 			const actionManager = this.ioc.get<IActionManager>(IActionManager);
 			actionManager.push(
-				new UpdatePropsAction({
-					id: shape.id,
-					propertyType: ShapePropertyEnum.Base,
-					props: { x: currentProps.x, y: currentProps.y },
-				}),
+				new UpdatePropsAction(
+					{
+						id: shape.id,
+						propertyType: ShapePropertyEnum.Base,
+						props: { x: currentProps.x, y: currentProps.y },
+					},
+					this.ioc,
+				),
 			);
 
 			shape.setState(ShapeStateEnum.Selected);
