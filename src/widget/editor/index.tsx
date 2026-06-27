@@ -1,13 +1,15 @@
 import { useEffect, useRef } from 'react';
 import './index.less';
 import { MOCK_SHAPE_DATA } from './shapeData';
-import { EventManager } from '@/domain/service/events';
 import { Stage } from '@/canvas/core/Stage';
-import { ShapeCreator } from '@/domain/service/shapeCreator';
 import { shapeManager } from '@/domain/service/shapeManager';
+import { useInject } from '@/common/context';
+import { ICanvasInitService, IEventManager } from '@/domain/contract';
 
 function Editor() {
 	const containerRef = useRef<HTMLDivElement>(null);
+	const eventManager = useInject<IEventManager>(IEventManager);
+	const canvasInitService = useInject<ICanvasInitService>(ICanvasInitService);
 
 	useEffect(() => {
 		if (!containerRef.current) {
@@ -18,10 +20,7 @@ function Editor() {
 
 		shapeManager.setStage(stage);
 
-		const shapeCreator = new ShapeCreator(stage, MOCK_SHAPE_DATA);
-		shapeCreator.create();
-
-		const eventManager = new EventManager();
+		canvasInitService.init(MOCK_SHAPE_DATA);
 		eventManager.start(containerRef.current);
 
 		return () => {

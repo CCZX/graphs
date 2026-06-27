@@ -24,6 +24,7 @@ export default tseslint.config(
 		},
 		rules: {
 			curly: ['error', 'all'],
+			'no-redeclare': 'off',
 			'no-unused-vars': 'off',
 			'@typescript-eslint/no-unused-vars': 'off',
 			'no-undef': 'off',

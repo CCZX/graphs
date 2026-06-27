@@ -1,5 +1,6 @@
 import { Container } from 'inversify';
 import { buildProviderModule } from 'inversify-binding-decorators';
+import '@/domain';
 
 const container = new Container();
 container.load(buildProviderModule());

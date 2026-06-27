@@ -1,37 +1,34 @@
-import { Stage } from '@/canvas/core/Stage';
 import { ShapeData, ShapePropertyEnum, ShapeTypeEnum } from '@/canvas/shapes/shape';
 import { BaseShape } from '@/canvas/shapes/BaseShape';
 import { Circle } from '@/canvas/shapes/Circle';
 import { Rectangle } from '@/canvas/shapes/Rectangle';
 import { shapeManager } from './shapeManager';
+import { ICanvasInitService } from '../contract';
+import { provide } from 'inversify-binding-decorators';
 
-export class ShapeCreator {
-	private stage: Stage;
-	private data: ShapeData[];
-
-	constructor(stage: Stage, data: ShapeData[]) {
-		this.stage = stage;
-		this.data = data;
-	}
-
-	create() {
-		for (let i = 0; i < this.data.length; i++) {
-			const shapeDataItem = this.data[i];
+@provide(ICanvasInitService)
+export class CanvasInitService implements ICanvasInitService {
+	init(data: ShapeData[]) {
+		for (let i = 0; i < data.length; i++) {
+			const shapeDataItem = data[i];
 
 			let shape: BaseShape | null = null;
 
 			if (shapeDataItem.type === ShapeTypeEnum.Circle) {
 				shape = new Circle(shapeDataItem.id);
 				shape.setProperty(ShapePropertyEnum.Base, shapeDataItem.properties.base);
-				shape.setProperty(ShapePropertyEnum.Fill, shapeDataItem.properties.fill);
+				if (shapeDataItem.properties.fill) {
+					shape.setProperty(ShapePropertyEnum.Fill, shapeDataItem.properties.fill);
+				}
 			} else if (shapeDataItem.type === ShapeTypeEnum.Rectangle) {
 				shape = new Rectangle(shapeDataItem.id);
 				shape.setProperty(ShapePropertyEnum.Base, shapeDataItem.properties.base);
-				shape.setProperty(ShapePropertyEnum.Fill, shapeDataItem.properties.fill);
+				if (shapeDataItem.properties.fill) {
+					shape.setProperty(ShapePropertyEnum.Fill, shapeDataItem.properties.fill);
+				}
 			}
 
 			if (shape) {
-				this.stage.appendShape(shape.container);
 				shapeManager.setShape(shape);
 			}
 		}

@@ -4,6 +4,8 @@ import { AbsEventMode } from './modes/AbsEventMode';
 import { InteractionMode } from './modes/interaction/InteractionMode';
 import { CreatorMode } from './modes/creator/CreatorMode';
 import { throttle as lodashThrottle } from 'lodash';
+import { provide } from 'inversify-binding-decorators';
+import { IEventManager } from '../../contract';
 
 interface Param {
 	viewport: {
@@ -49,9 +51,10 @@ export function throttle<T extends object>(delay: number) {
 	};
 }
 
-export class EventManager {
+@provide(IEventManager)
+export class EventManager implements IEventManager {
 	/** 跨 handler 共享的可变状态 */
-	state: InteractionState = {
+	private state: InteractionState = {
 		hoveredShape: null,
 		selectedShape: null,
 	};
@@ -115,9 +118,9 @@ export class EventManager {
 		this.dispatch(e);
 	}
 
-	_onPointermove = this.onPointermove.bind(this);
+	private _onPointermove = this.onPointermove.bind(this);
 
-	start(canvasEl: HTMLElement) {
+	public start(canvasEl: HTMLElement) {
 		this.canvasEl = canvasEl;
 		document.addEventListener('pointermove', this._onPointermove);
 		document.addEventListener('pointerdown', this.onPointerdown.bind(this));
