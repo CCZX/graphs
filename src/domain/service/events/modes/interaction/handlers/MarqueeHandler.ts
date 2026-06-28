@@ -42,7 +42,7 @@ export class MarqueeHandler implements IHandler {
 					}
 					return true;
 				}
-				return this.handlePointerMove(payload);
+				return this.handlePointerMove(state, payload);
 			case 'pointerup':
 				return this.handlePointerUp(state);
 			default:
@@ -58,22 +58,30 @@ export class MarqueeHandler implements IHandler {
 			return true;
 		}
 
-		this.startClientX = payload.viewportPoint.x;
-		this.startClientY = payload.viewportPoint.y;
+		// 转换为视口局部坐标，适配视口平移/缩放后的坐标系
+		const startLocal = this.shapeManager.clientToViewportLocal(
+			payload.viewportPoint.x,
+			payload.viewportPoint.y,
+		);
+		this.startClientX = startLocal.x;
+		this.startClientY = startLocal.y;
 		this.hasStart = true;
 		return true;
 	}
 
-	private handlePointerMove(payload: EventPayload): boolean {
+	private handlePointerMove(state: InteractionState, payload: EventPayload): boolean {
 		if (!this.hasStart) {
 			return true;
 		}
 
-		this.lastViewportX = payload.viewportPoint.x;
-		this.lastViewportY = payload.viewportPoint.y;
+		// 转换为视口局部坐标
+		const curLocal = this.shapeManager.clientToViewportLocal(
+			payload.viewportPoint.x,
+			payload.viewportPoint.y,
+		);
 
-		const dx = payload.viewportPoint.x - this.startClientX;
-		const dy = payload.viewportPoint.y - this.startClientY;
+		const dx = curLocal.x - this.startClientX;
+		const dy = curLocal.y - this.startClientY;
 
 		if (!this.isDragging) {
 			if (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) {
@@ -82,13 +90,15 @@ export class MarqueeHandler implements IHandler {
 			this.isDragging = true;
 		}
 
-		this.updateMarquee(payload);
+		this.lastViewportX = curLocal.x;
+		this.lastViewportY = curLocal.y;
+		this.updateMarquee();
+		this.selectShapesInMarquee(state);
 		return false;
 	}
 
 	private handlePointerUp(state: InteractionState): boolean {
 		if (this.isDragging) {
-			this.selectShapesInMarquee(state);
 			this.removeMarquee();
 			this.reset();
 			return false;
@@ -98,12 +108,11 @@ export class MarqueeHandler implements IHandler {
 		return true;
 	}
 
-	private updateMarquee(payload: EventPayload) {
-		// startClientX/Y and payload.viewportPoint are both in viewport coordinates
-		const x = Math.min(this.startClientX, payload.viewportPoint.x);
-		const y = Math.min(this.startClientY, payload.viewportPoint.y);
-		const w = Math.abs(payload.viewportPoint.x - this.startClientX);
-		const h = Math.abs(payload.viewportPoint.y - this.startClientY);
+	private updateMarquee() {
+		const x = Math.min(this.startClientX, this.lastViewportX);
+		const y = Math.min(this.startClientY, this.lastViewportY);
+		const w = Math.abs(this.lastViewportX - this.startClientX);
+		const h = Math.abs(this.lastViewportY - this.startClientY);
 
 		if (!this.marquee) {
 			this.marquee = new Graphics();
