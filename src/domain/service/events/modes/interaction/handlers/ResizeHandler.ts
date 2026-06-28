@@ -5,6 +5,7 @@ import {
 	BasePropertyValue,
 	ShapePropertyEnum,
 	ShapeStateEnum,
+	ShapeTypeEnum,
 	StrokePropertyValue,
 } from '@/shapes/contract';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
@@ -56,6 +57,7 @@ export class ResizeHandler extends Handler {
 			case 'pointermove':
 				// 没有按住主按键时不在 resize 中，清除残留状态
 				if (e.buttons !== 1 && this.isResizing) {
+					this.resizingShape?.setState(ShapeStateEnum.Selected);
 					this.reset();
 				}
 				return this.handlePointerMove(state, payload);
@@ -143,41 +145,88 @@ export class ResizeHandler extends Handler {
 		let newWidth = width;
 		let newHeight = height;
 
-		switch (this.direction) {
-			case Dir.BR:
-				newWidth = Math.max(MIN_SIZE, width + dx);
-				newHeight = Math.max(MIN_SIZE, height + dy);
-				break;
-			case Dir.TL:
-				newWidth = Math.max(MIN_SIZE, width - dx);
-				newHeight = Math.max(MIN_SIZE, height - dy);
-				newX = x + (width - newWidth);
-				newY = y + (height - newHeight);
-				break;
-			case Dir.TR:
-				newWidth = Math.max(MIN_SIZE, width + dx);
-				newHeight = Math.max(MIN_SIZE, height - dy);
-				newY = y + (height - newHeight);
-				break;
-			case Dir.BL:
-				newWidth = Math.max(MIN_SIZE, width - dx);
-				newHeight = Math.max(MIN_SIZE, height + dy);
-				newX = x + (width - newWidth);
-				break;
-			case Dir.T:
-				newHeight = Math.max(MIN_SIZE, height - dy);
-				newY = y + (height - newHeight);
-				break;
-			case Dir.B:
-				newHeight = Math.max(MIN_SIZE, height + dy);
-				break;
-			case Dir.L:
-				newWidth = Math.max(MIN_SIZE, width - dx);
-				newX = x + (width - newWidth);
-				break;
-			case Dir.R:
-				newWidth = Math.max(MIN_SIZE, width + dx);
-				break;
+		const isCircle = this.resizingShape.type === ShapeTypeEnum.Circle;
+
+		if (isCircle) {
+			const d = width;
+			let newD: number;
+
+			switch (this.direction) {
+				case Dir.T:
+					newD = Math.max(MIN_SIZE, d - dy);
+					newX = x + (d - newD) / 2;
+					newY = y + d - newD;
+					break;
+				case Dir.B:
+					newD = Math.max(MIN_SIZE, d + dy);
+					newX = x + (d - newD) / 2;
+					break;
+				case Dir.L:
+					newD = Math.max(MIN_SIZE, d - dx);
+					newX = x + d - newD;
+					newY = y + (d - newD) / 2;
+					break;
+				case Dir.R:
+					newD = Math.max(MIN_SIZE, d + dx);
+					newY = y + (d - newD) / 2;
+					break;
+				case Dir.BR:
+					newD = Math.max(MIN_SIZE, Math.max(d + dx, d + dy));
+					break;
+				case Dir.TL:
+					newD = Math.max(MIN_SIZE, Math.max(d - dx, d - dy));
+					newX = x + d - newD;
+					newY = y + d - newD;
+					break;
+				case Dir.TR:
+					newD = Math.max(MIN_SIZE, Math.max(d + dx, d - dy));
+					newY = y + d - newD;
+					break;
+				case Dir.BL:
+					newD = Math.max(MIN_SIZE, Math.max(d - dx, d + dy));
+					newX = x + d - newD;
+					break;
+			}
+
+			newWidth = newD;
+			newHeight = newD;
+		} else {
+			switch (this.direction) {
+				case Dir.BR:
+					newWidth = Math.max(MIN_SIZE, width + dx);
+					newHeight = Math.max(MIN_SIZE, height + dy);
+					break;
+				case Dir.TL:
+					newWidth = Math.max(MIN_SIZE, width - dx);
+					newHeight = Math.max(MIN_SIZE, height - dy);
+					newX = x + (width - newWidth);
+					newY = y + (height - newHeight);
+					break;
+				case Dir.TR:
+					newWidth = Math.max(MIN_SIZE, width + dx);
+					newHeight = Math.max(MIN_SIZE, height - dy);
+					newY = y + (height - newHeight);
+					break;
+				case Dir.BL:
+					newWidth = Math.max(MIN_SIZE, width - dx);
+					newHeight = Math.max(MIN_SIZE, height + dy);
+					newX = x + (width - newWidth);
+					break;
+				case Dir.T:
+					newHeight = Math.max(MIN_SIZE, height - dy);
+					newY = y + (height - newHeight);
+					break;
+				case Dir.B:
+					newHeight = Math.max(MIN_SIZE, height + dy);
+					break;
+				case Dir.L:
+					newWidth = Math.max(MIN_SIZE, width - dx);
+					newX = x + (width - newWidth);
+					break;
+				case Dir.R:
+					newWidth = Math.max(MIN_SIZE, width + dx);
+					break;
+			}
 		}
 
 		const actionManager = this.ioc.get<IActionManager>(IActionManager);

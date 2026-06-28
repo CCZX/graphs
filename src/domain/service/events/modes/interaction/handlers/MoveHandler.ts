@@ -28,7 +28,10 @@ export class MoveHandler extends Handler {
 			case 'pointermove':
 				// 没有按住主按键时不处理拖拽，清除残留状态
 				if (e.buttons !== 1) {
-					if (this.startScreenPoint) {
+					if (this.isDragging) {
+						this.movingShape?.setState(ShapeStateEnum.Selected);
+					}
+					if (this.startScreenPoint || this.isDragging) {
 						this.reset();
 					}
 					return true;
