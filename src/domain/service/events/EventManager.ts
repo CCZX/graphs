@@ -1,13 +1,10 @@
 import { viewportStore } from '@/store/viewport';
-import { InteractionState, EventPayload } from './types';
-import { AbsEventMode } from './modes/AbsEventMode';
-import { InteractionMode } from './modes/interaction/InteractionMode';
-import { CreatorMode } from './modes/creator/CreatorMode';
+import { InteractionState, EventPayload } from '../../contract/eventManager';
 import { throttle as lodashThrottle } from 'lodash';
 import { provide } from 'inversify-binding-decorators';
-import { IEventManager } from '../../contract';
+import { IEventManager, IEventMode } from '../../contract';
 import { IocContainerService } from '@/common/contract';
-import { inject } from 'inversify';
+import { inject, multiInject } from 'inversify';
 
 /**
  *
@@ -34,8 +31,9 @@ export class EventManager implements IEventManager {
 		selectedShape: null,
 	};
 
-	private eventModeList: AbsEventMode[] = [];
-	private activeMode: AbsEventMode | null = null;
+	@multiInject(IEventMode)
+	private eventModeList: IEventMode[] = [];
+	private activeMode: IEventMode | null = null;
 	private canvasEl: HTMLElement | null = null;
 
 	@inject(IocContainerService)
@@ -99,7 +97,7 @@ export class EventManager implements IEventManager {
 
 	public start(canvasEl: HTMLElement) {
 		this.canvasEl = canvasEl;
-		this.eventModeList = [new InteractionMode(this.ioc), new CreatorMode(this.ioc)];
+		// this.eventModeList = [new InteractionMode(this.ioc), new CreatorMode(this.ioc)];
 
 		document.addEventListener('pointermove', this._onPointermove);
 		document.addEventListener('pointerdown', this.onPointerdown.bind(this));

@@ -31,6 +31,10 @@ export function formatZoomScale(sclae: number) {
 export class Viewport extends Container {
 	private canvas: HTMLCanvasElement;
 
+	get canvasEl(): HTMLCanvasElement {
+		return this.canvas;
+	}
+
 	constructor(canvas: HTMLCanvasElement) {
 		super();
 

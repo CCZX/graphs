@@ -45,6 +45,10 @@ export class Stage {
 		this.viewport.removeChild(shape);
 	}
 
+	getViewport() {
+		return this.viewport;
+	}
+
 	destory() {
 		this.el.removeChild(this.app.view as unknown as HTMLCanvasElement);
 		this.app.destroy();

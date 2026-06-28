@@ -1,11 +1,18 @@
 import { ShapeStateEnum } from '@/shapes/contract';
 import { selectionStore } from '@/store/selection';
-import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
-import { Handler } from '../../../Handler';
+import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IShapeManager } from '@/domain/contract';
+import { fluentProvide } from 'inversify-binding-decorators';
+import { IHandlerWithInteraction, IHandler } from '@/domain/contract';
+import { inject } from 'inversify';
 
-export class SelectHandler extends Handler {
+// @ts-expect-error
+@fluentProvide(IHandlerWithInteraction).inSingletonScope().done()
+export class SelectHandler implements IHandler {
 	type = HandlerEnum.Select;
+
+	@inject(IShapeManager)
+	private shapeManager!: IShapeManager;
 
 	enable(_state: InteractionState): boolean {
 		return true;
@@ -16,9 +23,7 @@ export class SelectHandler extends Handler {
 			return true;
 		}
 
-		const shapeManager = this.ioc.get<IShapeManager>(IShapeManager);
-
-		const nextShape = shapeManager.getShapeByPoint(payload.viewportPoint);
+		const nextShape = this.shapeManager.getShapeByPoint(payload.viewportPoint);
 
 		// 新旧相同，放行给 MoveHandler
 		if (nextShape?.id === state.selectedShape?.id) {

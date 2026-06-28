@@ -11,6 +11,7 @@ export enum HandlerEnum {
 	Move = 'move',
 	Select = 'select',
 	Hover = 'hover',
+	Marquee = 'marquee',
 }
 
 /**

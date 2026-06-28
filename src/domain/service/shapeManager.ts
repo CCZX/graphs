@@ -1,4 +1,4 @@
-import { Point as PixiPoint } from 'pixi.js';
+import { Graphics, Point as PixiPoint } from 'pixi.js';
 import { isPointInRect } from '@/shapes/geometry';
 import { BaseShape } from '@/shapes/BaseShape';
 import { Stage } from '@/canvas/core/Stage';
@@ -37,8 +37,21 @@ export class ShapeManager implements IShapeManager {
 		}
 	}
 
+	getAllShapes(): BaseShape[] {
+		return Array.from(this.shapes.values());
+	}
+
 	setSelectedShape(shape: BaseShape) {
 		this.selectedShapes.set(shape.id, shape);
+	}
+
+	setMultipleSelectedShapes(shapes: BaseShape[]) {
+		this.selectedShapes.clear();
+		shapes.forEach((shape) => this.selectedShapes.set(shape.id, shape));
+	}
+
+	clearSelectedShapes() {
+		this.selectedShapes.clear();
 	}
 
 	getSelectedShapeById(id: string) {
@@ -51,5 +64,17 @@ export class ShapeManager implements IShapeManager {
 
 	removeSelectedShapeById(id: string) {
 		this.selectedShapes.delete(id);
+	}
+
+	addMarqueeGraphics(graphics: Graphics) {
+		this.stage.getViewport().addChild(graphics);
+	}
+
+	clientToViewportLocal(clientX: number, clientY: number): PixiPoint {
+		const viewport = this.stage.getViewport();
+		const canvasRect = viewport.canvasEl.getBoundingClientRect();
+		const stageX = clientX - canvasRect.left;
+		const stageY = clientY - canvasRect.top;
+		return viewport.toLocal(new PixiPoint(stageX, stageY));
 	}
 }

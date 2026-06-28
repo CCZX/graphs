@@ -1,22 +1,26 @@
-import { EventModeEnum } from '../../types';
-import { Handler } from '../../Handler';
-import { AbsEventMode } from '../AbsEventMode';
-import { CreateHandler } from './handlers/CreateHandler';
+import {
+	EventModeEnum,
+	IEventMode,
+	IHandler,
+	IHandlerWithCreator,
+} from '../../../../contract/eventManager';
 import { toolStore } from '@/store/tool';
-import { IocContainerService } from '@/common/contract';
+import { multiInject } from 'inversify';
+import { fluentProvide } from 'inversify-binding-decorators';
 
-export class CreatorMode extends AbsEventMode {
+// @ts-expect-error
+@fluentProvide(IEventMode).inSingletonScope().done()
+export class CreatorMode implements IEventMode {
 	mode = EventModeEnum.CreatorMode;
 
-	handlerList: Handler[] = [];
-
-	constructor(ioc: IocContainerService) {
-		super(ioc);
-		this.handlerList = [new CreateHandler(ioc)];
-	}
+	@multiInject(IHandlerWithCreator)
+	handlerList: IHandler[] = [];
 
 	enable(): boolean {
 		const tool = toolStore.getState().activeTool;
 		return tool !== null && tool !== 'select' && tool !== 'pen' && tool !== 'eraser';
 	}
+
+	onActivate(): void {}
+	onDeactivate(): void {}
 }

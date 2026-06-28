@@ -1,9 +1,17 @@
 import { ShapeData, ShapeTypeEnum } from '@/shapes/contract';
 import { toolStore, ToolType } from '@/store/tool';
-import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
-import { Handler } from '../../../Handler';
+import {
+	HandlerEnum,
+	InteractionState,
+	EventPayload,
+	IHandler,
+	IHandlerWithCreator,
+} from '../../../../../contract/eventManager';
 import { CreateShapeAction } from '@/domain/service/action/actions/CreateShpeAction';
 import { IActionManager } from '@/domain/contract/action';
+import { inject } from 'inversify';
+import { IocContainerService } from '@/common/contract';
+import { fluentProvide } from 'inversify-binding-decorators';
 
 let _idCounter = 0;
 function nextId(): string {
@@ -17,8 +25,16 @@ const DEFAULT_PROPS = {
 	fill: { color: 0xffffff, alpha: 1 },
 };
 
-export class CreateHandler extends Handler {
+// @ts-expect-error
+@fluentProvide(IHandlerWithCreator).inSingletonScope().done()
+export class CreateHandler implements IHandler {
 	type = HandlerEnum.Select;
+
+	@inject(IocContainerService)
+	private ioc!: IocContainerService;
+
+	@inject(IActionManager)
+	private actionManager!: IActionManager;
 
 	enable(_state: InteractionState): boolean {
 		const tool = toolStore.getState().activeTool;
@@ -60,8 +76,7 @@ export class CreateHandler extends Handler {
 			},
 		};
 
-		const actionManager = this.ioc.get<IActionManager>(IActionManager);
-		actionManager.push(new CreateShapeAction(shapeData, this.ioc));
+		this.actionManager.push(new CreateShapeAction(shapeData, this.ioc));
 
 		// 新建后退出创建模式，回到 select
 		toolStore.getState().setActiveTool(ToolType.Select);

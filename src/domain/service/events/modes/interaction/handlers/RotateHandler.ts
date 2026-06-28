@@ -8,12 +8,15 @@ import {
 	ShapePropertyEnum,
 	ShapeStateEnum,
 } from '@/shapes/contract';
-import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
-import { Handler } from '../../../Handler';
+import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
+import { fluentProvide } from 'inversify-binding-decorators';
+import { IHandlerWithInteraction, IHandler } from '@/domain/contract';
 
 const ROTATE_HANDLE_HIT_RADIUS = 12;
 
-export class RotateHandler extends Handler {
+// @ts-expect-error
+@fluentProvide(IHandlerWithInteraction).inSingletonScope().done()
+export class RotateHandler implements IHandler {
 	type = HandlerEnum.Rotate;
 
 	private isRotating = false;

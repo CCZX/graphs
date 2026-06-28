@@ -1,10 +1,16 @@
 import { ShapeStateEnum } from '@/shapes/contract';
-import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
-import { Handler } from '../../../Handler';
-import { IShapeManager } from '@/domain/contract';
+import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
+import { IHandler, IHandlerWithInteraction, IShapeManager } from '@/domain/contract';
+import { fluentProvide } from 'inversify-binding-decorators';
+import { inject } from 'inversify';
 
-export class HoverHandler extends Handler {
+// @ts-expect-error
+@fluentProvide(IHandlerWithInteraction).inSingletonScope().done()
+export class HoverHandler implements IHandler {
 	type = HandlerEnum.Hover;
+
+	@inject(IShapeManager)
+	private shapeManager!: IShapeManager;
 
 	enable(_state: InteractionState): boolean {
 		return true;
@@ -15,9 +21,7 @@ export class HoverHandler extends Handler {
 			return true;
 		}
 
-		const shapeManager = this.ioc.get<IShapeManager>(IShapeManager);
-
-		const nextShape = shapeManager.getShapeByPoint(payload.viewportPoint);
+		const nextShape = this.shapeManager.getShapeByPoint(payload.viewportPoint);
 
 		if (nextShape?.id === state.hoveredShape?.id) {
 			return true;

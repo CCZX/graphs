@@ -8,10 +8,13 @@ import {
 	ShapeTypeEnum,
 	StrokePropertyValue,
 } from '@/shapes/contract';
-import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
-import { Handler } from '../../../Handler';
+import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IActionLogManager, IActionManager } from '@/domain/contract/action';
 import { UpdatePropsAction } from '@/domain/service/action/actions/UpdatePropsAction';
+import { fluentProvide } from 'inversify-binding-decorators';
+import { IHandlerWithInteraction, IHandler } from '@/domain/contract';
+import { inject } from 'inversify';
+import { IocContainerService } from '@/common/contract';
 
 const MIN_SIZE = 10;
 const HANDLE_HIT_RADIUS = 8;
@@ -39,8 +42,19 @@ const CURSOR_MAP: Record<Dir, string> = {
 	[Dir.R]: 'ew-resize',
 };
 
-export class ResizeHandler extends Handler {
+// @ts-expect-error
+@fluentProvide(IHandlerWithInteraction).inSingletonScope().done()
+export class ResizeHandler implements IHandler {
 	type = HandlerEnum.Resize;
+
+	@inject(IActionManager)
+	private actionManager!: IActionManager;
+
+	@inject(IActionLogManager)
+	private actionLogManager!: IActionLogManager;
+
+	@inject(IocContainerService)
+	private ioc!: IocContainerService;
 
 	private isResizing = false;
 	private resizingShape: BaseShape | null = null;
@@ -93,8 +107,7 @@ export class ResizeHandler extends Handler {
 			return true;
 		}
 
-		const actionLogManager = this.ioc.get<IActionLogManager>(IActionLogManager);
-		actionLogManager.setStreamStart();
+		this.actionLogManager.setStreamStart();
 
 		this.direction = handle;
 		this.startViewportPoint = payload.viewportPoint;
@@ -115,8 +128,7 @@ export class ResizeHandler extends Handler {
 			return true;
 		}
 
-		const actionLogManager = this.ioc.get<IActionLogManager>(IActionLogManager);
-		actionLogManager.setStreamEnd();
+		this.actionLogManager.setStreamEnd();
 
 		this.resizingShape?.setState(ShapeStateEnum.Selected);
 		state.selectedShape = this.resizingShape;
@@ -229,8 +241,7 @@ export class ResizeHandler extends Handler {
 			}
 		}
 
-		const actionManager = this.ioc.get<IActionManager>(IActionManager);
-		actionManager.push(
+		this.actionManager.push(
 			new UpdatePropsAction(
 				{
 					id: this.resizingShape.id,

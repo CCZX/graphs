@@ -1,16 +1,32 @@
 import { BaseShape } from '@/shapes/BaseShape';
 import { BaseProperty } from '@/shapes/property/BaseProperty';
 import { BasePropertyValue, ShapePropertyEnum, ShapeStateEnum } from '@/shapes/contract';
-import { HandlerEnum, InteractionState, EventPayload } from '../../../types';
-import { Handler } from '../../../Handler';
+import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IShapeManager } from '@/domain/contract';
 import { IActionLogManager, IActionManager } from '@/domain/contract/action';
 import { UpdatePropsAction } from '@/domain/service/action/actions/UpdatePropsAction';
+import { fluentProvide } from 'inversify-binding-decorators';
+import { IHandlerWithInteraction, IHandler } from '@/domain/contract';
+import { inject } from 'inversify';
+import { IocContainerService } from '@/common/contract';
 
 const DRAG_THRESHOLD = 3;
-
-export class MoveHandler extends Handler {
+// @ts-expect-error
+@fluentProvide(IHandlerWithInteraction).inSingletonScope().done()
+export class MoveHandler implements IHandler {
 	type = HandlerEnum.Move;
+
+	@inject(IShapeManager)
+	private shapeManager!: IShapeManager;
+
+	@inject(IActionManager)
+	private actionManager!: IActionManager;
+
+	@inject(IActionLogManager)
+	private actionLogManager!: IActionLogManager;
+
+	@inject(IocContainerService)
+	private ioc!: IocContainerService;
 
 	private isDragging = false;
 	private movingShape: BaseShape | null = null;
@@ -45,8 +61,7 @@ export class MoveHandler extends Handler {
 	}
 
 	private handlePointerDown(state: InteractionState, payload: EventPayload): boolean {
-		const shapeManager = this.ioc.get<IShapeManager>(IShapeManager);
-		const shapeUnderCursor = shapeManager.getShapeByPoint(payload.viewportPoint);
+		const shapeUnderCursor = this.shapeManager.getShapeByPoint(payload.viewportPoint);
 		if (shapeUnderCursor?.id !== state.selectedShape?.id) {
 			return true;
 		}
@@ -74,8 +89,7 @@ export class MoveHandler extends Handler {
 				return true;
 			}
 
-			const actionLogManager = this.ioc.get<IActionLogManager>(IActionLogManager);
-			actionLogManager.setStreamStart();
+			this.actionLogManager.setStreamStart();
 
 			this.isDragging = true;
 			this.movingShape = state.selectedShape!;
@@ -88,8 +102,7 @@ export class MoveHandler extends Handler {
 
 	private handlePointerUp(_state: InteractionState): boolean {
 		if (this.isDragging) {
-			const actionLogManager = this.ioc.get<IActionLogManager>(IActionLogManager);
-			actionLogManager.setStreamEnd();
+			this.actionLogManager.setStreamEnd();
 
 			this.movingShape?.setState(ShapeStateEnum.Selected);
 			this.reset();
@@ -105,8 +118,7 @@ export class MoveHandler extends Handler {
 			return;
 		}
 
-		const actionManager = this.ioc.get<IActionManager>(IActionManager);
-		actionManager.push(
+		this.actionManager.push(
 			new UpdatePropsAction(
 				{
 					id: this.movingShape.id,
