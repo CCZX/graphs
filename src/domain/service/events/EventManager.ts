@@ -9,33 +9,6 @@ import { IEventManager } from '../../contract';
 import { IocContainerService } from '@/common/contract';
 import { inject } from 'inversify';
 
-interface Param {
-	viewport: {
-		x: number;
-		y: number;
-		scale: number;
-	};
-	point: { x: number; y: number };
-}
-
-/**
- * canvas 坐标转为 viewport 坐标
- * @param param
- * @returns
- */
-export function transformCanvasCoordinateToViewport(param: Param) {
-	const { viewport, point } = param;
-
-	const matrix = new window.DOMMatrix();
-	matrix.scaleSelf(1 / viewport.scale);
-	matrix.translateSelf(-viewport.x, -viewport.y);
-
-	const transformX = matrix.a * point.x + matrix.c * point.y + matrix.e;
-	const transformY = matrix.b * point.x + matrix.d * point.y + matrix.f;
-
-	return { x: transformX, y: transformY };
-}
-
 /**
  *
  * @param delay
@@ -70,10 +43,7 @@ export class EventManager implements IEventManager {
 
 	private getEventPayload(e: PointerEvent): EventPayload {
 		return {
-			viewportPoint: transformCanvasCoordinateToViewport({
-				point: { x: e.clientX, y: e.clientY },
-				viewport: viewportStore.getState(),
-			}),
+			viewportPoint: { x: e.clientX, y: e.clientY },
 			screenPoint: { x: e.pageX, y: e.pageY },
 			scale: viewportStore.getState().scale,
 		};
@@ -97,6 +67,8 @@ export class EventManager implements IEventManager {
 		for (const handler of this.activeMode.handlerList) {
 			if (!handler.enable(this.state)) {
 				continue;
+			} else {
+				console.log(handler.constructor.name);
 			}
 			const shouldContinue = handler.execute(e, this.state, payload);
 			if (!shouldContinue) {

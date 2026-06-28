@@ -62,6 +62,7 @@ export abstract class BaseShape<T extends Graphics = Graphics> {
 		const property = this.propertyMap.get(type);
 		if (property) {
 			property.set(value);
+			this.refreshDecorates();
 		}
 	}
 
@@ -69,7 +70,12 @@ export abstract class BaseShape<T extends Graphics = Graphics> {
 		const property = this.propertyMap.get(type);
 		if (property) {
 			property.update(value);
+			this.refreshDecorates();
 		}
+	}
+
+	private refreshDecorates() {
+		this.decorateMap.forEach((decorate) => decorate.refresh());
 	}
 
 	getProperty<T>(type: ShapePropertyEnum) {

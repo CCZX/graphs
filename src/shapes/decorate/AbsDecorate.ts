@@ -1,4 +1,4 @@
-import { ShapeDecorateTypeEnum } from '../../types/shape';
+import { ShapeDecorateTypeEnum } from '../contract';
 import { BaseShape } from '../BaseShape';
 
 export abstract class AbsDecorate {
@@ -13,4 +13,6 @@ export abstract class AbsDecorate {
 	abstract onActivate(): void;
 
 	abstract onDeactivate(): void;
+
+	refresh(): void {}
 }

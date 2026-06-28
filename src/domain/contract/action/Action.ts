@@ -3,7 +3,16 @@ export interface IAction<T> {
 
 	data: T;
 
+	/**
+	 * 生成对应的 back action（用于 undo）
+	 */
 	genBackAction(): IAction<T>;
+
+	/**
+	 * 是否需要添加到日志中
+	 */
+	setNeedAddLog(needAdd: boolean): void;
+	getNeedAddLog(): boolean;
 }
 
 export interface IActionExecute {

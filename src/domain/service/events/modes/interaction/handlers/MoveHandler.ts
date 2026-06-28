@@ -26,6 +26,13 @@ export class MoveHandler extends Handler {
 			case 'pointerdown':
 				return this.handlePointerDown(state, payload);
 			case 'pointermove':
+				// 没有按住主按键时不处理拖拽，清除残留状态
+				if (e.buttons !== 1) {
+					if (this.startScreenPoint) {
+						this.reset();
+					}
+					return true;
+				}
 				return this.handlePointerMove(state, payload);
 			case 'pointerup':
 				return this.handlePointerUp(state);

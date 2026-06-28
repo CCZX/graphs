@@ -1,10 +1,8 @@
 import { Point as PixiPoint } from 'pixi.js';
 import { BaseShape } from '@/shapes/BaseShape';
 import { BaseProperty } from '@/shapes/property/BaseProperty';
-import { SelectedBorder } from '@/shapes/decorate/SelectedBorder';
 import {
 	BasePropertyValue,
-	ShapeDecorateTypeEnum,
 	ShapePropertyEnum,
 	ShapeStateEnum,
 	StrokePropertyValue,
@@ -23,6 +21,10 @@ enum Dir {
 	TR = 'TR',
 	BR = 'BR',
 	BL = 'BL',
+	T = 'T',
+	R = 'R',
+	B = 'B',
+	L = 'L',
 }
 
 const CURSOR_MAP: Record<Dir, string> = {
@@ -30,6 +32,10 @@ const CURSOR_MAP: Record<Dir, string> = {
 	[Dir.TR]: 'nesw-resize',
 	[Dir.BR]: 'nwse-resize',
 	[Dir.BL]: 'nesw-resize',
+	[Dir.T]: 'ns-resize',
+	[Dir.B]: 'ns-resize',
+	[Dir.L]: 'ew-resize',
+	[Dir.R]: 'ew-resize',
 };
 
 export class ResizeHandler extends Handler {
@@ -48,6 +54,10 @@ export class ResizeHandler extends Handler {
 	execute(e: PointerEvent, state: InteractionState, payload: EventPayload): boolean {
 		switch (e.type) {
 			case 'pointermove':
+				// 没有按住主按键时不在 resize 中，清除残留状态
+				if (e.buttons !== 1 && this.isResizing) {
+					this.reset();
+				}
 				return this.handlePointerMove(state, payload);
 			case 'pointerdown':
 				return this.handlePointerDown(state, payload);
@@ -154,6 +164,20 @@ export class ResizeHandler extends Handler {
 				newHeight = Math.max(MIN_SIZE, height + dy);
 				newX = x + (width - newWidth);
 				break;
+			case Dir.T:
+				newHeight = Math.max(MIN_SIZE, height - dy);
+				newY = y + (height - newHeight);
+				break;
+			case Dir.B:
+				newHeight = Math.max(MIN_SIZE, height + dy);
+				break;
+			case Dir.L:
+				newWidth = Math.max(MIN_SIZE, width - dx);
+				newX = x + (width - newWidth);
+				break;
+			case Dir.R:
+				newWidth = Math.max(MIN_SIZE, width + dx);
+				break;
 		}
 
 		const actionManager = this.ioc.get<IActionManager>(IActionManager);
@@ -167,11 +191,6 @@ export class ResizeHandler extends Handler {
 				this.ioc,
 			),
 		);
-
-		const border = this.resizingShape.getDecorate(
-			ShapeDecorateTypeEnum.SelectedBorder,
-		) as SelectedBorder;
-		border?.refresh();
 	}
 
 	private detectHandle(shape: BaseShape, vp: Point, scale: number): Dir | null {
@@ -195,6 +214,48 @@ export class ResizeHandler extends Handler {
 		for (const c of corners) {
 			if (Math.abs(local.x - c.px) < threshold && Math.abs(local.y - c.py) < threshold) {
 				return c.dir;
+			}
+		}
+
+		// 边缘检测：排除角落区域，避免与角落 handle 冲突
+		const cornerExclude = threshold * 2;
+		const edges: {
+			check: () => boolean;
+			dir: Dir;
+		}[] = [
+			{
+				check: () =>
+					Math.abs(local.y - (0 - offset)) < threshold &&
+					local.x > cornerExclude &&
+					local.x < width - cornerExclude,
+				dir: Dir.T,
+			},
+			{
+				check: () =>
+					Math.abs(local.x - (width + offset)) < threshold &&
+					local.y > cornerExclude &&
+					local.y < height - cornerExclude,
+				dir: Dir.R,
+			},
+			{
+				check: () =>
+					Math.abs(local.y - (height + offset)) < threshold &&
+					local.x > cornerExclude &&
+					local.x < width - cornerExclude,
+				dir: Dir.B,
+			},
+			{
+				check: () =>
+					Math.abs(local.x - (0 - offset)) < threshold &&
+					local.y > cornerExclude &&
+					local.y < height - cornerExclude,
+				dir: Dir.L,
+			},
+		];
+
+		for (const edge of edges) {
+			if (edge.check()) {
+				return edge.dir;
 			}
 		}
 

@@ -18,7 +18,6 @@ export class UndoShortcutKey implements IShortcutKey {
 
 	onKeyDown(_e: KeyboardEvent): void {
 		this.actionLogManager.undo();
-		console.log('撤销');
 	}
 
 	onKeyUp(_e: KeyboardEvent): void {}

@@ -32,7 +32,8 @@ export class ActionLogManager implements IActionLogManager {
 		}
 
 		const backAction = this.undoStack.pop()!;
-		this.redoStack.push(backAction);
+		backAction.setNeedAddLog(false);
+		// this.redoStack.push(backAction);
 
 		const actionManager = this.ioc.get<IActionManager>(IActionManager);
 		actionManager.push(backAction);

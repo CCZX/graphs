@@ -12,7 +12,10 @@ export class ActionManager implements IActionManager {
 	private actionLogManager!: IActionLogManager;
 
 	push(action: AbsAction) {
-		this.actionLogManager.addAction(action);
+		const needAddLog = action.getNeedAddLog();
+		if (needAddLog) {
+			this.actionLogManager.addAction(action);
+		}
 
 		const execute = this.executeList.find((item) => item.type === action.type);
 		if (execute) {
