@@ -29,12 +29,12 @@ export class MoveHandler implements IHandler {
 	private ioc!: IocContainerService;
 
 	private isDragging = false;
-	private movingShape: BaseShape | null = null;
+	private movingShapes: BaseShape[] = [];
 	private startScreenPoint: Point | null = null;
-	private originBaseProps: BasePropertyValue | null = null;
+	private originBasePropsMap: Map<string, BasePropertyValue> = new Map();
 
 	enable(state: InteractionState): boolean {
-		return state.selectedShape !== null;
+		return state.selectedShapes.length > 0;
 	}
 
 	execute(e: PointerEvent, state: InteractionState, payload: EventPayload): boolean {
@@ -42,10 +42,9 @@ export class MoveHandler implements IHandler {
 			case 'pointerdown':
 				return this.handlePointerDown(state, payload);
 			case 'pointermove':
-				// 没有按住主按键时不处理拖拽，清除残留状态
 				if (e.buttons !== 1) {
 					if (this.isDragging) {
-						this.movingShape?.setState(ShapeStateEnum.Selected);
+						this.movingShapes.forEach((s) => s.setState(ShapeStateEnum.Selected));
 					}
 					if (this.startScreenPoint || this.isDragging) {
 						this.reset();
@@ -62,15 +61,19 @@ export class MoveHandler implements IHandler {
 
 	private handlePointerDown(state: InteractionState, payload: EventPayload): boolean {
 		const shapeUnderCursor = this.shapeManager.getShapeByPoint(payload.viewportPoint);
-		if (shapeUnderCursor?.id !== state.selectedShape?.id) {
-			return true;
-		}
-		if (!state.selectedShape) {
+		const isOnSelected =
+			shapeUnderCursor && state.selectedShapes.some((s) => s.id === shapeUnderCursor.id);
+		if (!isOnSelected) {
 			return true;
 		}
 
-		const p = state.selectedShape.getProperty<BaseProperty>(ShapePropertyEnum.Base).get();
-		this.originBaseProps = p || null;
+		this.originBasePropsMap.clear();
+		for (const shape of state.selectedShapes) {
+			const p = shape.getProperty<BaseProperty>(ShapePropertyEnum.Base).get();
+			if (p) {
+				this.originBasePropsMap.set(shape.id, { ...p });
+			}
+		}
 		this.startScreenPoint = payload.screenPoint;
 		return true;
 	}
@@ -81,7 +84,7 @@ export class MoveHandler implements IHandler {
 			return false;
 		}
 
-		if (this.startScreenPoint && this.originBaseProps) {
+		if (this.startScreenPoint && this.originBasePropsMap.size > 0) {
 			const dx = payload.screenPoint.x - this.startScreenPoint.x;
 			const dy = payload.screenPoint.y - this.startScreenPoint.y;
 
@@ -92,8 +95,8 @@ export class MoveHandler implements IHandler {
 			this.actionLogManager.setStreamStart();
 
 			this.isDragging = true;
-			this.movingShape = state.selectedShape!;
-			this.movingShape.setState(ShapeStateEnum.Moving);
+			this.movingShapes = [...state.selectedShapes];
+			this.movingShapes.forEach((s) => s.setState(ShapeStateEnum.Moving));
 			return false;
 		}
 
@@ -104,7 +107,7 @@ export class MoveHandler implements IHandler {
 		if (this.isDragging) {
 			this.actionLogManager.setStreamEnd();
 
-			this.movingShape?.setState(ShapeStateEnum.Selected);
+			this.movingShapes.forEach((s) => s.setState(ShapeStateEnum.Selected));
 			this.reset();
 			return false;
 		}
@@ -114,29 +117,38 @@ export class MoveHandler implements IHandler {
 	}
 
 	private applyMove(screenPoint: Point) {
-		if (!this.movingShape || !this.originBaseProps || !this.startScreenPoint) {
+		if (!this.startScreenPoint) {
 			return;
 		}
 
-		this.actionManager.push(
-			new UpdatePropsAction(
-				{
-					id: this.movingShape.id,
-					propertyType: ShapePropertyEnum.Base,
-					props: {
-						x: this.originBaseProps.x + (screenPoint.x - this.startScreenPoint.x),
-						y: this.originBaseProps.y + (screenPoint.y - this.startScreenPoint.y),
+		const dx = screenPoint.x - this.startScreenPoint.x;
+		const dy = screenPoint.y - this.startScreenPoint.y;
+
+		for (const shape of this.movingShapes) {
+			const origin = this.originBasePropsMap.get(shape.id);
+			if (!origin) {
+				continue;
+			}
+			this.actionManager.push(
+				new UpdatePropsAction(
+					{
+						id: shape.id,
+						propertyType: ShapePropertyEnum.Base,
+						props: {
+							x: origin.x + dx,
+							y: origin.y + dy,
+						},
 					},
-				},
-				this.ioc,
-			),
-		);
+					this.ioc,
+				),
+			);
+		}
 	}
 
 	private reset() {
 		this.isDragging = false;
-		this.movingShape = null;
+		this.movingShapes = [];
 		this.startScreenPoint = null;
-		this.originBaseProps = null;
+		this.originBasePropsMap.clear();
 	}
 }

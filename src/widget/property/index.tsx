@@ -23,7 +23,8 @@ const STROKE_RADIUS_MAP: Record<number, number> = { 0: 1, 1: 2, 3: 5, 5: 7 };
 
 export function Property() {
 	const shapeManager = useInject<IShapeManager>(IShapeManager);
-	const selectedShapeId = selectionStore((s) => s.selectedShapeId);
+	const selectedShapeIds = selectionStore((s) => s.selectedShapeIds);
+	const firstId = selectedShapeIds[0] || null;
 
 	const [strokeColor, setStrokeColor] = useState('#1e1e1e');
 	const [strokeWidth, setStrokeWidth] = useState(1);
@@ -34,7 +35,8 @@ export function Property() {
 	const visibleRef = useRef(false);
 
 	const syncFromShape = useCallback(() => {
-		const id = selectionStore.getState().selectedShapeId;
+		const ids = selectionStore.getState().selectedShapeIds;
+		const id = ids[0];
 		if (!id) {
 			return;
 		}
@@ -64,7 +66,7 @@ export function Property() {
 	}, []);
 
 	useEffect(() => {
-		if (selectedShapeId) {
+		if (selectedShapeIds.length > 0) {
 			syncFromShape();
 			setVisible(true);
 			visibleRef.current = true;
@@ -72,7 +74,7 @@ export function Property() {
 			setVisible(false);
 			visibleRef.current = false;
 		}
-	}, [selectedShapeId, syncFromShape]);
+	}, [selectedShapeIds, syncFromShape]);
 
 	useEffect(() => {
 		const onPointerUp = () => {
@@ -85,7 +87,7 @@ export function Property() {
 		return () => document.removeEventListener('pointerup', onPointerUp);
 	}, [syncFromShape]);
 
-	const shape = selectedShapeId ? shapeManager.getShapeById(selectedShapeId) : null;
+	const shape = firstId ? shapeManager.getShapeById(firstId) : null;
 
 	const handleStrokeColor = (preset: PresetColor) => {
 		setStrokeColor(preset.hex);
@@ -123,6 +125,11 @@ export function Property() {
 	return (
 		<div className={`ctx-panel ${visible ? 'ctx-panel--visible' : ''}`}>
 			<div className='ctx-inner'>
+				{selectedShapeIds.length > 1 && (
+					<div className='ctx-section'>
+						<span className='ctx-label'>{selectedShapeIds.length} shapes selected</span>
+					</div>
+				)}
 				{/* 描边颜色 */}
 				<div className='ctx-section'>
 					<span className='ctx-label'>描边</span>

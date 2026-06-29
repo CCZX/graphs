@@ -63,7 +63,7 @@ export class ResizeHandler implements IHandler {
 	private originBaseProps: BasePropertyValue | null = null;
 
 	enable(state: InteractionState): boolean {
-		return state.selectedShape !== null;
+		return state.selectedShapes.length === 1;
 	}
 
 	execute(e: PointerEvent, state: InteractionState, payload: EventPayload): boolean {
@@ -92,7 +92,11 @@ export class ResizeHandler implements IHandler {
 		}
 
 		// 悬停在 resize handle 上，改光标并打断后续 handler
-		const handle = this.detectHandle(state.selectedShape!, payload.viewportPoint, payload.scale);
+		const handle = this.detectHandle(
+			state.selectedShapes[0]!,
+			payload.viewportPoint,
+			payload.scale,
+		);
 		if (handle) {
 			document.body.style.cursor = CURSOR_MAP[handle];
 			return false;
@@ -102,7 +106,11 @@ export class ResizeHandler implements IHandler {
 	}
 
 	private handlePointerDown(state: InteractionState, payload: EventPayload): boolean {
-		const handle = this.detectHandle(state.selectedShape!, payload.viewportPoint, payload.scale);
+		const handle = this.detectHandle(
+			state.selectedShapes[0]!,
+			payload.viewportPoint,
+			payload.scale,
+		);
 		if (!handle) {
 			return true;
 		}
@@ -112,11 +120,11 @@ export class ResizeHandler implements IHandler {
 		this.direction = handle;
 		this.startViewportPoint = payload.viewportPoint;
 
-		const p = state.selectedShape!.getProperty<BaseProperty>(ShapePropertyEnum.Base).get();
+		const p = state.selectedShapes[0]!.getProperty<BaseProperty>(ShapePropertyEnum.Base).get();
 		this.originBaseProps = { ...p };
 
 		this.isResizing = true;
-		this.resizingShape = state.selectedShape!;
+		this.resizingShape = state.selectedShapes[0]!;
 
 		this.resizingShape.setState(ShapeStateEnum.Resizing);
 
@@ -131,7 +139,9 @@ export class ResizeHandler implements IHandler {
 		this.actionLogManager.setStreamEnd();
 
 		this.resizingShape?.setState(ShapeStateEnum.Selected);
-		state.selectedShape = this.resizingShape;
+		if (this.resizingShape) {
+			state.selectedShapes[0] = this.resizingShape;
+		}
 
 		this.reset();
 		return false;

@@ -31,7 +31,8 @@ export class HoverHandler implements IHandler {
 			state.hoveredShape.setState(ShapeStateEnum.Normal);
 		}
 
-		if (nextShape?.getState() === ShapeStateEnum.Normal) {
+		const isSelected = nextShape && state.selectedShapes.some((s) => s.id === nextShape.id);
+		if (nextShape?.getState() === ShapeStateEnum.Normal && !isSelected) {
 			nextShape.setState(ShapeStateEnum.Hover);
 		}
 

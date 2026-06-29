@@ -1,3 +1,4 @@
+import { BaseShape } from '@/shapes/BaseShape';
 import { ShapeStateEnum } from '@/shapes/contract';
 import { selectionStore } from '@/store/selection';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
@@ -25,8 +26,8 @@ export class SelectHandler implements IHandler {
 
 		const nextShape = this.shapeManager.getShapeByPoint(payload.viewportPoint);
 
-		// 新旧相同，放行给 MoveHandler
-		if (nextShape?.id === state.selectedShape?.id) {
+		// 点击已选中的图形，放行给 MoveHandler
+		if (nextShape && state.selectedShapes.some((s) => s.id === nextShape.id)) {
 			return true;
 		}
 
@@ -34,16 +35,18 @@ export class SelectHandler implements IHandler {
 			state.hoveredShape.setState(ShapeStateEnum.Normal);
 		}
 
-		if (state.selectedShape) {
-			state.selectedShape.setState(ShapeStateEnum.Normal);
-		}
+		// 取消所有选中
+		state.selectedShapes.forEach((s) => s.setState(ShapeStateEnum.Normal));
+		state.selectedShapes = [];
+		selectionStore.getState().clearSelectedShapeIds();
+		this.shapeManager.clearSelectedShapes();
 
 		if (nextShape) {
 			nextShape.setState(ShapeStateEnum.Selected);
+			state.selectedShapes = [nextShape];
+			selectionStore.getState().addSelectedShapeId(nextShape.id);
+			this.shapeManager.setSelectedShape(nextShape);
 		}
-
-		state.selectedShape = nextShape || null;
-		selectionStore.getState().setSelectedShapeId(nextShape?.id || null);
 
 		return true;
 	}

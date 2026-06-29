@@ -151,14 +151,10 @@ export class MarqueeHandler implements IHandler {
 		this.shapeManager.setMultipleSelectedShapes(intersectingShapes);
 
 		// Update InteractionState for handlers
-		state.selectedShape = intersectingShapes.length > 0 ? intersectingShapes[0] : null;
+		state.selectedShapes = intersectingShapes;
 
 		// Update selection store for UI
-		if (intersectingShapes.length > 0) {
-			selectionStore.getState().setSelectedShapeId(intersectingShapes[0].id);
-		} else {
-			selectionStore.getState().setSelectedShapeId(null);
-		}
+		selectionStore.getState().setSelectedShapeIds(intersectingShapes.map((s) => s.id));
 
 		// Update shape states
 		intersectingShapes.forEach((shape) => {

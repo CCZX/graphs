@@ -24,7 +24,7 @@ export class RotateHandler implements IHandler {
 	private originRotation = 0;
 
 	enable(state: InteractionState): boolean {
-		return state.selectedShape !== null;
+		return state.selectedShapes.length === 1;
 	}
 
 	execute(e: PointerEvent, state: InteractionState, payload: EventPayload): boolean {
@@ -46,7 +46,7 @@ export class RotateHandler implements IHandler {
 			return false;
 		}
 
-		if (this.isOverRotateHandle(state.selectedShape!, payload.viewportPoint, payload.scale)) {
+		if (this.isOverRotateHandle(state.selectedShapes[0]!, payload.viewportPoint, payload.scale)) {
 			document.body.style.cursor = 'grabbing';
 			return false;
 		}
@@ -55,7 +55,7 @@ export class RotateHandler implements IHandler {
 	}
 
 	private handlePointerDown(state: InteractionState, payload: EventPayload): boolean {
-		const shape = state.selectedShape!;
+		const shape = state.selectedShapes[0]!;
 		if (!this.isOverRotateHandle(shape, payload.viewportPoint, payload.scale)) {
 			return true;
 		}
@@ -76,7 +76,9 @@ export class RotateHandler implements IHandler {
 		}
 
 		this.rotatingShape?.setState(ShapeStateEnum.Selected);
-		state.selectedShape = this.rotatingShape;
+		if (this.rotatingShape) {
+			state.selectedShapes[0] = this.rotatingShape;
+		}
 		this.reset();
 		return false;
 	}

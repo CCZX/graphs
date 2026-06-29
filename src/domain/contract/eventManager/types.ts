@@ -19,7 +19,7 @@ export enum HandlerEnum {
  */
 export interface InteractionState {
 	hoveredShape: BaseShape | null;
-	selectedShape: BaseShape | null;
+	selectedShapes: BaseShape[];
 }
 
 /**

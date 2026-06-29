@@ -28,7 +28,7 @@ export class EventManager implements IEventManager {
 	/** 跨 handler 共享的可变状态 */
 	private state: InteractionState = {
 		hoveredShape: null,
-		selectedShape: null,
+		selectedShapes: [],
 	};
 
 	@multiInject(IEventMode)
