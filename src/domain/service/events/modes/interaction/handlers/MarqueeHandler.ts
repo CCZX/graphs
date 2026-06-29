@@ -58,7 +58,6 @@ export class MarqueeHandler implements IHandler {
 			return true;
 		}
 
-		// 转换为视口局部坐标，适配视口平移/缩放后的坐标系
 		const startLocal = this.shapeManager.clientToViewportLocal(
 			payload.viewportPoint.x,
 			payload.viewportPoint.y,
@@ -74,7 +73,6 @@ export class MarqueeHandler implements IHandler {
 			return true;
 		}
 
-		// 转换为视口局部坐标
 		const curLocal = this.shapeManager.clientToViewportLocal(
 			payload.viewportPoint.x,
 			payload.viewportPoint.y,

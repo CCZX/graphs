@@ -9,6 +9,7 @@ import {
 } from '../../../../../contract/eventManager';
 import { CreateShapeAction } from '@/domain/service/action/actions/CreateShpeAction';
 import { IActionManager } from '@/domain/contract/action';
+import { IShapeManager } from '@/domain/contract';
 import { inject } from 'inversify';
 import { IocContainerService } from '@/common/contract';
 import { fluentProvide } from 'inversify-binding-decorators';
@@ -36,6 +37,9 @@ export class CreateHandler implements IHandler {
 	@inject(IActionManager)
 	private actionManager!: IActionManager;
 
+	@inject(IShapeManager)
+	private shapeManager!: IShapeManager;
+
 	enable(_state: InteractionState): boolean {
 		const tool = toolStore.getState().activeTool;
 		return tool === 'rect' || tool === 'circle';
@@ -48,7 +52,10 @@ export class CreateHandler implements IHandler {
 
 		const tool = toolStore.getState().activeTool;
 		const id = nextId();
-		const { viewportPoint } = payload;
+		const localPoint = this.shapeManager.clientToViewportLocal(
+			payload.viewportPoint.x,
+			payload.viewportPoint.y,
+		);
 
 		const shapeType: ShapeTypeEnum = (() => {
 			switch (tool) {
@@ -66,8 +73,8 @@ export class CreateHandler implements IHandler {
 			type: shapeType,
 			properties: {
 				base: {
-					x: viewportPoint.x - DEFAULT_PROPS.width / 2,
-					y: viewportPoint.y - DEFAULT_PROPS.height / 2,
+					x: localPoint.x - DEFAULT_PROPS.width / 2,
+					y: localPoint.y - DEFAULT_PROPS.height / 2,
 					width: DEFAULT_PROPS.width,
 					height: DEFAULT_PROPS.height,
 				},
