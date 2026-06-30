@@ -3,6 +3,7 @@ import { ShapeStateEnum } from '@/shapes/contract';
 import { selectionStore } from '@/store/selection';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IShapeManager } from '@/domain/contract';
+import { isPointInRect } from '@/shapes/geometry';
 import { fluentProvide } from 'inversify-binding-decorators';
 import { IHandlerWithInteraction, IHandler } from '@/domain/contract';
 import { inject } from 'inversify';
@@ -31,6 +32,11 @@ export class SelectHandler implements IHandler {
 			return true;
 		}
 
+		// 点击在多选 overlay 上，放行给 MoveHandler
+		if (this.isOnOverlay(payload)) {
+			return true;
+		}
+
 		if (state.hoveredShape?.getState() === ShapeStateEnum.Hover) {
 			state.hoveredShape.setState(ShapeStateEnum.Normal);
 		}
@@ -48,6 +54,26 @@ export class SelectHandler implements IHandler {
 			this.shapeManager.setSelectedShape(nextShape);
 		}
 
+		this.shapeManager.updateMultiSelectOverlay(state.selectedShapes);
+
 		return true;
+	}
+
+	private isOnOverlay(payload: EventPayload): boolean {
+		const rect = this.shapeManager.getMultiSelectOverlayRect();
+		if (!rect) {
+			return false;
+		}
+		const local = this.shapeManager.clientToViewportLocal(
+			payload.viewportPoint.x,
+			payload.viewportPoint.y,
+		);
+		const expanded = {
+			x: rect.x - 4,
+			y: rect.y - 4,
+			width: rect.width + 8,
+			height: rect.height + 8,
+		};
+		return isPointInRect({ x: local.x, y: local.y }, expanded);
 	}
 }

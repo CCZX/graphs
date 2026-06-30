@@ -4,7 +4,7 @@ import { AbsState } from './AbsState';
 export class ResizingState extends AbsState {
 	type: ShapeStateEnum = ShapeStateEnum.Resizing;
 
-	allowNextStateTypes = [ShapeStateEnum.Selected];
+	allowNextStateTypes = [ShapeStateEnum.Selected, ShapeStateEnum.MultiSelected];
 
 	onActivate() {
 		this.shape.getDecorate(ShapeDecorateTypeEnum.SelectedBorder)?.onActivate();

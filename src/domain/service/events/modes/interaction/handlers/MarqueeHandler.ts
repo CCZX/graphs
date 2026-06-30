@@ -34,7 +34,6 @@ export class MarqueeHandler implements IHandler {
 			case 'pointerdown':
 				return this.handlePointerDown(payload);
 			case 'pointermove':
-				// 没有按住主按键时不处理拖拽，清除残留状态
 				if (e.buttons !== 1) {
 					if (this.isDragging || this.hasStart) {
 						this.removeMarquee();
@@ -53,7 +52,6 @@ export class MarqueeHandler implements IHandler {
 	private handlePointerDown(payload: EventPayload): boolean {
 		const shapeUnderCursor = this.shapeManager.getShapeByPoint(payload.viewportPoint);
 
-		// 点击在图形上，不启动框选
 		if (shapeUnderCursor) {
 			return true;
 		}
@@ -135,8 +133,6 @@ export class MarqueeHandler implements IHandler {
 		const allShapes = this.shapeManager.getAllShapes();
 		const intersectingShapes = allShapes.filter((shape) => {
 			const bounds = shape.getBounds();
-			// container position is center, pivot is at center, bounds start at (0,0)
-			// so top-left in viewport is container - half bounds
 			const shapeRect = {
 				x: shape.container.x - bounds.width / 2,
 				y: shape.container.y - bounds.height / 2,
@@ -148,25 +144,27 @@ export class MarqueeHandler implements IHandler {
 
 		this.shapeManager.setMultipleSelectedShapes(intersectingShapes);
 
-		// Update InteractionState for handlers
 		state.selectedShapes = intersectingShapes;
 
-		// Update selection store for UI
 		selectionStore.getState().setSelectedShapeIds(intersectingShapes.map((s) => s.id));
 
-		// Update shape states
+		const targetState =
+			intersectingShapes.length > 1 ? ShapeStateEnum.MultiSelected : ShapeStateEnum.Selected;
+
 		intersectingShapes.forEach((shape) => {
-			shape.setState(ShapeStateEnum.Selected);
+			shape.setState(targetState);
 		});
 
-		// Reset non-intersecting selected shapes to Normal
 		allShapes
 			.filter((shape) => !intersectingShapes.includes(shape))
 			.forEach((shape) => {
-				if (shape.getState() === ShapeStateEnum.Selected) {
+				const s = shape.getState();
+				if (s === ShapeStateEnum.Selected || s === ShapeStateEnum.MultiSelected) {
 					shape.setState(ShapeStateEnum.Normal);
 				}
 			});
+
+		this.shapeManager.updateMultiSelectOverlay(intersectingShapes);
 	}
 
 	private removeMarquee() {

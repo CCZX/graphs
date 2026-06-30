@@ -9,6 +9,7 @@ export class SelectedState extends AbsState {
 		ShapeStateEnum.Moving,
 		ShapeStateEnum.Resizing,
 		ShapeStateEnum.Rotating,
+		ShapeStateEnum.MultiSelected,
 	];
 
 	onActivate() {

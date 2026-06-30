@@ -4,7 +4,7 @@ import { AbsState } from './AbsState';
 export class RotatingState extends AbsState {
 	type: ShapeStateEnum = ShapeStateEnum.Rotating;
 
-	allowNextStateTypes = [ShapeStateEnum.Selected];
+	allowNextStateTypes = [ShapeStateEnum.Selected, ShapeStateEnum.MultiSelected];
 
 	onActivate() {
 		this.shape.getDecorate(ShapeDecorateTypeEnum.SelectedBorder)?.onActivate();

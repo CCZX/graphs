@@ -17,6 +17,11 @@ export enum ShapeStateEnum {
 	Selected = 'selected',
 
 	/**
+	 * 多选态
+	 */
+	MultiSelected = 'multiSelected',
+
+	/**
 	 * 编辑态，只有文字拥有此状态
 	 */
 	Edit = 'edit',

@@ -27,6 +27,11 @@ export interface IShapeManager {
 
 	addMarqueeGraphics(graphics: Graphics): void;
 
+	showMultiSelectOverlay(rect: Rectangle): void;
+	hideMultiSelectOverlay(): void;
+	updateMultiSelectOverlay(shapes: BaseShape[]): void;
+	getMultiSelectOverlayRect(): Rectangle | null;
+
 	clientToViewportLocal(clientX: number, clientY: number): PixiPoint;
 }
 export const IShapeManager = Symbol('IShapeManager');

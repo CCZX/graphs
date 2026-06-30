@@ -3,6 +3,7 @@ import { BaseShape } from '../BaseShape';
 import { EditState } from './EditState';
 import { HoverState } from './HoverState';
 import { MovingState } from './MovingState';
+import { MultiSelectedState } from './MultiSelectedState';
 import { NormalState } from './NormalState';
 import { ResizingState } from './ResizingState';
 import { RotatingState } from './RotatingState';
@@ -16,6 +17,8 @@ export class StateFactory {
 			return new HoverState(shape);
 		} else if (state === ShapeStateEnum.Selected) {
 			return new SelectedState(shape);
+		} else if (state === ShapeStateEnum.MultiSelected) {
+			return new MultiSelectedState(shape);
 		} else if (state === ShapeStateEnum.Edit) {
 			return new EditState(shape);
 		} else if (state === ShapeStateEnum.Moving) {

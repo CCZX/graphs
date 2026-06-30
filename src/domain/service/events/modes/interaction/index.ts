@@ -4,4 +4,5 @@ export * from './handlers/MarqueeHandler';
 export * from './handlers/MoveHandler';
 export * from './handlers/ResizeHandler';
 export * from './handlers/RotateHandler';
+export * from './handlers/MultiResizeHandler';
 export * from './handlers/HoverHandler';

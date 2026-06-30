@@ -5,6 +5,7 @@ import { HandlerEnum, InteractionState, EventPayload } from '../../../../../cont
 import { IShapeManager } from '@/domain/contract';
 import { IActionLogManager, IActionManager } from '@/domain/contract/action';
 import { UpdatePropsAction } from '@/domain/service/action/actions/UpdatePropsAction';
+import { isPointInRect } from '@/shapes/geometry';
 import { fluentProvide } from 'inversify-binding-decorators';
 import { IHandlerWithInteraction, IHandler } from '@/domain/contract';
 import { inject } from 'inversify';
@@ -44,7 +45,9 @@ export class MoveHandler implements IHandler {
 			case 'pointermove':
 				if (e.buttons !== 1) {
 					if (this.isDragging) {
-						this.movingShapes.forEach((s) => s.setState(ShapeStateEnum.Selected));
+						const restoreState =
+							this.movingShapes.length > 1 ? ShapeStateEnum.MultiSelected : ShapeStateEnum.Selected;
+						this.movingShapes.forEach((s) => s.setState(restoreState));
 					}
 					if (this.startScreenPoint || this.isDragging) {
 						this.reset();
@@ -63,7 +66,10 @@ export class MoveHandler implements IHandler {
 		const shapeUnderCursor = this.shapeManager.getShapeByPoint(payload.viewportPoint);
 		const isOnSelected =
 			shapeUnderCursor && state.selectedShapes.some((s) => s.id === shapeUnderCursor.id);
-		if (!isOnSelected) {
+
+		const isOnOverlay = this.isPointOnOverlay(payload);
+
+		if (!isOnSelected && !isOnOverlay) {
 			return true;
 		}
 
@@ -76,6 +82,25 @@ export class MoveHandler implements IHandler {
 		}
 		this.startScreenPoint = payload.screenPoint;
 		return true;
+	}
+
+	private isPointOnOverlay(payload: EventPayload): boolean {
+		const rect = this.shapeManager.getMultiSelectOverlayRect();
+		if (!rect) {
+			return false;
+		}
+		const local = this.shapeManager.clientToViewportLocal(
+			payload.viewportPoint.x,
+			payload.viewportPoint.y,
+		);
+		// 扩展 4px 匹配 overlay 绘制的 offset
+		const expanded = {
+			x: rect.x - 4,
+			y: rect.y - 4,
+			width: rect.width + 8,
+			height: rect.height + 8,
+		};
+		return isPointInRect({ x: local.x, y: local.y }, expanded);
 	}
 
 	private handlePointerMove(state: InteractionState, payload: EventPayload): boolean {
@@ -107,7 +132,9 @@ export class MoveHandler implements IHandler {
 		if (this.isDragging) {
 			this.actionLogManager.setStreamEnd();
 
-			this.movingShapes.forEach((s) => s.setState(ShapeStateEnum.Selected));
+			const restoreState =
+				this.movingShapes.length > 1 ? ShapeStateEnum.MultiSelected : ShapeStateEnum.Selected;
+			this.movingShapes.forEach((s) => s.setState(restoreState));
 			this.reset();
 			return false;
 		}
@@ -143,6 +170,8 @@ export class MoveHandler implements IHandler {
 				),
 			);
 		}
+
+		this.shapeManager.updateMultiSelectOverlay(this.movingShapes);
 	}
 
 	private reset() {
