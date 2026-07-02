@@ -3,6 +3,7 @@ import { BaseProperty } from '@/shapes/property/BaseProperty';
 import { BasePropertyValue, ShapePropertyEnum, ShapeStateEnum } from '@/shapes/contract';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IShapeManager } from '@/domain/contract';
+import { ISelectService } from '@/domain/contract/SelectService';
 import { IActionLogManager, IActionManager } from '@/domain/contract/action';
 import { UpdatePropsAction } from '@/domain/service/action/actions/UpdatePropsAction';
 import { isPointInRect } from '@/shapes/geometry';
@@ -19,6 +20,9 @@ export class MoveHandler implements IHandler {
 
 	@inject(IShapeManager)
 	private shapeManager!: IShapeManager;
+
+	@inject(ISelectService)
+	private selectService!: ISelectService;
 
 	@inject(IActionManager)
 	private actionManager!: IActionManager;
@@ -85,7 +89,7 @@ export class MoveHandler implements IHandler {
 	}
 
 	private isPointOnOverlay(payload: EventPayload): boolean {
-		const rect = this.shapeManager.getMultiSelectOverlayRect();
+		const rect = this.selectService.getMultiSelectOverlayRect();
 		if (!rect) {
 			return false;
 		}
@@ -171,7 +175,7 @@ export class MoveHandler implements IHandler {
 			);
 		}
 
-		this.shapeManager.updateMultiSelectOverlay(this.movingShapes);
+		this.selectService.updateMultiSelectOverlay(this.movingShapes);
 	}
 
 	private reset() {

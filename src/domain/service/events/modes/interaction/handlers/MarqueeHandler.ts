@@ -1,6 +1,7 @@
 import { Graphics } from 'pixi.js';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IHandler, IHandlerWithInteraction, IShapeManager } from '@/domain/contract';
+import { ISelectService } from '@/domain/contract/SelectService';
 import { isRectIntersect } from '@/shapes/geometry';
 import { ShapeStateEnum } from '@/shapes/contract';
 import { selectionStore } from '@/store/selection';
@@ -16,6 +17,9 @@ export class MarqueeHandler implements IHandler {
 
 	@inject(IShapeManager)
 	private shapeManager!: IShapeManager;
+
+	@inject(ISelectService)
+	private selectService!: ISelectService;
 
 	private isDragging = false;
 	private startClientX = 0;
@@ -112,7 +116,7 @@ export class MarqueeHandler implements IHandler {
 
 		if (!this.marquee) {
 			this.marquee = new Graphics();
-			this.shapeManager.addMarqueeGraphics(this.marquee);
+			this.selectService.addMarqueeGraphics(this.marquee);
 		}
 
 		this.marquee.clear();
@@ -142,7 +146,7 @@ export class MarqueeHandler implements IHandler {
 			return isRectIntersect(marqueeRect, shapeRect);
 		});
 
-		this.shapeManager.setMultipleSelectedShapes(intersectingShapes);
+		this.selectService.setMultipleSelectedShapes(intersectingShapes);
 
 		state.selectedShapes = intersectingShapes;
 
@@ -164,7 +168,7 @@ export class MarqueeHandler implements IHandler {
 				}
 			});
 
-		this.shapeManager.updateMultiSelectOverlay(intersectingShapes);
+		this.selectService.updateMultiSelectOverlay(intersectingShapes);
 	}
 
 	private removeMarquee() {

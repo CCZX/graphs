@@ -3,6 +3,7 @@ import { ShapeStateEnum } from '@/shapes/contract';
 import { selectionStore } from '@/store/selection';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IShapeManager } from '@/domain/contract';
+import { ISelectService } from '@/domain/contract/SelectService';
 import { isPointInRect } from '@/shapes/geometry';
 import { fluentProvide } from 'inversify-binding-decorators';
 import { IHandlerWithInteraction, IHandler } from '@/domain/contract';
@@ -15,6 +16,9 @@ export class SelectHandler implements IHandler {
 
 	@inject(IShapeManager)
 	private shapeManager!: IShapeManager;
+
+	@inject(ISelectService)
+	private selectService!: ISelectService;
 
 	enable(_state: InteractionState): boolean {
 		return true;
@@ -45,22 +49,22 @@ export class SelectHandler implements IHandler {
 		state.selectedShapes.forEach((s) => s.setState(ShapeStateEnum.Normal));
 		state.selectedShapes = [];
 		selectionStore.getState().clearSelectedShapeIds();
-		this.shapeManager.clearSelectedShapes();
+		this.selectService.clearSelectedShapes();
 
 		if (nextShape) {
 			nextShape.setState(ShapeStateEnum.Selected);
 			state.selectedShapes = [nextShape];
 			selectionStore.getState().addSelectedShapeId(nextShape.id);
-			this.shapeManager.setSelectedShape(nextShape);
+			this.selectService.setSelectedShape(nextShape);
 		}
 
-		this.shapeManager.updateMultiSelectOverlay(state.selectedShapes);
+		this.selectService.updateMultiSelectOverlay(state.selectedShapes);
 
 		return true;
 	}
 
 	private isOnOverlay(payload: EventPayload): boolean {
-		const rect = this.shapeManager.getMultiSelectOverlayRect();
+		const rect = this.selectService.getMultiSelectOverlayRect();
 		if (!rect) {
 			return false;
 		}

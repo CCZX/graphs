@@ -3,6 +3,7 @@ import { BaseProperty } from '@/shapes/property/BaseProperty';
 import { BasePropertyValue, ShapePropertyEnum, ShapeStateEnum } from '@/shapes/contract';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IShapeManager } from '@/domain/contract';
+import { ISelectService } from '@/domain/contract/SelectService';
 import { IActionLogManager, IActionManager } from '@/domain/contract/action';
 import { UpdatePropsAction } from '@/domain/service/action/actions/UpdatePropsAction';
 import { fluentProvide } from 'inversify-binding-decorators';
@@ -35,6 +36,9 @@ export class MultiResizeHandler implements IHandler {
 
 	@inject(IShapeManager)
 	private shapeManager!: IShapeManager;
+
+	@inject(ISelectService)
+	private selectService!: ISelectService;
 
 	@inject(IActionManager)
 	private actionManager!: IActionManager;
@@ -81,7 +85,7 @@ export class MultiResizeHandler implements IHandler {
 	}
 
 	private getExpandedOverlayRect(): Rectangle | null {
-		const rect = this.shapeManager.getMultiSelectOverlayRect();
+		const rect = this.selectService.getMultiSelectOverlayRect();
 		if (!rect) {
 			return null;
 		}
@@ -132,7 +136,7 @@ export class MultiResizeHandler implements IHandler {
 
 		this.direction = handle;
 		this.startLocalPoint = local;
-		this.originAABB = { ...this.shapeManager.getMultiSelectOverlayRect()! };
+		this.originAABB = { ...this.selectService.getMultiSelectOverlayRect()! };
 
 		this.originShapeProps.clear();
 		for (const shape of state.selectedShapes) {
@@ -203,7 +207,7 @@ export class MultiResizeHandler implements IHandler {
 			);
 		}
 
-		this.shapeManager.updateMultiSelectOverlay(state.selectedShapes);
+		this.selectService.updateMultiSelectOverlay(state.selectedShapes);
 	}
 
 	private computeNewAABB(local: Point): Rectangle {

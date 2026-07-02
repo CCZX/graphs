@@ -16,7 +16,7 @@ import { BaseProperty } from './property/BaseProperty';
 import { FillProperty } from './property/FillProperty';
 import { StrokeProperty } from './property/StrokeProperty';
 import { SelectedBorder } from './decorate/SelectedBorder';
-import { IShapeManager } from '@/domain/contract';
+import { ISelectService } from '@/domain/contract/SelectService';
 
 export abstract class BaseShape<T extends Graphics = Graphics> {
 	/**
@@ -96,14 +96,14 @@ export abstract class BaseShape<T extends Graphics = Graphics> {
 			return;
 		}
 
-		const shapeManager = this.context.ioc.get<IShapeManager>(IShapeManager);
+		const selectService = this.context.ioc.get<ISelectService>(ISelectService);
 
 		if (stateType === ShapeStateEnum.Normal) {
-			shapeManager.removeSelectedShapeById(this.id);
+			selectService.removeSelectedShapeById(this.id);
 		}
 
 		if (stateType === ShapeStateEnum.Selected) {
-			shapeManager.setSelectedShape(this);
+			selectService.setSelectedShape(this);
 		}
 
 		let state = this.stateMap.get(stateType);

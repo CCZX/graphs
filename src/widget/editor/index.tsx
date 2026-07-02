@@ -9,6 +9,7 @@ import {
 	IShapeManager,
 	IShortcutKeyManager,
 } from '@/domain/contract';
+import { ISelectService } from '@/domain/contract/SelectService';
 
 function Editor() {
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -16,6 +17,7 @@ function Editor() {
 	const canvasInitService = useInject<ICanvasInitService>(ICanvasInitService);
 	const shapeManager = useInject<IShapeManager>(IShapeManager);
 	const shortcutKeyManager = useInject<IShortcutKeyManager>(IShortcutKeyManager);
+	const selectService = useInject<ISelectService>(ISelectService);
 
 	useEffect(() => {
 		if (!containerRef.current) {
@@ -25,6 +27,7 @@ function Editor() {
 		const stage = Stage.createStage(containerRef.current);
 
 		shapeManager.setStage(stage);
+		selectService.setStage(stage);
 
 		canvasInitService.init(MOCK_SHAPE_DATA);
 		eventManager.start(containerRef.current);
