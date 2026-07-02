@@ -9,7 +9,7 @@ import {
 } from '../../../../../contract/eventManager';
 import { CreateShapeAction } from '@/domain/service/action/actions/CreateShpeAction';
 import { IActionManager } from '@/domain/contract/action';
-import { IShapeManager } from '@/domain/contract';
+import { IViewportService } from '@/domain/contract/ViewportService';
 import { inject } from 'inversify';
 import { IocContainerService } from '@/common/contract';
 import { fluentProvide } from 'inversify-binding-decorators';
@@ -37,8 +37,8 @@ export class CreateHandler implements IHandler {
 	@inject(IActionManager)
 	private actionManager!: IActionManager;
 
-	@inject(IShapeManager)
-	private shapeManager!: IShapeManager;
+	@inject(IViewportService)
+	private viewportService!: IViewportService;
 
 	enable(_state: InteractionState): boolean {
 		const tool = toolStore.getState().activeTool;
@@ -52,7 +52,7 @@ export class CreateHandler implements IHandler {
 
 		const tool = toolStore.getState().activeTool;
 		const id = nextId();
-		const localPoint = this.shapeManager.clientToViewportLocal(
+		const localPoint = this.viewportService.clientToViewportLocal(
 			payload.viewportPoint.x,
 			payload.viewportPoint.y,
 		);

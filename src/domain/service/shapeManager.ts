@@ -38,12 +38,4 @@ export class ShapeManager implements IShapeManager {
 	getAllShapes(): BaseShape[] {
 		return Array.from(this.shapes.values());
 	}
-
-	clientToViewportLocal(clientX: number, clientY: number): PixiPoint {
-		const viewport = this.stage.getViewport();
-		const canvasRect = viewport.canvasEl.getBoundingClientRect();
-		const stageX = clientX - canvasRect.left;
-		const stageY = clientY - canvasRect.top;
-		return viewport.toLocal(new PixiPoint(stageX, stageY));
-	}
 }

@@ -4,6 +4,7 @@ import { BasePropertyValue, ShapePropertyEnum, ShapeStateEnum } from '@/shapes/c
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IShapeManager } from '@/domain/contract';
 import { ISelectService } from '@/domain/contract/SelectService';
+import { IViewportService } from '@/domain/contract/ViewportService';
 import { IActionLogManager, IActionManager } from '@/domain/contract/action';
 import { UpdatePropsAction } from '@/domain/service/action/actions/UpdatePropsAction';
 import { isPointInRect } from '@/shapes/geometry';
@@ -23,6 +24,9 @@ export class MoveHandler implements IHandler {
 
 	@inject(ISelectService)
 	private selectService!: ISelectService;
+
+	@inject(IViewportService)
+	private viewportService!: IViewportService;
 
 	@inject(IActionManager)
 	private actionManager!: IActionManager;
@@ -93,7 +97,7 @@ export class MoveHandler implements IHandler {
 		if (!rect) {
 			return false;
 		}
-		const local = this.shapeManager.clientToViewportLocal(
+		const local = this.viewportService.clientToViewportLocal(
 			payload.viewportPoint.x,
 			payload.viewportPoint.y,
 		);

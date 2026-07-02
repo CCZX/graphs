@@ -2,8 +2,8 @@ import { BaseShape } from '@/shapes/BaseShape';
 import { BaseProperty } from '@/shapes/property/BaseProperty';
 import { BasePropertyValue, ShapePropertyEnum, ShapeStateEnum } from '@/shapes/contract';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
-import { IShapeManager } from '@/domain/contract';
 import { ISelectService } from '@/domain/contract/SelectService';
+import { IViewportService } from '@/domain/contract/ViewportService';
 import { IActionLogManager, IActionManager } from '@/domain/contract/action';
 import { UpdatePropsAction } from '@/domain/service/action/actions/UpdatePropsAction';
 import { fluentProvide } from 'inversify-binding-decorators';
@@ -34,11 +34,11 @@ const CURSOR_MAP: Record<Dir, string> = {
 export class MultiResizeHandler implements IHandler {
 	type = HandlerEnum.Resize;
 
-	@inject(IShapeManager)
-	private shapeManager!: IShapeManager;
-
 	@inject(ISelectService)
 	private selectService!: ISelectService;
+
+	@inject(IViewportService)
+	private viewportService!: IViewportService;
 
 	@inject(IActionManager)
 	private actionManager!: IActionManager;
@@ -77,7 +77,7 @@ export class MultiResizeHandler implements IHandler {
 	}
 
 	private getLocalPoint(payload: EventPayload): Point {
-		const p = this.shapeManager.clientToViewportLocal(
+		const p = this.viewportService.clientToViewportLocal(
 			payload.viewportPoint.x,
 			payload.viewportPoint.y,
 		);

@@ -4,3 +4,4 @@ export * from './shapeManager';
 export * from './action';
 export * from './shortcutKey';
 export * from './select/SelectService';
+export * from './viewportService';

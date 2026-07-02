@@ -4,6 +4,7 @@ import { selectionStore } from '@/store/selection';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IShapeManager } from '@/domain/contract';
 import { ISelectService } from '@/domain/contract/SelectService';
+import { IViewportService } from '@/domain/contract/ViewportService';
 import { isPointInRect } from '@/shapes/geometry';
 import { fluentProvide } from 'inversify-binding-decorators';
 import { IHandlerWithInteraction, IHandler } from '@/domain/contract';
@@ -19,6 +20,9 @@ export class SelectHandler implements IHandler {
 
 	@inject(ISelectService)
 	private selectService!: ISelectService;
+
+	@inject(IViewportService)
+	private viewportService!: IViewportService;
 
 	enable(_state: InteractionState): boolean {
 		return true;
@@ -68,7 +72,7 @@ export class SelectHandler implements IHandler {
 		if (!rect) {
 			return false;
 		}
-		const local = this.shapeManager.clientToViewportLocal(
+		const local = this.viewportService.clientToViewportLocal(
 			payload.viewportPoint.x,
 			payload.viewportPoint.y,
 		);

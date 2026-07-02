@@ -2,6 +2,7 @@ import { Graphics } from 'pixi.js';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IHandler, IHandlerWithInteraction, IShapeManager } from '@/domain/contract';
 import { ISelectService } from '@/domain/contract/SelectService';
+import { IViewportService } from '@/domain/contract/ViewportService';
 import { isRectIntersect } from '@/shapes/geometry';
 import { ShapeStateEnum } from '@/shapes/contract';
 import { selectionStore } from '@/store/selection';
@@ -20,6 +21,9 @@ export class MarqueeHandler implements IHandler {
 
 	@inject(ISelectService)
 	private selectService!: ISelectService;
+
+	@inject(IViewportService)
+	private viewportService!: IViewportService;
 
 	private isDragging = false;
 	private startClientX = 0;
@@ -60,7 +64,7 @@ export class MarqueeHandler implements IHandler {
 			return true;
 		}
 
-		const startLocal = this.shapeManager.clientToViewportLocal(
+		const startLocal = this.viewportService.clientToViewportLocal(
 			payload.viewportPoint.x,
 			payload.viewportPoint.y,
 		);
@@ -75,7 +79,7 @@ export class MarqueeHandler implements IHandler {
 			return true;
 		}
 
-		const curLocal = this.shapeManager.clientToViewportLocal(
+		const curLocal = this.viewportService.clientToViewportLocal(
 			payload.viewportPoint.x,
 			payload.viewportPoint.y,
 		);
