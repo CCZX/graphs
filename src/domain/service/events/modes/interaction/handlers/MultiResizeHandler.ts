@@ -6,9 +6,9 @@ import { ISelectService } from '@/domain/contract/SelectService';
 import { IViewportService } from '@/domain/contract/ViewportService';
 import { IActionLogManager, IActionManager } from '@/domain/contract/action';
 import { UpdatePropsAction } from '@/domain/service/action/actions/UpdatePropsAction';
-import { fluentProvide } from 'inversify-binding-decorators';
 import { IHandlerWithInteraction, IHandler } from '@/domain/contract';
 import { inject } from 'inversify';
+import { fluentProvideWithSingle } from '@/common/context';
 import { IocContainerService } from '@/common/contract';
 
 const MIN_SIZE = 10;
@@ -29,8 +29,7 @@ const CURSOR_MAP: Record<Dir, string> = {
 	[Dir.BL]: 'nesw-resize',
 };
 
-// @ts-expect-error
-@fluentProvide(IHandlerWithInteraction).inSingletonScope().done()
+@fluentProvideWithSingle(IHandlerWithInteraction)
 export class MultiResizeHandler implements IHandler {
 	type = HandlerEnum.Resize;
 

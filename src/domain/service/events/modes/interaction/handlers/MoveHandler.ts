@@ -8,14 +8,14 @@ import { IViewportService } from '@/domain/contract/ViewportService';
 import { IActionLogManager, IActionManager } from '@/domain/contract/action';
 import { UpdatePropsAction } from '@/domain/service/action/actions/UpdatePropsAction';
 import { isPointInRect } from '@/shapes/geometry';
-import { fluentProvide } from 'inversify-binding-decorators';
 import { IHandlerWithInteraction, IHandler } from '@/domain/contract';
 import { inject } from 'inversify';
+import { fluentProvideWithSingle } from '@/common/context';
 import { IocContainerService } from '@/common/contract';
 
 const DRAG_THRESHOLD = 3;
-// @ts-expect-error
-@fluentProvide(IHandlerWithInteraction).inSingletonScope().done()
+
+@fluentProvideWithSingle(IHandlerWithInteraction)
 export class MoveHandler implements IHandler {
 	type = HandlerEnum.Move;
 

@@ -6,10 +6,9 @@ import {
 } from '../../../../contract/eventManager';
 import { toolStore } from '@/store/tool';
 import { multiInject } from 'inversify';
-import { fluentProvide } from 'inversify-binding-decorators';
+import { fluentProvideWithSingle } from '@/common/context';
 
-// @ts-expect-error
-@fluentProvide(IEventMode).inSingletonScope().done()
+@fluentProvideWithSingle(IEventMode)
 export class CreatorMode implements IEventMode {
 	mode = EventModeEnum.CreatorMode;
 

@@ -7,6 +7,8 @@ import type { PresetColor } from './const';
 import './index.less';
 import { useInject } from '@/common/context';
 import { IShapeManager } from '@/domain/contract';
+import { StrokeProperty } from '@/shapes/property/StrokeProperty';
+import { FillProperty } from '@/shapes/property/FillProperty';
 
 function numberToHex(num: number): string {
 	return '#' + num.toString(16).padStart(6, '0');
@@ -45,13 +47,13 @@ export function Property() {
 			return;
 		}
 
-		const stroke = shape.getProperty<any>(ShapePropertyEnum.Stroke)?.get() as StrokePropertyValue;
+		const stroke = shape.getProperty<StrokeProperty>(ShapePropertyEnum.Stroke).value;
 		if (stroke) {
 			setStrokeColor(numberToHex(stroke.color));
 			setStrokeWidth(stroke.width);
 		}
 
-		const fill = shape.getProperty<any>(ShapePropertyEnum.Fill)?.get() as FillPropertyValue;
+		const fill = shape.getProperty<FillProperty>(ShapePropertyEnum.Fill).value;
 		if (fill) {
 			if (fill.alpha === 0) {
 				setIsTransparent(true);

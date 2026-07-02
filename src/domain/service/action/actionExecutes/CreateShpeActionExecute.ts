@@ -5,13 +5,12 @@ import { ShapePropertyEnum, ShapeTypeEnum } from '@/shapes/contract';
 import { Circle } from '@/shapes/Circle';
 import { Rectangle } from '@/shapes/Rectangle';
 import { ActionTypeEnum, IActionExecute } from '../../../contract/action';
-import { fluentProvide } from 'inversify-binding-decorators';
 import { IShapeManager } from '@/domain/contract';
 import { inject } from 'inversify';
 import { IocContainerService } from '@/common/contract';
+import { fluentProvideWithSingle } from '@/common/context';
 
-// @ts-ignore
-@fluentProvide(IActionExecute).inSingletonScope().done()
+@fluentProvideWithSingle(IActionExecute)
 export class CreateShapeActionExecute extends AbsActionExecute {
 	type = ActionTypeEnum.CreateShape;
 

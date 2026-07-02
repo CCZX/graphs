@@ -12,7 +12,7 @@ import { IActionManager } from '@/domain/contract/action';
 import { IViewportService } from '@/domain/contract/ViewportService';
 import { inject } from 'inversify';
 import { IocContainerService } from '@/common/contract';
-import { fluentProvide } from 'inversify-binding-decorators';
+import { fluentProvideWithSingle } from '@/common/context';
 
 let _idCounter = 0;
 function nextId(): string {
@@ -26,8 +26,7 @@ const DEFAULT_PROPS = {
 	fill: { color: 0xffffff, alpha: 1 },
 };
 
-// @ts-expect-error
-@fluentProvide(IHandlerWithCreator).inSingletonScope().done()
+@fluentProvideWithSingle(IHandlerWithCreator)
 export class CreateHandler implements IHandler {
 	type = HandlerEnum.Select;
 

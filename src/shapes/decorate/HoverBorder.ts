@@ -4,6 +4,7 @@ import { ShapeDecorateTypeEnum, ShapePropertyEnum } from '../contract';
 import type { StrokePropertyValue } from '../contract';
 import { BaseShape } from '../BaseShape';
 import { AbsDecorate } from './AbsDecorate';
+import { StrokeProperty } from '../property/StrokeProperty';
 
 const BORDER_PADDING = 2;
 
@@ -20,9 +21,7 @@ export class HoverBorder extends AbsDecorate {
 	onActivate() {
 		const { width, height } = this.shape.getBounds();
 
-		const stroke = this.shape
-			.getProperty<any>(ShapePropertyEnum.Stroke)
-			?.get() as StrokePropertyValue;
+		const stroke = this.shape.getProperty<StrokeProperty>(ShapePropertyEnum.Stroke).value;
 		const strokeWidth = stroke?.width || 0;
 		const offset = strokeWidth / 2 + BORDER_PADDING;
 

@@ -11,10 +11,11 @@ import {
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IActionLogManager, IActionManager } from '@/domain/contract/action';
 import { UpdatePropsAction } from '@/domain/service/action/actions/UpdatePropsAction';
-import { fluentProvide } from 'inversify-binding-decorators';
 import { IHandlerWithInteraction, IHandler } from '@/domain/contract';
 import { inject } from 'inversify';
+import { fluentProvideWithSingle } from '@/common/context';
 import { IocContainerService } from '@/common/contract';
+import { StrokeProperty } from '@/shapes/property/StrokeProperty';
 
 const MIN_SIZE = 10;
 const HANDLE_HIT_RADIUS = 8;
@@ -42,8 +43,7 @@ const CURSOR_MAP: Record<Dir, string> = {
 	[Dir.R]: 'ew-resize',
 };
 
-// @ts-expect-error
-@fluentProvide(IHandlerWithInteraction).inSingletonScope().done()
+@fluentProvideWithSingle(IHandlerWithInteraction)
 export class ResizeHandler implements IHandler {
 	type = HandlerEnum.Resize;
 
@@ -267,7 +267,7 @@ export class ResizeHandler implements IHandler {
 		const { width, height } = shape.getBounds();
 		const threshold = HANDLE_HIT_RADIUS / scale;
 
-		const stroke = shape.getProperty<any>(ShapePropertyEnum.Stroke)?.get() as StrokePropertyValue;
+		const stroke = shape.getProperty<StrokeProperty>(ShapePropertyEnum.Stroke).value;
 		const strokeWidth = stroke?.width || 0;
 		const offset = strokeWidth / 2 + BORDER_PADDING;
 

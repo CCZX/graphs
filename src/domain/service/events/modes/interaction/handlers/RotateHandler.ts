@@ -9,13 +9,12 @@ import {
 	ShapeStateEnum,
 } from '@/shapes/contract';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
-import { fluentProvide } from 'inversify-binding-decorators';
 import { IHandlerWithInteraction, IHandler } from '@/domain/contract';
+import { fluentProvideWithSingle } from '@/common/context';
 
 const ROTATE_HANDLE_HIT_RADIUS = 12;
 
-// @ts-expect-error
-@fluentProvide(IHandlerWithInteraction).inSingletonScope().done()
+@fluentProvideWithSingle(IHandlerWithInteraction)
 export class RotateHandler implements IHandler {
 	type = HandlerEnum.Rotate;
 

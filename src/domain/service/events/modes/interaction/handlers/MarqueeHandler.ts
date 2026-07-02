@@ -6,13 +6,12 @@ import { IViewportService } from '@/domain/contract/ViewportService';
 import { isRectIntersect } from '@/shapes/geometry';
 import { ShapeStateEnum } from '@/shapes/contract';
 import { selectionStore } from '@/store/selection';
-import { fluentProvide } from 'inversify-binding-decorators';
 import { inject } from 'inversify';
+import { fluentProvideWithSingle } from '@/common/context';
 
 const DRAG_THRESHOLD = 3;
 
-// @ts-expect-error
-@fluentProvide(IHandlerWithInteraction).inSingletonScope().done()
+@fluentProvideWithSingle(IHandlerWithInteraction)
 export class MarqueeHandler implements IHandler {
 	type = HandlerEnum.Marquee;
 

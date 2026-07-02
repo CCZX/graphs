@@ -1,12 +1,11 @@
 import { AbsActionExecute } from '../AbsActionExecute';
 import { ActionTypeEnum, IActionExecute } from '../../../contract/action';
 import { IShapeManager } from '@/domain/contract';
-import { fluentProvide } from 'inversify-binding-decorators';
 import { inject } from 'inversify';
+import { fluentProvideWithSingle } from '@/common/context';
 import { UpdatePropsAction } from '../actions/UpdatePropsAction';
 
-// @ts-ignore
-@fluentProvide(IActionExecute).inSingletonScope().done()
+@fluentProvideWithSingle(IActionExecute)
 export class UpdatePropsActionExecute extends AbsActionExecute {
 	type = ActionTypeEnum.UpdateShapeProps;
 

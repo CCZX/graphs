@@ -4,6 +4,7 @@ import { ShapeDecorateTypeEnum, ShapePropertyEnum } from '../contract';
 import type { StrokePropertyValue } from '../contract';
 import { BaseShape } from '../BaseShape';
 import { AbsDecorate } from './AbsDecorate';
+import { StrokeProperty } from '../property/StrokeProperty';
 
 const HANDLE_RADIUS = 5;
 const BORDER_PADDING = 2;
@@ -21,9 +22,7 @@ export class SelectedBorder extends AbsDecorate {
 	}
 
 	private getStrokeWidth(): number {
-		const stroke = this.shape
-			.getProperty<any>(ShapePropertyEnum.Stroke)
-			?.get() as StrokePropertyValue;
+		const stroke = this.shape.getProperty<StrokeProperty>(ShapePropertyEnum.Stroke).value;
 		return stroke?.width || 0;
 	}
 

@@ -1,11 +1,10 @@
 import { ShapeStateEnum } from '@/shapes/contract';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IHandler, IHandlerWithInteraction, IShapeManager } from '@/domain/contract';
-import { fluentProvide } from 'inversify-binding-decorators';
 import { inject } from 'inversify';
+import { fluentProvideWithSingle } from '@/common/context';
 
-// @ts-expect-error
-@fluentProvide(IHandlerWithInteraction).inSingletonScope().done()
+@fluentProvideWithSingle(IHandlerWithInteraction)
 export class HoverHandler implements IHandler {
 	type = HandlerEnum.Hover;
 

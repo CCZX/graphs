@@ -5,11 +5,10 @@ import {
 	IHandlerWithInteraction,
 } from '../../../../contract/eventManager';
 import { toolStore, ToolType } from '@/store/tool';
-import { fluentProvide } from 'inversify-binding-decorators';
 import { multiInject } from 'inversify';
+import { fluentProvideWithSingle } from '@/common/context';
 
-// @ts-expect-error
-@fluentProvide(IEventMode).inSingletonScope().done()
+@fluentProvideWithSingle(IEventMode)
 export class InteractionMode implements IEventMode {
 	mode = EventModeEnum.InteractionMode;
 

@@ -1,9 +1,8 @@
 import { IActionLogManager, IShortcutKey } from '@/domain/contract';
 import { inject } from 'inversify';
-import { fluentProvide } from 'inversify-binding-decorators';
+import { fluentProvideWithSingle } from '@/common/context';
 
-// @ts-ignore
-@fluentProvide(IShortcutKey).inSingletonScope().done()
+@fluentProvideWithSingle(IShortcutKey)
 export class UndoShortcutKey implements IShortcutKey {
 	@inject(IActionLogManager)
 	private actionLogManager!: IActionLogManager;

@@ -1,6 +1,7 @@
 import { createContext, useContext, ReactNode } from 'react';
 import { Container } from 'inversify';
 import { container } from './container';
+import { fluentProvide } from 'inversify-binding-decorators';
 
 const DIContext = createContext<Container | null>(null);
 
@@ -23,4 +24,8 @@ export function useIOCContainer() {
 	}
 
 	return container;
+}
+
+export function fluentProvideWithSingle(token: symbol) {
+	return fluentProvide(token).inSingletonScope().done();
 }

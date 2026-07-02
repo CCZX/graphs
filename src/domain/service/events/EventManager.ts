@@ -12,9 +12,6 @@ import { inject, multiInject } from 'inversify';
  */
 export function throttle<T extends object>(delay: number) {
 	return function (_target: T, _key: string, descriptor: PropertyDescriptor) {
-		const lastTime = 0;
-		let timer: number;
-
 		const originalValue = descriptor.value as (...args: any[]) => any;
 
 		descriptor.value = lodashThrottle(originalValue, delay);
