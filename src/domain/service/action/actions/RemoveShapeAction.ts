@@ -2,10 +2,10 @@ import { ShapeData } from '@/shapes/contract';
 import { AbsAction } from '../AbsAction';
 import { ActionTypeEnum } from '../../../contract/action';
 import { IocContainerService } from '@/common/contract';
-import { RemoveShapeAction } from './RemoveShapeAction';
+import { CreateShapeAction } from './CreateShpeAction';
 
-export class CreateShapeAction extends AbsAction<ShapeData[]> {
-	type: ActionTypeEnum.CreateShape = ActionTypeEnum.CreateShape;
+export class RemoveShapeAction extends AbsAction<ShapeData[]> {
+	type: ActionTypeEnum.RemoveShape = ActionTypeEnum.RemoveShape;
 	data: ShapeData[];
 
 	constructor(data: ShapeData[], ioc: IocContainerService) {
@@ -13,7 +13,7 @@ export class CreateShapeAction extends AbsAction<ShapeData[]> {
 		this.data = data;
 	}
 
-	genBackAction(): RemoveShapeAction {
-		return new RemoveShapeAction(this.data, this.ioc);
+	genBackAction(): CreateShapeAction {
+		return new CreateShapeAction(this.data, this.ioc);
 	}
 }

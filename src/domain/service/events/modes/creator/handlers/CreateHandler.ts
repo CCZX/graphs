@@ -82,7 +82,7 @@ export class CreateHandler implements IHandler {
 			},
 		};
 
-		this.actionManager.push(new CreateShapeAction(shapeData, this.ioc));
+		this.actionManager.push(new CreateShapeAction([shapeData], this.ioc));
 
 		// 新建后退出创建模式，回到 select
 		toolStore.getState().setActiveTool(ToolType.Select);

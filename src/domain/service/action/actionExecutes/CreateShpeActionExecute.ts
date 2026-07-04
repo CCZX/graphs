@@ -21,29 +21,34 @@ export class CreateShapeActionExecute extends AbsActionExecute {
 	private iocContainerService!: IocContainerService;
 
 	execute(action: CreateShapeAction): void {
-		console.log(action.data);
-		let shape: BaseShape;
-		const { type, id, properties } = action.data;
-		const { base, fill, stroke } = properties;
-		if (type === ShapeTypeEnum.Rectangle) {
-			shape = new Rectangle(id, { ioc: this.iocContainerService });
-		} else if (type === ShapeTypeEnum.Circle) {
-			shape = new Circle(id, { ioc: this.iocContainerService });
-		} else {
-			shape = new Rectangle(id, { ioc: this.iocContainerService });
+		for (const { id, type, properties } of action.data) {
+			const { base, fill, stroke } = properties;
+
+			let shape: BaseShape;
+			if (type === ShapeTypeEnum.Rectangle) {
+				shape = new Rectangle(id, { ioc: this.iocContainerService });
+			} else if (type === ShapeTypeEnum.Circle) {
+				shape = new Circle(id, { ioc: this.iocContainerService });
+			} else {
+				shape = new Rectangle(id, { ioc: this.iocContainerService });
+			}
+
+			shape.setProperty(ShapePropertyEnum.Base, {
+				x: base.x,
+				y: base.y,
+				width: base.width,
+				height: base.height,
+			});
+
+			if (fill) {
+				shape.setProperty(ShapePropertyEnum.Fill, fill);
+			}
+
+			if (stroke) {
+				shape.setProperty(ShapePropertyEnum.Stroke, stroke);
+			}
+
+			this.shapeManager.setShape(shape);
 		}
-		shape.setProperty(ShapePropertyEnum.Base, {
-			x: base.x,
-			y: base.y,
-			width: base.width,
-			height: base.height,
-		});
-		if (fill) {
-			shape.setProperty(ShapePropertyEnum.Fill, fill);
-		}
-		if (stroke) {
-			shape.setProperty(ShapePropertyEnum.Stroke, stroke);
-		}
-		this.shapeManager.setShape(shape);
 	}
 }

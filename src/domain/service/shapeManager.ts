@@ -38,4 +38,12 @@ export class ShapeManager implements IShapeManager {
 	getAllShapes(): BaseShape[] {
 		return Array.from(this.shapes.values());
 	}
+
+	removeShape(id: string) {
+		const shape = this.shapes.get(id);
+		if (shape) {
+			this.stage.removeShape(shape.container);
+			this.shapes.delete(id);
+		}
+	}
 }
