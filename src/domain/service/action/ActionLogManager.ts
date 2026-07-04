@@ -31,12 +31,15 @@ export class ActionLogManager implements IActionLogManager {
 			return;
 		}
 
-		const backAction = this.undoStack.pop()!;
+		const action = this.undoStack.pop()!;
+		action.setNeedAddLog(false);
+
+		const backAction = action.genBackAction();
 		backAction.setNeedAddLog(false);
-		// this.redoStack.push(backAction);
+		this.redoStack.push(backAction);
 
 		const actionManager = this.ioc.get<IActionManager>(IActionManager);
-		actionManager.push(backAction);
+		actionManager.push(action);
 	}
 
 	redo() {
