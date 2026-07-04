@@ -98,6 +98,7 @@ export class MultiResizeHandler implements IHandler {
 
 	private handlePointerMove(state: InteractionState, payload: EventPayload): boolean {
 		if (this.isResizing) {
+			document.body.style.cursor = CURSOR_MAP[this.direction!];
 			this.applyResize(state, payload);
 			return false;
 		}
@@ -160,6 +161,7 @@ export class MultiResizeHandler implements IHandler {
 
 		state.selectedShapes.forEach((s) => s.setState(ShapeStateEnum.MultiSelected));
 		this.reset();
+		document.body.style.cursor = 'default';
 		return false;
 	}
 

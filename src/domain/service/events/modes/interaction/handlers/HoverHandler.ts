@@ -22,6 +22,8 @@ export class HoverHandler implements IHandler {
 
 		const nextShape = this.shapeManager.getShapeByPoint(payload.viewportPoint);
 
+		document.body.style.cursor = 'default';
+
 		if (nextShape?.id === state.hoveredShape?.id) {
 			return true;
 		}
@@ -36,8 +38,6 @@ export class HoverHandler implements IHandler {
 		}
 
 		state.hoveredShape = nextShape || null;
-
-		document.body.style.cursor = nextShape ? 'move' : 'default';
 
 		return true;
 	}

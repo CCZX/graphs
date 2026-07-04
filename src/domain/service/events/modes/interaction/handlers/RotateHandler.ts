@@ -41,6 +41,7 @@ export class RotateHandler implements IHandler {
 
 	private handlePointerMove(state: InteractionState, payload: EventPayload): boolean {
 		if (this.isRotating) {
+			document.body.style.cursor = 'grabbing';
 			this.applyRotate(payload.viewportPoint);
 			return false;
 		}
@@ -79,6 +80,7 @@ export class RotateHandler implements IHandler {
 			state.selectedShapes[0] = this.rotatingShape;
 		}
 		this.reset();
+		document.body.style.cursor = 'default';
 		return false;
 	}
 

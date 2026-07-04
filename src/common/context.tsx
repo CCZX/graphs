@@ -17,15 +17,6 @@ export function useInject<T>(token: symbol): T {
 	return container.get<T>(token);
 }
 
-export function useIOCContainer() {
-	const container = useContext(DIContext);
-	if (!container) {
-		throw new Error('useIOCContainer must be used within a ContextProvider');
-	}
-
-	return container;
-}
-
 export function fluentProvideWithSingle(token: symbol) {
 	return fluentProvide(token).inSingletonScope().done();
 }

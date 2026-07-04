@@ -58,11 +58,11 @@ export class Viewport extends Container {
 		this.setPosition(this.x - deltaX, this.y - deltaY);
 	};
 
-	initEvent() {
+	private initEvent() {
 		this.canvas.addEventListener('wheel', this.onWheel);
 	}
 
-	setScale(scale: number, point?: Point) {
+	private setScale(scale: number, point?: Point) {
 		scale = floor(formatZoomScale(scale), 2);
 
 		const { width, height } = this.canvas.getBoundingClientRect();
@@ -83,7 +83,7 @@ export class Viewport extends Container {
 		}
 	}
 
-	setPosition(x: number, y: number) {
+	private setPosition(x: number, y: number) {
 		x = floor(x, 2);
 		y = floor(y, 2);
 

@@ -87,6 +87,7 @@ export class ResizeHandler implements IHandler {
 	private handlePointerMove(state: InteractionState, payload: EventPayload): boolean {
 		// 正在 resize 中，更新尺寸
 		if (this.isResizing) {
+			document.body.style.cursor = CURSOR_MAP[this.direction!];
 			this.applyResize(state, payload.viewportPoint);
 			return false;
 		}
@@ -144,6 +145,7 @@ export class ResizeHandler implements IHandler {
 		}
 
 		this.reset();
+		document.body.style.cursor = 'default';
 		return false;
 	}
 

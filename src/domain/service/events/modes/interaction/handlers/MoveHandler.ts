@@ -113,6 +113,7 @@ export class MoveHandler implements IHandler {
 
 	private handlePointerMove(state: InteractionState, payload: EventPayload): boolean {
 		if (this.isDragging) {
+			document.body.style.cursor = 'grabbing';
 			this.applyMove(payload.screenPoint);
 			return false;
 		}
@@ -130,6 +131,7 @@ export class MoveHandler implements IHandler {
 			this.isDragging = true;
 			this.movingShapes = [...state.selectedShapes];
 			this.movingShapes.forEach((s) => s.setState(ShapeStateEnum.Moving));
+			document.body.style.cursor = 'grabbing';
 			return false;
 		}
 
@@ -144,10 +146,12 @@ export class MoveHandler implements IHandler {
 				this.movingShapes.length > 1 ? ShapeStateEnum.MultiSelected : ShapeStateEnum.Selected;
 			this.movingShapes.forEach((s) => s.setState(restoreState));
 			this.reset();
+			document.body.style.cursor = 'default';
 			return false;
 		}
 
 		this.reset();
+		document.body.style.cursor = 'default';
 		return true;
 	}
 
