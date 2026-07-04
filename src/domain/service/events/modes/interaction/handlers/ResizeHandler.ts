@@ -255,11 +255,15 @@ export class ResizeHandler implements IHandler {
 
 		this.actionManager.push(
 			new UpdatePropsAction(
-				{
-					id: this.resizingShape.id,
-					propertyType: ShapePropertyEnum.Base,
-					props: { x: newX, y: newY, width: newWidth, height: newHeight },
-				},
+				[
+					{
+						id: this.resizingShape.id,
+						type: this.resizingShape.type,
+						properties: {
+							base: { x: newX, y: newY, width: newWidth, height: newHeight },
+						},
+					},
+				],
 				this.ioc,
 			),
 		);

@@ -1,6 +1,6 @@
 import { BaseShape } from '@/shapes/BaseShape';
 import { BaseProperty } from '@/shapes/property/BaseProperty';
-import { BasePropertyValue, ShapePropertyEnum, ShapeStateEnum } from '@/shapes/contract';
+import { BasePropertyValue, ShapeData, ShapePropertyEnum, ShapeStateEnum } from '@/shapes/contract';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IShapeManager } from '@/domain/contract';
 import { ISelectService } from '@/domain/contract/SelectService';
@@ -163,25 +163,21 @@ export class MoveHandler implements IHandler {
 		const dx = screenPoint.x - this.startScreenPoint.x;
 		const dy = screenPoint.y - this.startScreenPoint.y;
 
+		const shapeDatas: ShapeData[] = [];
 		for (const shape of this.movingShapes) {
 			const origin = this.originBasePropsMap.get(shape.id);
 			if (!origin) {
 				continue;
 			}
-			this.actionManager.push(
-				new UpdatePropsAction(
-					{
-						id: shape.id,
-						propertyType: ShapePropertyEnum.Base,
-						props: {
-							x: origin.x + dx,
-							y: origin.y + dy,
-						},
-					},
-					this.ioc,
-				),
-			);
+			shapeDatas.push({
+				id: shape.id,
+				type: shape.type,
+				properties: {
+					base: { ...origin, x: origin.x + dx, y: origin.y + dy },
+				},
+			});
 		}
+		this.actionManager.push(new UpdatePropsAction(shapeDatas, this.ioc));
 
 		this.selectService.updateMultiSelectOverlay(this.movingShapes);
 	}

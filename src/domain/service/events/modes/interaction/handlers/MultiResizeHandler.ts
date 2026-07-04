@@ -1,6 +1,6 @@
 import { BaseShape } from '@/shapes/BaseShape';
 import { BaseProperty } from '@/shapes/property/BaseProperty';
-import { BasePropertyValue, ShapePropertyEnum, ShapeStateEnum } from '@/shapes/contract';
+import { BasePropertyValue, ShapeData, ShapePropertyEnum, ShapeStateEnum } from '@/shapes/contract';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { ISelectService } from '@/domain/contract/SelectService';
 import { IViewportService } from '@/domain/contract/ViewportService';
@@ -182,6 +182,7 @@ export class MultiResizeHandler implements IHandler {
 		const scaleX = newAABB.width / ow;
 		const scaleY = newAABB.height / oh;
 
+		const shapeDatas: ShapeData[] = [];
 		for (const shape of state.selectedShapes) {
 			const origin = this.originShapeProps.get(shape.id);
 			if (!origin) {
@@ -191,22 +192,20 @@ export class MultiResizeHandler implements IHandler {
 			const relX = (origin.x - this.originAABB.x) / ow;
 			const relY = (origin.y - this.originAABB.y) / oh;
 
-			this.actionManager.push(
-				new UpdatePropsAction(
-					{
-						id: shape.id,
-						propertyType: ShapePropertyEnum.Base,
-						props: {
-							x: newAABB.x + relX * newAABB.width,
-							y: newAABB.y + relY * newAABB.height,
-							width: Math.max(MIN_SIZE, origin.width * scaleX),
-							height: Math.max(MIN_SIZE, origin.height * scaleY),
-						},
+			shapeDatas.push({
+				id: shape.id,
+				type: shape.type,
+				properties: {
+					base: {
+						x: newAABB.x + relX * newAABB.width,
+						y: newAABB.y + relY * newAABB.height,
+						width: Math.max(MIN_SIZE, origin.width * scaleX),
+						height: Math.max(MIN_SIZE, origin.height * scaleY),
 					},
-					this.ioc,
-				),
-			);
+				},
+			});
 		}
+		this.actionManager.push(new UpdatePropsAction(shapeDatas, this.ioc));
 
 		this.selectService.updateMultiSelectOverlay(state.selectedShapes);
 	}
