@@ -35,4 +35,12 @@ export const MOCK_SHAPE_DATA: ShapeData[] = [
 	//     fill: { color: 0x1ae70f, alpha: 1 },
 	//   },
 	// },
+	{
+		id: 'text-1',
+		type: ShapeTypeEnum.Text,
+		properties: {
+			base: { x: 300, y: 300, width: 200, height: 30 },
+			text: { text: 'helloworld' },
+		},
+	},
 ];

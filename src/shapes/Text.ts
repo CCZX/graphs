@@ -1,12 +1,10 @@
-import { Text as PixiText, TextStyle } from 'pixi.js';
+import { Point, Text as PixiText, TextStyle } from 'pixi.js';
 import { viewportStore } from '../store/viewport';
-import { ShapeContext, ShapeTypeEnum } from './contract';
+import { ShapeContext, ShapePropertyEnum, ShapeStateEnum, ShapeTypeEnum } from './contract';
 import { BaseShape } from './BaseShape';
+import { TextProperty } from './property/TextProperty';
 
-/**
- * 文字
- * @see https://github.com/Mwni/pixi-text-input
- */
+// @ts-expect-error
 export class Text extends BaseShape<PixiText> {
 	private inputDOM: HTMLInputElement | undefined;
 
@@ -24,10 +22,46 @@ export class Text extends BaseShape<PixiText> {
 		this.graphics.text = 'input text';
 		this.graphics.style = this.style;
 		this.graphics.interactive = true;
-		this.graphics.resolution = 16; // 为了放大时渲染不模糊
+		this.graphics.resolution = 16;
+	}
 
-		this.graphics.x = 500;
-		this.graphics.y = 500;
+	// ---- property ----
+
+	protected initProperty() {
+		super.initProperty();
+		// @ts-ignore Text extends BaseShape<PixiText>, AbsProperty expects BaseShape<Graphics>
+		this.propertyMap.set(ShapePropertyEnum.Text, new TextProperty(this));
+	}
+
+	// ---- DOM input ----
+
+	showTextInput(): void {
+		if (!this.inputDOM) {
+			return;
+		}
+		if (!this.inputDOM.parentNode) {
+			document.body.appendChild(this.inputDOM);
+		}
+		this.syncInputPosition();
+		this.inputDOM.value = this.graphics.text;
+		this.inputDOM.style.display = 'block';
+		setTimeout(() => this.inputDOM?.focus(), 0);
+	}
+
+	hideTextInput(): void {
+		if (!this.inputDOM) {
+			return;
+		}
+		this.inputDOM.style.display = 'none';
+	}
+
+	commitTextInput(): void {
+		if (!this.inputDOM) {
+			return;
+		}
+		const v = this.inputDOM.value;
+		this.graphics.text = v;
+		this.setProperty(ShapePropertyEnum.Text, { text: v });
 	}
 
 	private initInputDOM() {
@@ -41,90 +75,78 @@ export class Text extends BaseShape<PixiText> {
 		input.style.border = 'none';
 		input.style.display = 'none';
 		input.style.padding = '0';
-		// input.style.opacity = "0.5"
 		input.style.transformOrigin = 'center left';
 		input.value = 'input text';
 
 		this.inputDOM = input;
-
-		this.updateInputDOMPosition();
+		this.syncInputPosition();
 	}
 
-	private onInputKeydown = () => {};
+	private syncInputPosition = () => {
+		if (!this.inputDOM) {
+			return;
+		}
+		const { width, height } = this.getWH();
+		const topLeft = this.container.toGlobal(new Point(0, 0));
+		const bottomRight = this.container.toGlobal(new Point(width, height));
+		const { scale: vScale } = viewportStore.getState();
+
+		this.inputDOM.style.transform = `translate3d(${topLeft.x}px, ${topLeft.y}px, 0px)`;
+		this.inputDOM.style.width = `${bottomRight.x - topLeft.x}px`;
+		this.inputDOM.style.height = `${bottomRight.y - topLeft.y}px`;
+		this.inputDOM.style.fontSize = `${((this.graphics.style.fontSize as number) || 12) * vScale}px`;
+	};
+
+	// ---- event listeners ----
+
+	private onInputKeydown = (e: KeyboardEvent) => {
+		if (e.key === 'Escape') {
+			this.setState(ShapeStateEnum.Selected);
+		}
+	};
 
 	private onInputInput = (e: Event) => {
 		const v = (e.target as HTMLInputElement)?.value;
-
 		this.graphics.text = v;
-		this.updateInputDOMPosition();
+		this.syncInputPosition();
 	};
-
-	private onInputKeyup = () => {};
-
-	private onInputFocus = () => {};
 
 	private onInputBlur = () => {
-		this.inputDOM!.style.display = 'none';
+		this.setState(ShapeStateEnum.Selected);
 	};
+
+	private unsubViewport: (() => void) | null = null;
 
 	private addEventListener = () => {
 		this.inputDOM?.addEventListener('keydown', this.onInputKeydown);
 		this.inputDOM?.addEventListener('input', this.onInputInput);
-		this.inputDOM?.addEventListener('keyup', this.onInputKeyup);
-		this.inputDOM?.addEventListener('focus', this.onInputFocus);
 		this.inputDOM?.addEventListener('blur', this.onInputBlur);
-		this.graphics.on('added', this.onGraphicsAdded);
-		this.graphics.on('removed', this.onGraphicsRemoved);
-		this.graphics.on('pointerdown', this.onGraphicsClick);
-		viewportStore.subscribe(this.updateInputDOMPosition);
+		this.container.on('added', this.onGraphicsAdded);
+		this.container.on('removed', this.onGraphicsRemoved);
+		this.unsubViewport = viewportStore.subscribe(this.syncInputPosition);
 	};
 
 	private removeEventListener = () => {
 		this.inputDOM?.removeEventListener('keydown', this.onInputKeydown);
 		this.inputDOM?.removeEventListener('input', this.onInputInput);
-		this.inputDOM?.removeEventListener('keyup', this.onInputKeyup);
-		this.inputDOM?.removeEventListener('focus', this.onInputFocus);
 		this.inputDOM?.removeEventListener('blur', this.onInputBlur);
-		this.graphics.off('added', this.onGraphicsAdded);
-		this.graphics.off('removed', this.onGraphicsRemoved);
-		this.graphics.off('pointerdown', this.onGraphicsClick);
+		this.container.off('added', this.onGraphicsAdded);
+		this.container.off('removed', this.onGraphicsRemoved);
+		this.unsubViewport?.();
 	};
 
 	private onGraphicsAdded = () => {
 		document.body.appendChild(this.inputDOM!);
-		this.updateInputDOMPosition();
+		this.syncInputPosition();
 	};
 
 	private onGraphicsRemoved = () => {
-		document.body.removeChild(this.inputDOM!);
-	};
-
-	private updateInputDOMPosition = () => {
-		if (!this.inputDOM) {
-			return;
+		if (this.inputDOM?.parentNode) {
+			document.body.removeChild(this.inputDOM);
 		}
-		const { x, y, width, height } = this.getBounds();
-		const { x: vx, y: vy, scale: vScale } = viewportStore.getState();
-
-		this.inputDOM.style.transform = `translate3d(${x * vScale + vx}px, ${y * vScale + vy}px, 0px)`;
-		this.inputDOM.style.width = `${width}px`;
-		this.inputDOM.style.height = `${height}px`;
-		this.inputDOM.style.fontSize = `${((this.graphics.style.fontSize as number) || 12) * vScale}px`;
 	};
 
-	private onGraphicsClick = () => {
-		if (!this.inputDOM) {
-			return;
-		}
-		this.updateInputDOMPosition();
-
-		this.inputDOM.style.display = 'block';
-		setTimeout(() => {
-			this.inputDOM!.focus();
-		}, 100);
-	};
-
-	destory() {
+	destroy(): void {
 		this.graphics.destroy();
 		this.removeEventListener();
 	}

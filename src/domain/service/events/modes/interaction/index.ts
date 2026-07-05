@@ -1,4 +1,5 @@
 export * from './InteractionMode';
+export * from './handlers/TextEditHandler';
 export * from './handlers/SelectHandler';
 export * from './handlers/MarqueeHandler';
 export * from './handlers/MoveHandler';

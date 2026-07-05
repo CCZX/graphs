@@ -1,4 +1,4 @@
-import { ShapeData, ShapeTypeEnum } from '@/shapes/contract';
+import { ShapeData, ShapePropertyEnum, ShapeStateEnum, ShapeTypeEnum } from '@/shapes/contract';
 import { toolStore, ToolType } from '@/store/tool';
 import {
 	HandlerEnum,
@@ -9,6 +9,7 @@ import {
 } from '../../../../../contract/eventManager';
 import { CreateShapeAction } from '@/domain/service/action/actions/CreateShpeAction';
 import { IActionManager } from '@/domain/contract/action';
+import { IShapeManager } from '@/domain/contract';
 import { IViewportService } from '@/domain/contract/ViewportService';
 import { inject } from 'inversify';
 import { IocContainerService } from '@/common/contract';
@@ -36,12 +37,15 @@ export class CreateHandler implements IHandler {
 	@inject(IActionManager)
 	private actionManager!: IActionManager;
 
+	@inject(IShapeManager)
+	private shapeManager!: IShapeManager;
+
 	@inject(IViewportService)
 	private viewportService!: IViewportService;
 
 	enable(_state: InteractionState): boolean {
 		const tool = toolStore.getState().activeTool;
-		return tool === 'rect' || tool === 'circle';
+		return tool === 'rect' || tool === 'circle' || tool === 'text';
 	}
 
 	execute(e: PointerEvent, _state: InteractionState, payload: EventPayload): boolean {
@@ -62,6 +66,8 @@ export class CreateHandler implements IHandler {
 					return ShapeTypeEnum.Rectangle;
 				case 'circle':
 					return ShapeTypeEnum.Circle;
+				case 'text':
+					return ShapeTypeEnum.Text;
 				default:
 					return ShapeTypeEnum.Rectangle;
 			}
@@ -79,10 +85,19 @@ export class CreateHandler implements IHandler {
 				},
 				fill: { color: 0xffffff, alpha: 1 },
 				stroke: { color: 0x1e1e1e, width: 1, alpha: 1 },
+				...(shapeType === ShapeTypeEnum.Text ? { text: { text: '' } } : {}),
 			},
 		};
 
 		this.actionManager.push(new CreateShapeAction([shapeData], this.ioc));
+
+		// 新建文本后自动进入编辑态
+		if (shapeType === ShapeTypeEnum.Text) {
+			const shape = this.shapeManager.getShapeById(id);
+			shape?.setProperty(ShapePropertyEnum.Fill, { color: 0xffffff, alpha: 0 });
+			shape?.setProperty(ShapePropertyEnum.Stroke, { color: 0x1e1e1e, width: 0, alpha: 0 });
+			shape?.setState(ShapeStateEnum.Edit);
+		}
 
 		// 新建后退出创建模式，回到 select
 		toolStore.getState().setActiveTool(ToolType.Select);

@@ -2,6 +2,7 @@ import { ShapeData, ShapePropertyEnum, ShapeTypeEnum } from '@/shapes/contract';
 import { BaseShape } from '@/shapes/BaseShape';
 import { Circle } from '@/shapes/Circle';
 import { Rectangle } from '@/shapes/Rectangle';
+import { Text } from '@/shapes/Text';
 import { ICanvasInitService, IShapeManager } from '../contract';
 import { provide } from 'inversify-binding-decorators';
 import { inject } from 'inversify';
@@ -35,6 +36,19 @@ export class CanvasInitService implements ICanvasInitService {
 				shape.setProperty(ShapePropertyEnum.Base, shapeDataItem.properties.base);
 				if (shapeDataItem.properties.fill) {
 					shape.setProperty(ShapePropertyEnum.Fill, shapeDataItem.properties.fill);
+				}
+			} else if (shapeDataItem.type === ShapeTypeEnum.Text) {
+				// @ts-ignore Text extends BaseShape<PixiText> but BaseShape expects Graphics
+				shape = new Text(shapeDataItem.id, { ioc: this.iocContainerService });
+				// @ts-ignore shape narrowed inside else-if
+				shape.setProperty(ShapePropertyEnum.Base, shapeDataItem.properties.base);
+				if (shapeDataItem.properties.fill) {
+					// @ts-ignore
+					shape.setProperty(ShapePropertyEnum.Fill, shapeDataItem.properties.fill);
+				}
+				if (shapeDataItem.properties.text) {
+					// @ts-ignore
+					shape.setProperty(ShapePropertyEnum.Text, shapeDataItem.properties.text);
 				}
 			}
 

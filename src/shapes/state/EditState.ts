@@ -4,7 +4,14 @@ import { AbsState } from './AbsState';
 export class EditState extends AbsState {
 	type: ShapeStateEnum = ShapeStateEnum.Edit;
 
-	onActivate() {}
+	allowNextStateTypes = [ShapeStateEnum.Normal, ShapeStateEnum.Selected];
 
-	onDeactivate(): void {}
+	onActivate() {
+		this.shape.showTextInput();
+	}
+
+	onDeactivate(): void {
+		this.shape.commitTextInput();
+		this.shape.hideTextInput();
+	}
 }

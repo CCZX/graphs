@@ -35,7 +35,7 @@ export abstract class BaseShape<T extends Graphics = Graphics> {
 
 	private stateMap: Map<ShapeStateEnum, AbsState> = new Map();
 	private decorateMap: Map<ShapeDecorateTypeEnum, AbsDecorate> = new Map();
-	private propertyMap: Map<ShapePropertyEnum, AbsProperty> = new Map();
+	protected propertyMap: Map<ShapePropertyEnum, AbsProperty> = new Map();
 	private stateMachine: StateMachine;
 
 	protected context: ShapeContext;
@@ -52,7 +52,7 @@ export abstract class BaseShape<T extends Graphics = Graphics> {
 		this.initProperty();
 	}
 
-	private initProperty() {
+	protected initProperty() {
 		this.propertyMap.set(ShapePropertyEnum.Base, new BaseProperty(this));
 		this.propertyMap.set(ShapePropertyEnum.Fill, new FillProperty(this));
 		this.propertyMap.set(ShapePropertyEnum.Stroke, new StrokeProperty(this));
@@ -138,4 +138,9 @@ export abstract class BaseShape<T extends Graphics = Graphics> {
 		// container 的 pivot 设为中心后，local 坐标系下 shape 始终从 (0,0) 开始
 		return { x: 0, y: 0, width, height };
 	}
+
+	// 以下三个方法供 EditState 回调，Text 子类 override
+	showTextInput(): void {}
+	hideTextInput(): void {}
+	commitTextInput(): void {}
 }

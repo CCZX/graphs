@@ -20,6 +20,10 @@ export class BaseProperty extends AbsProperty<BasePropertyValue> {
 		this.shape.container.pivot.set(width / 2, height / 2);
 		this.shape.container.angle = rotation;
 
+		if (typeof (this.shape.graphics as any).clear !== 'function') {
+			return;
+		}
+
 		this.shape.graphics.clear();
 
 		if (this.shape.type === ShapeTypeEnum.Rectangle) {
