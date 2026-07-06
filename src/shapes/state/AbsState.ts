@@ -1,4 +1,4 @@
-import { ShapeStateEnum } from '../../types/shape';
+import { ShapeStateEnum } from '../contract';
 import { BaseShape } from '../BaseShape';
 
 export abstract class AbsState {

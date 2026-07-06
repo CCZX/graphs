@@ -1,6 +1,6 @@
 import { BaseShape } from '@/shapes/BaseShape';
 import { AbsActionExecute } from '../AbsActionExecute';
-import { CreateShapeAction } from '../actions/CreateShpeAction';
+import { CreateShapeAction } from '../actions/CreateShapeAction';
 import { ShapePropertyEnum, ShapeTypeEnum } from '@/shapes/contract';
 import { Circle } from '@/shapes/Circle';
 import { Rectangle } from '@/shapes/Rectangle';

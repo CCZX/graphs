@@ -2,7 +2,7 @@ import { ShapeData } from '@/shapes/contract';
 import { AbsAction } from '../AbsAction';
 import { ActionTypeEnum } from '../../../contract/action';
 import { IocContainerService } from '@/common/contract';
-import { CreateShapeAction } from './CreateShpeAction';
+import { CreateShapeAction } from './CreateShapeAction';
 
 export class RemoveShapeAction extends AbsAction<ShapeData[]> {
 	type: ActionTypeEnum.RemoveShape = ActionTypeEnum.RemoveShape;

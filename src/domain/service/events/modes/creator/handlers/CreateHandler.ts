@@ -7,7 +7,7 @@ import {
 	IHandler,
 	IHandlerWithCreator,
 } from '../../../../../contract/eventManager';
-import { CreateShapeAction } from '@/domain/service/action/actions/CreateShpeAction';
+import { CreateShapeAction } from '@/domain/service/action/actions/CreateShapeAction';
 import { IActionManager } from '@/domain/contract/action';
 import { IShapeManager } from '@/domain/contract';
 import { IViewportService } from '@/domain/contract/ViewportService';
