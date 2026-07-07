@@ -32,7 +32,6 @@ export class CreateShapeActionExecute extends AbsActionExecute {
 			} else if (type === ShapeTypeEnum.Circle) {
 				shape = new Circle(id, { ioc: this.iocContainerService });
 			} else if (type === ShapeTypeEnum.Text) {
-				// @ts-ignore Text extends BaseShape<PixiText> but BaseShape expects Graphics
 				shape = new Text(id, { ioc: this.iocContainerService });
 			} else if (type === ShapeTypeEnum.Line) {
 				shape = new Line(id, { ioc: this.iocContainerService });

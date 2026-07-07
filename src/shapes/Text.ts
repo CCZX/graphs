@@ -4,7 +4,6 @@ import { ShapeContext, ShapePropertyEnum, ShapeStateEnum, ShapeTypeEnum } from '
 import { BaseShape } from './BaseShape';
 import { TextProperty } from './property/TextProperty';
 
-// @ts-expect-error
 export class Text extends BaseShape<PixiText> {
 	private inputDOM: HTMLInputElement | undefined;
 
@@ -29,7 +28,6 @@ export class Text extends BaseShape<PixiText> {
 
 	protected initProperty() {
 		super.initProperty();
-		// @ts-ignore Text extends BaseShape<PixiText>, AbsProperty expects BaseShape<Graphics>
 		this.propertyMap.set(ShapePropertyEnum.Text, new TextProperty(this));
 	}
 
@@ -115,7 +113,7 @@ export class Text extends BaseShape<PixiText> {
 		this.setState(ShapeStateEnum.Selected);
 	};
 
-	private unsubViewport: (() => void) | null = null;
+	private unsubscribeViewport: (() => void) | null = null;
 
 	private addEventListener = () => {
 		this.inputDOM?.addEventListener('keydown', this.onInputKeydown);
@@ -123,7 +121,7 @@ export class Text extends BaseShape<PixiText> {
 		this.inputDOM?.addEventListener('blur', this.onInputBlur);
 		this.container.on('added', this.onGraphicsAdded);
 		this.container.on('removed', this.onGraphicsRemoved);
-		this.unsubViewport = viewportStore.subscribe(this.syncInputPosition);
+		this.unsubscribeViewport = viewportStore.subscribe(this.syncInputPosition);
 	};
 
 	private removeEventListener = () => {
@@ -132,7 +130,7 @@ export class Text extends BaseShape<PixiText> {
 		this.inputDOM?.removeEventListener('blur', this.onInputBlur);
 		this.container.off('added', this.onGraphicsAdded);
 		this.container.off('removed', this.onGraphicsRemoved);
-		this.unsubViewport?.();
+		this.unsubscribeViewport?.();
 	};
 
 	private onGraphicsAdded = () => {

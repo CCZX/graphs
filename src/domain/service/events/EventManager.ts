@@ -94,10 +94,17 @@ export class EventManager implements IEventManager {
 
 	public start(canvasEl: HTMLElement) {
 		this.canvasEl = canvasEl;
-		// this.eventModeList = [new InteractionMode(this.ioc), new CreatorMode(this.ioc)];
 
 		document.addEventListener('pointermove', this._onPointermove);
 		document.addEventListener('pointerdown', this.onPointerdown.bind(this));
 		document.addEventListener('pointerup', this.onPointerup.bind(this));
+	}
+
+	public stop() {
+		this.canvasEl = null;
+		this.activeMode = null;
+		document.removeEventListener('pointermove', this._onPointermove);
+		document.removeEventListener('pointerdown', this.onPointerdown.bind(this));
+		document.removeEventListener('pointerup', this.onPointerup.bind(this));
 	}
 }

@@ -2,6 +2,7 @@ import { EventModeEnum, EventPayload, HandlerEnum, InteractionState } from '..';
 
 export interface IEventManager {
 	start(canvasEl: HTMLElement): void;
+	stop(): void;
 }
 export const IEventManager = Symbol('IEventManager');
 

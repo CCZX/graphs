@@ -39,16 +39,12 @@ export class CanvasInitService implements ICanvasInitService {
 					shape.setProperty(ShapePropertyEnum.Fill, shapeDataItem.properties.fill);
 				}
 			} else if (shapeDataItem.type === ShapeTypeEnum.Text) {
-				// @ts-ignore Text extends BaseShape<PixiText> but BaseShape expects Graphics
 				shape = new Text(shapeDataItem.id, { ioc: this.iocContainerService });
-				// @ts-ignore shape narrowed inside else-if
 				shape.setProperty(ShapePropertyEnum.Base, shapeDataItem.properties.base);
 				if (shapeDataItem.properties.fill) {
-					// @ts-ignore
 					shape.setProperty(ShapePropertyEnum.Fill, shapeDataItem.properties.fill);
 				}
 				if (shapeDataItem.properties.text) {
-					// @ts-ignore
 					shape.setProperty(ShapePropertyEnum.Text, shapeDataItem.properties.text);
 				}
 			} else if (shapeDataItem.type === ShapeTypeEnum.Line) {

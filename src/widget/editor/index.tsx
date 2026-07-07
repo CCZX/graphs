@@ -38,7 +38,8 @@ function Editor() {
 
 		return () => {
 			shortcutKeyManager.stop();
-			stage.destory();
+			eventManager.stop();
+			stage.destroy();
 		};
 	}, []);
 

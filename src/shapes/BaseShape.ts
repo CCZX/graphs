@@ -1,4 +1,4 @@
-import { Graphics, Container } from 'pixi.js';
+import { Graphics, Container, Text as PixiText } from 'pixi.js';
 import {
 	ShapeContext,
 	ShapeDecorateTypeEnum,
@@ -18,7 +18,7 @@ import { StrokeProperty } from './property/StrokeProperty';
 import { SelectedBorder } from './decorate/SelectedBorder';
 import { ISelectService } from '@/domain/contract/SelectService';
 
-export abstract class BaseShape<T extends Graphics = Graphics> {
+export abstract class BaseShape<T extends Container = Container> {
 	/**
 	 * 图形、图形装饰的容器节点
 	 */
