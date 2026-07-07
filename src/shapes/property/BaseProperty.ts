@@ -24,6 +24,10 @@ export class BaseProperty extends AbsProperty<BasePropertyValue> {
 			return;
 		}
 
+		if (this.shape.type === ShapeTypeEnum.Line) {
+			return;
+		}
+
 		this.shape.graphics.clear();
 
 		if (this.shape.type === ShapeTypeEnum.Rectangle) {

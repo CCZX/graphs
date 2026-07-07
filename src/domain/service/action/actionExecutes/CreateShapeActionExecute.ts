@@ -4,6 +4,7 @@ import { CreateShapeAction } from '../actions/CreateShapeAction';
 import { ShapePropertyEnum, ShapeTypeEnum } from '@/shapes/contract';
 import { Circle } from '@/shapes/Circle';
 import { Rectangle } from '@/shapes/Rectangle';
+import { Line } from '@/shapes/Line';
 import { Text } from '@/shapes/Text';
 import { ActionTypeEnum, IActionExecute } from '../../../contract/action';
 import { IShapeManager } from '@/domain/contract';
@@ -23,7 +24,7 @@ export class CreateShapeActionExecute extends AbsActionExecute {
 
 	execute(action: CreateShapeAction): void {
 		for (const { id, type, properties } of action.data) {
-			const { base, fill, stroke, text } = properties;
+			const { base, fill, stroke, text, line } = properties;
 
 			let shape: BaseShape;
 			if (type === ShapeTypeEnum.Rectangle) {
@@ -33,6 +34,8 @@ export class CreateShapeActionExecute extends AbsActionExecute {
 			} else if (type === ShapeTypeEnum.Text) {
 				// @ts-ignore Text extends BaseShape<PixiText> but BaseShape expects Graphics
 				shape = new Text(id, { ioc: this.iocContainerService });
+			} else if (type === ShapeTypeEnum.Line) {
+				shape = new Line(id, { ioc: this.iocContainerService });
 			} else {
 				shape = new Rectangle(id, { ioc: this.iocContainerService });
 			}
@@ -54,6 +57,10 @@ export class CreateShapeActionExecute extends AbsActionExecute {
 
 			if (text) {
 				shape.setProperty(ShapePropertyEnum.Text, text);
+			}
+
+			if (line) {
+				shape.setProperty(ShapePropertyEnum.Line, line);
 			}
 
 			this.shapeManager.setShape(shape);

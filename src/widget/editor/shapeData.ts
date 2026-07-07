@@ -36,6 +36,20 @@ export const MOCK_SHAPE_DATA: ShapeData[] = [
 	//   },
 	// },
 	{
+		id: 'line-1',
+		type: ShapeTypeEnum.Line,
+		properties: {
+			base: { x: 120, y: 120, width: 160, height: 60 },
+			stroke: { color: 0xff0000, width: 2, alpha: 1 },
+			line: {
+				start: { x: 120, y: 120 },
+				end: { x: 280, y: 180 },
+				routing: 'straight',
+				endArrow: true,
+			},
+		},
+	},
+	{
 		id: 'text-1',
 		type: ShapeTypeEnum.Text,
 		properties: {

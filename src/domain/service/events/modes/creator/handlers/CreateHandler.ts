@@ -45,7 +45,7 @@ export class CreateHandler implements IHandler {
 
 	enable(_state: InteractionState): boolean {
 		const tool = toolStore.getState().activeTool;
-		return tool === 'rect' || tool === 'circle' || tool === 'text';
+		return tool === 'rect' || tool === 'circle' || tool === 'text' || tool === 'line';
 	}
 
 	execute(e: PointerEvent, _state: InteractionState, payload: EventPayload): boolean {
@@ -68,6 +68,8 @@ export class CreateHandler implements IHandler {
 					return ShapeTypeEnum.Circle;
 				case 'text':
 					return ShapeTypeEnum.Text;
+				case 'line':
+					return ShapeTypeEnum.Line;
 				default:
 					return ShapeTypeEnum.Rectangle;
 			}
@@ -86,6 +88,15 @@ export class CreateHandler implements IHandler {
 				fill: { color: 0xffffff, alpha: 1 },
 				stroke: { color: 0x1e1e1e, width: 1, alpha: 1 },
 				...(shapeType === ShapeTypeEnum.Text ? { text: { text: '' } } : {}),
+				...(shapeType === ShapeTypeEnum.Line
+					? {
+							line: {
+								start: { x: localPoint.x, y: localPoint.y },
+								end: { x: localPoint.x + 100, y: localPoint.y },
+								routing: 'straight' as const,
+							},
+					  }
+					: {}),
 			},
 		};
 

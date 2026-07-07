@@ -6,6 +6,7 @@ import { IShapeManager } from '@/domain/contract';
 import { BaseProperty } from '@/shapes/property/BaseProperty';
 import { FillProperty } from '@/shapes/property/FillProperty';
 import { StrokeProperty } from '@/shapes/property/StrokeProperty';
+import { LineProperty } from '@/shapes/property/LineProperty';
 
 export class UpdatePropsAction extends AbsAction<ShapeData[]> {
 	type: ActionTypeEnum.UpdateShapeProps = ActionTypeEnum.UpdateShapeProps;
@@ -33,6 +34,10 @@ export class UpdatePropsAction extends AbsAction<ShapeData[]> {
 
 			if (item.properties.stroke) {
 				properties.stroke = shape?.getProperty<StrokeProperty>(ShapePropertyEnum.Stroke)?.value;
+			}
+
+			if (item.properties.line) {
+				properties.line = shape?.getProperty<LineProperty>(ShapePropertyEnum.Line)?.value;
 			}
 
 			return {

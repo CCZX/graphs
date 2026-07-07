@@ -59,6 +59,10 @@ export enum ShapePropertyEnum {
 	Fill = 'fill',
 	Stroke = 'stroke',
 	Text = 'text',
+	/**
+	 * 连线属性，包含起终点、路由、箭头
+	 */
+	Line = 'line',
 }
 
 export interface BasePropertyValue {
@@ -87,6 +91,26 @@ export interface TextPropertyValue {
 	text: string;
 }
 
+/** 连线端点：可以是自由坐标，也可以锚定到某个图形 */
+export interface LineEndpointValue {
+	x: number;
+	y: number;
+	/** 锚定的图形 id，设置后连线跟随图形移动 */
+	shapeId?: string;
+	/** 锚点在目标图形的方向，'auto' 自动选取最近边 */
+	anchor?: 'auto' | 'top' | 'right' | 'bottom' | 'left' | 'center';
+}
+
+export type LineRoutingType = 'straight' | 'orthogonal' | 'curved';
+
+export interface LinePropertyValue {
+	start: LineEndpointValue;
+	end: LineEndpointValue;
+	routing?: LineRoutingType;
+	startArrow?: boolean;
+	endArrow?: boolean;
+}
+
 export interface ShapeData {
 	id: string;
 	type: ShapeTypeEnum;
@@ -95,5 +119,6 @@ export interface ShapeData {
 		fill?: FillPropertyValue;
 		stroke?: StrokePropertyValue;
 		text?: TextPropertyValue;
+		line?: LinePropertyValue;
 	};
 }

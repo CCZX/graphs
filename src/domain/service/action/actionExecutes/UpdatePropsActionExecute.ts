@@ -36,6 +36,10 @@ export class UpdatePropsActionExecute extends AbsActionExecute {
 				shape.updateProperty(ShapePropertyEnum.Stroke, properties.stroke);
 			}
 
+			if (properties.line) {
+				shape.updateProperty(ShapePropertyEnum.Line, properties.line);
+			}
+
 			shapes.push(shape);
 		}
 
