@@ -10,19 +10,19 @@ const MAX_ZOOM_SCALE = last(ZOOM_SCALE_LIST)!;
 
 /**
  *
- * @param sclae
+ * @param scale
  * @returns
  */
-export function formatZoomScale(sclae: number) {
-	if (sclae < MIN_ZOOM_SCALE) {
-		sclae = MIN_ZOOM_SCALE;
+export function formatZoomScale(scale: number) {
+	if (scale < MIN_ZOOM_SCALE) {
+		scale = MIN_ZOOM_SCALE;
 	}
 
-	if (sclae > MAX_ZOOM_SCALE) {
-		sclae = MAX_ZOOM_SCALE;
+	if (scale > MAX_ZOOM_SCALE) {
+		scale = MAX_ZOOM_SCALE;
 	}
 
-	return floor(sclae, 2);
+	return floor(scale, 2);
 }
 
 /**
