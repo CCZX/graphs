@@ -7,7 +7,9 @@ import { TextProperty } from './property/TextProperty';
 export class Text extends BaseShape<PixiText> {
 	private inputDOM: HTMLInputElement | undefined;
 
-	type = ShapeTypeEnum.Text;
+	get type(): ShapeTypeEnum {
+		return ShapeTypeEnum.Text;
+	}
 
 	style: TextStyle = new TextStyle({
 		fontSize: 16,

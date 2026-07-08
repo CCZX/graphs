@@ -1,3 +1,4 @@
+import { Graphics } from 'pixi.js';
 import { AbsProperty } from './AbsProperty';
 import { StrokePropertyValue, ShapePropertyEnum, ShapeTypeEnum } from '../contract';
 import { BaseShape } from '../BaseShape';
@@ -22,17 +23,18 @@ export class StrokeProperty extends AbsProperty<StrokePropertyValue> {
 		}
 
 		const { width, height } = this.shape.getWH();
+		const g = this.shape.graphics as Graphics;
 
-		this.shape.graphics.lineStyle(this.value.width, this.value.color, this.value.alpha);
+		g.lineStyle(this.value.width, this.value.color, this.value.alpha);
 
 		if (this.shape.type === ShapeTypeEnum.Rectangle) {
-			this.shape.graphics.drawRect(0, 0, width, height);
+			g.drawRect(0, 0, width, height);
 		}
 
 		if (this.shape.type === ShapeTypeEnum.Circle) {
-			this.shape.graphics.drawCircle(0, 0, width / 2);
+			g.drawCircle(0, 0, width / 2);
 		}
 
-		this.shape.graphics.lineStyle(0);
+		g.lineStyle(0);
 	}
 }

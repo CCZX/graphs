@@ -4,7 +4,9 @@ import { BaseShape } from './BaseShape';
 import { LineProperty } from './property/LineProperty';
 
 export class Line extends BaseShape<Graphics> {
-	type = ShapeTypeEnum.Line;
+	get type(): ShapeTypeEnum {
+		return ShapeTypeEnum.Line;
+	}
 
 	constructor(id: string, context: ShapeContext) {
 		super(id, new Graphics(), context);

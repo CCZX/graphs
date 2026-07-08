@@ -1,3 +1,4 @@
+import { Graphics } from 'pixi.js';
 import { AbsProperty } from './AbsProperty';
 import { BasePropertyValue, ShapePropertyEnum, ShapeTypeEnum } from '../contract';
 import { BaseShape } from '../BaseShape';
@@ -20,7 +21,7 @@ export class BaseProperty extends AbsProperty<BasePropertyValue> {
 		this.shape.container.pivot.set(width / 2, height / 2);
 		this.shape.container.angle = rotation;
 
-		if (typeof (this.shape.graphics as any).clear !== 'function') {
+		if (this.shape.type === ShapeTypeEnum.Text) {
 			return;
 		}
 
@@ -28,17 +29,18 @@ export class BaseProperty extends AbsProperty<BasePropertyValue> {
 			return;
 		}
 
-		this.shape.graphics.clear();
+		const g = this.shape.graphics as Graphics;
+		g.clear();
 
 		if (this.shape.type === ShapeTypeEnum.Rectangle) {
-			this.shape.graphics.position.set(0, 0);
-			this.shape.graphics.beginFill();
-			this.shape.graphics.drawRect(0, 0, width, height);
-			this.shape.graphics.endFill();
+			g.position.set(0, 0);
+			g.beginFill();
+			g.drawRect(0, 0, width, height);
+			g.endFill();
 		}
 
 		if (this.shape.type === ShapeTypeEnum.Circle) {
-			this.shape.graphics.position.set(width / 2, height / 2);
+			g.position.set(width / 2, height / 2);
 		}
 
 		const fill = this.shape.getProperty<FillProperty>(ShapePropertyEnum.Fill);

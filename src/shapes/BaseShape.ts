@@ -31,7 +31,7 @@ export abstract class BaseShape<T extends Container = Container> {
 
 	id: string;
 
-	abstract type: ShapeTypeEnum;
+	abstract get type(): ShapeTypeEnum;
 
 	private stateMap: Map<ShapeStateEnum, AbsState> = new Map();
 	private decorateMap: Map<ShapeDecorateTypeEnum, AbsDecorate> = new Map();
