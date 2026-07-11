@@ -1,10 +1,16 @@
 import { Graphics, Container, Text as PixiText } from 'pixi.js';
 import {
+	BasePropertyValue,
+	FillPropertyValue,
+	LinePropertyValue,
 	ShapeContext,
+	ShapeData,
 	ShapeDecorateTypeEnum,
 	ShapePropertyEnum,
 	ShapeStateEnum,
 	ShapeTypeEnum,
+	StrokePropertyValue,
+	TextPropertyValue,
 } from './contract';
 import { AbsDecorate } from './decorate/AbsDecorate';
 import { HoverBorder } from './decorate/HoverBorder';
@@ -80,6 +86,43 @@ export abstract class BaseShape<T extends Container = Container> {
 
 	getProperty<T>(type: ShapePropertyEnum) {
 		return this.propertyMap.get(type) as T;
+	}
+
+	/** 序列化为 ShapeData，用于删除后可撤销地重建图形 */
+	toData(): ShapeData {
+		const properties: ShapeData['properties'] = {
+			base: { ...(this.propertyMap.get(ShapePropertyEnum.Base)!.value as BasePropertyValue) },
+		};
+
+		const fill = this.propertyMap.get(ShapePropertyEnum.Fill)?.value as
+			| FillPropertyValue
+			| undefined;
+		if (fill) {
+			properties.fill = { ...fill };
+		}
+
+		const stroke = this.propertyMap.get(ShapePropertyEnum.Stroke)?.value as
+			| StrokePropertyValue
+			| undefined;
+		if (stroke) {
+			properties.stroke = { ...stroke };
+		}
+
+		const text = this.propertyMap.get(ShapePropertyEnum.Text)?.value as
+			| TextPropertyValue
+			| undefined;
+		if (text) {
+			properties.text = { ...text };
+		}
+
+		const line = this.propertyMap.get(ShapePropertyEnum.Line)?.value as
+			| LinePropertyValue
+			| undefined;
+		if (line) {
+			properties.line = { ...line };
+		}
+
+		return { id: this.id, type: this.type, properties };
 	}
 
 	initDecorate() {

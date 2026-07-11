@@ -107,4 +107,9 @@ export class EventManager implements IEventManager {
 		document.removeEventListener('pointerdown', this.onPointerdown.bind(this));
 		document.removeEventListener('pointerup', this.onPointerup.bind(this));
 	}
+
+	public clearSelection() {
+		this.state.selectedShapes = [];
+		this.state.hoveredShape = null;
+	}
 }

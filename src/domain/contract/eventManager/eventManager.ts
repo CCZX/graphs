@@ -3,6 +3,8 @@ import { EventModeEnum, EventPayload, HandlerEnum, InteractionState } from '..';
 export interface IEventManager {
 	start(canvasEl: HTMLElement): void;
 	stop(): void;
+	/** 清空跨 handler 共享的选中/悬停状态（如删除选中图形后调用） */
+	clearSelection(): void;
 }
 export const IEventManager = Symbol('IEventManager');
 
