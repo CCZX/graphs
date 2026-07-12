@@ -1,8 +1,8 @@
 import { Point, Text as PixiText, TextStyle } from 'pixi.js';
-import { viewportStore } from '../store/viewport';
 import { ShapeContext, ShapePropertyEnum, ShapeStateEnum, ShapeTypeEnum } from './contract';
 import { BaseShape } from './BaseShape';
 import { TextProperty } from './property/TextProperty';
+import { IViewportService } from '@/domain/contract';
 
 export class Text extends BaseShape<PixiText> {
 	private inputDOM: HTMLInputElement | undefined;
@@ -89,7 +89,10 @@ export class Text extends BaseShape<PixiText> {
 		const { width, height } = this.getWH();
 		const topLeft = this.container.toGlobal(new Point(0, 0));
 		const bottomRight = this.container.toGlobal(new Point(width, height));
-		const { scale: vScale } = viewportStore.getState();
+
+		const viewportService = this.context.ioc.get<IViewportService>(IViewportService);
+
+		const { scale: vScale } = viewportService.store.getState();
 
 		this.inputDOM.style.transform = `translate3d(${topLeft.x}px, ${topLeft.y}px, 0px)`;
 		this.inputDOM.style.width = `${bottomRight.x - topLeft.x}px`;
@@ -123,7 +126,9 @@ export class Text extends BaseShape<PixiText> {
 		this.inputDOM?.addEventListener('blur', this.onInputBlur);
 		this.container.on('added', this.onGraphicsAdded);
 		this.container.on('removed', this.onGraphicsRemoved);
-		this.unsubscribeViewport = viewportStore.subscribe(this.syncInputPosition);
+
+		const viewportService = this.context.ioc.get<IViewportService>(IViewportService);
+		this.unsubscribeViewport = viewportService.store.subscribe(this.syncInputPosition);
 	};
 
 	private removeEventListener = () => {

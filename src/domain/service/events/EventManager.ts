@@ -1,8 +1,7 @@
-import { viewportStore } from '@/store/viewport';
 import { InteractionState, EventPayload } from '../../contract/eventManager';
 import { throttle as lodashThrottle } from 'lodash';
 import { provide } from 'inversify-binding-decorators';
-import { IEventManager, IEventMode } from '../../contract';
+import { IEventManager, IEventMode, IViewportService } from '../../contract';
 import { IocContainerService } from '@/common/contract';
 import { inject, multiInject } from 'inversify';
 
@@ -36,11 +35,14 @@ export class EventManager implements IEventManager {
 	@inject(IocContainerService)
 	private ioc!: IocContainerService;
 
+	@inject(IViewportService)
+	private viewportService!: IViewportService;
+
 	private getEventPayload(e: PointerEvent): EventPayload {
 		return {
 			viewportPoint: { x: e.clientX, y: e.clientY },
 			screenPoint: { x: e.pageX, y: e.pageY },
-			scale: viewportStore.getState().scale,
+			scale: this.viewportService.store.getState().scale,
 		};
 	}
 

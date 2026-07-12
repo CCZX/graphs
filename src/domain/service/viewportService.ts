@@ -1,20 +1,38 @@
 import { Point as PixiPoint } from 'pixi.js';
 import { Stage } from '@/canvas/core/Stage';
-import { IViewportService } from '@/domain/contract/ViewportService';
+import { IViewportService, ViewportState } from '@/domain/contract/ViewportService';
 import { provide } from 'inversify-binding-decorators';
-import { viewportStore } from '../../store/viewport';
+import { create } from 'zustand';
+
+const viewportStore = create<ViewportState>((set) => ({
+	x: 0,
+	y: 0,
+	scale: 1,
+
+	setX(x) {
+		set(() => ({ x }));
+	},
+	setY(y) {
+		set(() => ({ y }));
+	},
+	setScale(scale) {
+		set(() => ({ scale }));
+	},
+}));
 
 @provide(IViewportService)
 export class ViewportService implements IViewportService {
 	private stage!: Stage;
 
+	public store = viewportStore;
+
 	private listenViewportEvent() {
 		this.stage.getViewport()?.scaleChangeEvent$.subscribe((scale) => {
-			viewportStore.getState().setScale(scale.scale);
+			this.store.getState().setScale(scale.scale);
 		});
 		this.stage.getViewport()?.positionChangeEvent$.subscribe((position) => {
-			viewportStore.getState().setX(position.x);
-			viewportStore.getState().setY(position.y);
+			this.store.getState().setX(position.x);
+			this.store.getState().setY(position.y);
 		});
 	}
 
