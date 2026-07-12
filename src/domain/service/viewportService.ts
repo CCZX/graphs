@@ -3,6 +3,8 @@ import { Stage } from '@/canvas/core/Stage';
 import { IViewportService, ViewportState } from '@/domain/contract/ViewportService';
 import { provide } from 'inversify-binding-decorators';
 import { create } from 'zustand';
+import { provideMultiple } from '@/common/context';
+import { IDestroyable } from '@/common/contract/Destroyable';
 
 const viewportStore = create<ViewportState>((set) => ({
 	x: 0,
@@ -20,8 +22,8 @@ const viewportStore = create<ViewportState>((set) => ({
 	},
 }));
 
-@provide(IViewportService)
-export class ViewportService implements IViewportService {
+@provideMultiple(IViewportService, IDestroyable)
+export class ViewportService implements IViewportService, IDestroyable {
 	private stage!: Stage;
 
 	public store = viewportStore;
@@ -52,4 +54,6 @@ export class ViewportService implements IViewportService {
 		const stageY = clientY - canvasRect.top;
 		return viewport.toLocal(new PixiPoint(stageX, stageY));
 	}
+
+	public destroy(): void {}
 }

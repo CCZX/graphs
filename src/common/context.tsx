@@ -1,7 +1,7 @@
 import { createContext, useContext, ReactNode } from 'react';
-import { Container } from 'inversify';
+import { Container, interfaces, multiInject } from 'inversify';
 import { container } from './container';
-import { fluentProvide } from 'inversify-binding-decorators';
+import { fluentProvide, provide } from 'inversify-binding-decorators';
 
 const DIContext = createContext<Container | null>(null);
 
@@ -17,6 +17,30 @@ export function useInject<T>(token: symbol): T {
 	return container.get<T>(token);
 }
 
+export function useMultiInject<T>(token: symbol): T[] {
+	const container = useContext(DIContext);
+	if (!container) {
+		throw new Error('useMultiInject must be used within a ContextProvider');
+	}
+	try {
+		return container.getAll<T>(token);
+	} catch (error) {
+		return [];
+	}
+}
+
+/**
+ * 提供一个单例 service
+ */
 export function fluentProvideWithSingle(token: symbol) {
 	return fluentProvide(token).inSingletonScope().done();
+}
+
+/**
+ * 一个 service 实现多个 interface
+ */
+export function provideMultiple(...identifiers: interfaces.ServiceIdentifier<any>[]) {
+	return function (target: any) {
+		identifiers.forEach((id) => provide(id, true)(target));
+	};
 }

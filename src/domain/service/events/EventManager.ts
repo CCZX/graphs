@@ -4,11 +4,9 @@ import { provide } from 'inversify-binding-decorators';
 import { IEventManager, IEventMode, IViewportService } from '../../contract';
 import { IocContainerService } from '@/common/contract';
 import { inject, multiInject } from 'inversify';
+import { provideMultiple } from '@/common/context';
+import { IDestroyable } from '@/common/contract/Destroyable';
 
-/**
- *
- * @param delay
- */
 export function throttle<T extends object>(delay: number) {
 	return function (_target: T, _key: string, descriptor: PropertyDescriptor) {
 		const originalValue = descriptor.value as (...args: any[]) => any;
@@ -19,8 +17,8 @@ export function throttle<T extends object>(delay: number) {
 	};
 }
 
-@provide(IEventManager)
-export class EventManager implements IEventManager {
+@provideMultiple(IEventManager, IDestroyable)
+export class EventManager implements IEventManager, IDestroyable {
 	/** 跨 handler 共享的可变状态 */
 	private state: InteractionState = {
 		hoveredShape: null,
@@ -102,7 +100,7 @@ export class EventManager implements IEventManager {
 		document.addEventListener('pointerup', this.onPointerup.bind(this));
 	}
 
-	public stop() {
+	public destroy() {
 		this.canvasEl = null;
 		this.activeMode = null;
 		document.removeEventListener('pointermove', this._onPointermove);

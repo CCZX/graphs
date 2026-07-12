@@ -1,9 +1,11 @@
 import { provide } from 'inversify-binding-decorators';
 import { IShortcutKey, IShortcutKeyManager } from '../../contract';
 import { multiInject } from 'inversify';
+import { IDestroyable } from '@/common/contract/Destroyable';
+import { provideMultiple } from '@/common/context';
 
-@provide(IShortcutKeyManager)
-export class ShortcutKeyManager implements IShortcutKeyManager {
+@provideMultiple(IShortcutKeyManager, IDestroyable)
+export class ShortcutKeyManager implements IShortcutKeyManager, IDestroyable {
 	@multiInject(IShortcutKey)
 	private shortcutKeys: IShortcutKey[] = [];
 
@@ -35,7 +37,7 @@ export class ShortcutKeyManager implements IShortcutKeyManager {
 		window.addEventListener('keyup', this.onKeyUp);
 	}
 
-	stop() {
+	destroy() {
 		this.started = false;
 		window.removeEventListener('keydown', this.onKeyDown);
 		window.removeEventListener('keyup', this.onKeyUp);

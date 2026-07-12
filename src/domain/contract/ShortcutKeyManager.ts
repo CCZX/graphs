@@ -1,6 +1,5 @@
 export interface IShortcutKeyManager {
 	start(): void;
-	stop(): void;
 }
 
 export const IShortcutKeyManager = Symbol('IShortcutKeyManager');
