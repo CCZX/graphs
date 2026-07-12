@@ -1,7 +1,7 @@
 import { Container, IDestroyOptions, Point } from 'pixi.js';
 import floor from 'lodash/floor';
-import { viewportStore } from '../../store/viewport';
 import { last } from 'lodash';
+import { Subject } from 'rxjs';
 
 const ZOOM_SCALE_LIST = [0.1, 0.3, 0.5, 1.0, 2.0, 3.0, 4.0];
 
@@ -30,6 +30,10 @@ export function formatZoomScale(scale: number) {
  */
 export class Viewport extends Container {
 	private canvas: HTMLCanvasElement;
+
+	public scaleChangeEvent$ = new Subject<{ scale: number }>();
+
+	public positionChangeEvent$ = new Subject<{ x: number; y: number }>();
 
 	get canvasEl(): HTMLCanvasElement {
 		return this.canvas;
@@ -70,7 +74,7 @@ export class Viewport extends Container {
 
 		const prevPoint = this.toLocal(point);
 
-		viewportStore.getState().setScale(scale);
+		this.scaleChangeEvent$.next({ scale });
 		this.scale.set(scale, scale);
 
 		const nextPoint = this.toLocal(point);
@@ -87,9 +91,7 @@ export class Viewport extends Container {
 		x = floor(x, 2);
 		y = floor(y, 2);
 
-		viewportStore.getState().setX(x);
-		viewportStore.getState().setY(y);
-
+		this.positionChangeEvent$.next({ x, y });
 		this.position.set(x, y);
 	}
 
