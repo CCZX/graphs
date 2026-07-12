@@ -1,13 +1,13 @@
-import { BaseShape } from '@/shapes/BaseShape';
-import { BaseProperty } from '@/shapes/property/BaseProperty';
-import { BasePropertyValue, ShapeData, ShapePropertyEnum, ShapeStateEnum } from '@/shapes/contract';
+import { BaseShape } from '@/shape/BaseShape';
+import { BaseProperty } from '@/shape/property/BaseProperty';
+import { BasePropertyValue, ShapeData, ShapePropertyEnum, ShapeStateEnum } from '@/shape/contract';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IShapeManager } from '@/domain/contract';
 import { ISelectService } from '@/domain/contract/SelectService';
 import { IViewportService } from '@/domain/contract/ViewportService';
 import { IActionLogManager, IActionManager } from '@/domain/contract/action';
 import { UpdatePropsAction } from '@/domain/service/action/actions/UpdatePropsAction';
-import { isPointInRect } from '@/shapes/geometry';
+import { isPointInRect } from '@/shape/geometry';
 import { IHandlerWithInteraction, IHandler } from '@/domain/contract';
 import { inject } from 'inversify';
 import { fluentProvideWithSingle } from '@/common/context';

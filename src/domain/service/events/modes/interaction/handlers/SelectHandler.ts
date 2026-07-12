@@ -1,11 +1,11 @@
-import { BaseShape } from '@/shapes/BaseShape';
-import { ShapeStateEnum } from '@/shapes/contract';
+import { BaseShape } from '@/shape/BaseShape';
+import { ShapeStateEnum } from '@/shape/contract';
 import { selectionStore } from '@/store/selection';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IShapeManager } from '@/domain/contract';
 import { ISelectService } from '@/domain/contract/SelectService';
 import { IViewportService } from '@/domain/contract/ViewportService';
-import { isPointInRect } from '@/shapes/geometry';
+import { isPointInRect } from '@/shape/geometry';
 import { IHandlerWithInteraction, IHandler } from '@/domain/contract';
 import { inject } from 'inversify';
 import { fluentProvideWithSingle } from '@/common/context';

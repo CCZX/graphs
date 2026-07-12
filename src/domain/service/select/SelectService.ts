@@ -1,6 +1,6 @@
 import { Graphics } from 'pixi.js';
-import { getShapesAABB } from '@/shapes/geometry';
-import { BaseShape } from '@/shapes/BaseShape';
+import { getShapesAABB } from '@/shape/geometry';
+import { BaseShape } from '@/shape/BaseShape';
 import { Stage } from '@/canvas/core/Stage';
 import { ISelectService } from '@/domain/contract/SelectService';
 import { provide } from 'inversify-binding-decorators';

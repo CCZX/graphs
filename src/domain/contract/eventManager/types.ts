@@ -1,4 +1,4 @@
-import { BaseShape } from '@/shapes/BaseShape';
+import { BaseShape } from '@/shape/BaseShape';
 
 export enum EventModeEnum {
 	InteractionMode = 'interactionMode',

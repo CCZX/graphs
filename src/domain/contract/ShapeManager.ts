@@ -1,5 +1,5 @@
 import { Stage } from '@/canvas/core/Stage';
-import { BaseShape } from '@/shapes/BaseShape';
+import { BaseShape } from '@/shape/BaseShape';
 
 export interface IShapeManager {
 	setStage(stage: Stage): void;

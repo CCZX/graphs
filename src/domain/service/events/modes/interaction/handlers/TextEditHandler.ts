@@ -1,4 +1,4 @@
-import { ShapeStateEnum, ShapeTypeEnum } from '@/shapes/contract';
+import { ShapeStateEnum, ShapeTypeEnum } from '@/shape/contract';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IHandlerWithInteraction, IHandler, IShapeManager } from '@/domain/contract';
 import { ISelectService } from '@/domain/contract/SelectService';

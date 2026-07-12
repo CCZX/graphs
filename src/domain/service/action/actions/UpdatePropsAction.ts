@@ -1,12 +1,12 @@
 import { AbsAction } from '../AbsAction';
 import { ActionTypeEnum } from '../../../contract/action';
-import { ShapeData, ShapePropertyEnum } from '@/shapes/contract';
+import { ShapeData, ShapePropertyEnum } from '@/shape/contract';
 import { IocContainerService } from '@/common/contract';
 import { IShapeManager } from '@/domain/contract';
-import { BaseProperty } from '@/shapes/property/BaseProperty';
-import { FillProperty } from '@/shapes/property/FillProperty';
-import { StrokeProperty } from '@/shapes/property/StrokeProperty';
-import { LineProperty } from '@/shapes/property/LineProperty';
+import { BaseProperty } from '@/shape/property/BaseProperty';
+import { FillProperty } from '@/shape/property/FillProperty';
+import { StrokeProperty } from '@/shape/property/StrokeProperty';
+import { LineProperty } from '@/shape/property/LineProperty';
 
 export class UpdatePropsAction extends AbsAction<ShapeData[]> {
 	type: ActionTypeEnum.UpdateShapeProps = ActionTypeEnum.UpdateShapeProps;

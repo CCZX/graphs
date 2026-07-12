@@ -1,6 +1,6 @@
 import { Point as PixiPoint } from 'pixi.js';
-import { isPointInRect } from '@/shapes/geometry';
-import { BaseShape } from '@/shapes/BaseShape';
+import { isPointInRect } from '@/shape/geometry';
+import { BaseShape } from '@/shape/BaseShape';
 import { Stage } from '@/canvas/core/Stage';
 import { IShapeManager } from '../contract';
 import { provide } from 'inversify-binding-decorators';

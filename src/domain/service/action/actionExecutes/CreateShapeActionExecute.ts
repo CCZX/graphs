@@ -1,11 +1,11 @@
-import { BaseShape } from '@/shapes/BaseShape';
+import { BaseShape } from '@/shape/BaseShape';
 import { AbsActionExecute } from '../AbsActionExecute';
 import { CreateShapeAction } from '../actions/CreateShapeAction';
-import { ShapePropertyEnum, ShapeTypeEnum } from '@/shapes/contract';
-import { Circle } from '@/shapes/Circle';
-import { Rectangle } from '@/shapes/Rectangle';
-import { Line } from '@/shapes/Line';
-import { Text } from '@/shapes/Text';
+import { ShapePropertyEnum, ShapeTypeEnum } from '@/shape/contract';
+import { Circle } from '@/shape/Circle';
+import { Rectangle } from '@/shape/Rectangle';
+import { Line } from '@/shape/Line';
+import { Text } from '@/shape/Text';
 import { ActionTypeEnum, IActionExecute } from '../../../contract/action';
 import { IShapeManager } from '@/domain/contract';
 import { inject } from 'inversify';

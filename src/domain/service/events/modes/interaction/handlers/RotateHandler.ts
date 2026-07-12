@@ -1,13 +1,13 @@
 import { Point as PixiPoint } from 'pixi.js';
-import { BaseShape } from '@/shapes/BaseShape';
-import { BaseProperty } from '@/shapes/property/BaseProperty';
-import { SelectedBorder } from '@/shapes/decorate/SelectedBorder';
+import { BaseShape } from '@/shape/BaseShape';
+import { BaseProperty } from '@/shape/property/BaseProperty';
+import { SelectedBorder } from '@/shape/decorate/SelectedBorder';
 import {
 	BasePropertyValue,
 	ShapeDecorateTypeEnum,
 	ShapePropertyEnum,
 	ShapeStateEnum,
-} from '@/shapes/contract';
+} from '@/shape/contract';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IHandlerWithInteraction, IHandler } from '@/domain/contract';
 import { fluentProvideWithSingle } from '@/common/context';

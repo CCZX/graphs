@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { selectionStore } from '@/store/selection';
-import { ShapePropertyEnum } from '@/shapes/contract';
-import type { FillPropertyValue, StrokePropertyValue } from '@/shapes/contract';
+import { ShapePropertyEnum } from '@/shape/contract';
+import type { FillPropertyValue, StrokePropertyValue } from '@/shape/contract';
 import { STROKE_COLOR_PRESETS, FILL_COLOR_PRESETS } from './const';
 import type { PresetColor } from './const';
 import './index.less';
 import { useInject } from '@/common/context';
 import { IShapeManager } from '@/domain/contract';
-import { StrokeProperty } from '@/shapes/property/StrokeProperty';
-import { FillProperty } from '@/shapes/property/FillProperty';
+import { StrokeProperty } from '@/shape/property/StrokeProperty';
+import { FillProperty } from '@/shape/property/FillProperty';
 
 function numberToHex(num: number): string {
 	return '#' + num.toString(16).padStart(6, '0');

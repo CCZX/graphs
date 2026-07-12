@@ -1,4 +1,4 @@
-import { BaseShape } from '@/shapes/BaseShape';
+import { BaseShape } from '@/shape/BaseShape';
 import { AbsActionExecute } from '../AbsActionExecute';
 import { RemoveShapeAction } from '../actions/RemoveShapeAction';
 import { ActionTypeEnum, IActionExecute } from '../../../contract/action';

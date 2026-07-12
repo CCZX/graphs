@@ -3,8 +3,8 @@ import { HandlerEnum, InteractionState, EventPayload } from '../../../../../cont
 import { IHandler, IHandlerWithInteraction, IShapeManager } from '@/domain/contract';
 import { ISelectService } from '@/domain/contract/SelectService';
 import { IViewportService } from '@/domain/contract/ViewportService';
-import { isRectIntersect } from '@/shapes/geometry';
-import { ShapeStateEnum } from '@/shapes/contract';
+import { isRectIntersect } from '@/shape/geometry';
+import { ShapeStateEnum } from '@/shape/contract';
 import { selectionStore } from '@/store/selection';
 import { inject } from 'inversify';
 import { fluentProvideWithSingle } from '@/common/context';

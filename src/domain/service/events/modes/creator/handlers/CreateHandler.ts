@@ -4,7 +4,7 @@ import {
 	ShapePropertyEnum,
 	ShapeStateEnum,
 	ShapeTypeEnum,
-} from '@/shapes/contract';
+} from '@/shape/contract';
 import { toolStore, ToolType } from '@/store/tool';
 import {
 	HandlerEnum,

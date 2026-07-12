@@ -1,4 +1,4 @@
-import { ShapeData } from '@/shapes/contract';
+import { ShapeData } from '@/shape/contract';
 import { AbsAction } from '../AbsAction';
 import { ActionTypeEnum } from '../../../contract/action';
 import { IocContainerService } from '@/common/contract';

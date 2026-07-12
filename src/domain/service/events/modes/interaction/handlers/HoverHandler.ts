@@ -1,4 +1,4 @@
-import { ShapeStateEnum } from '@/shapes/contract';
+import { ShapeStateEnum } from '@/shape/contract';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IHandler, IHandlerWithInteraction, IShapeManager } from '@/domain/contract';
 import { inject } from 'inversify';

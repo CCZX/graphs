@@ -1,13 +1,13 @@
 import { Point as PixiPoint } from 'pixi.js';
-import { BaseShape } from '@/shapes/BaseShape';
-import { BaseProperty } from '@/shapes/property/BaseProperty';
+import { BaseShape } from '@/shape/BaseShape';
+import { BaseProperty } from '@/shape/property/BaseProperty';
 import {
 	BasePropertyValue,
 	ShapePropertyEnum,
 	ShapeStateEnum,
 	ShapeTypeEnum,
 	StrokePropertyValue,
-} from '@/shapes/contract';
+} from '@/shape/contract';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IActionLogManager, IActionManager } from '@/domain/contract/action';
 import { UpdatePropsAction } from '@/domain/service/action/actions/UpdatePropsAction';
@@ -15,7 +15,7 @@ import { IHandlerWithInteraction, IHandler } from '@/domain/contract';
 import { inject } from 'inversify';
 import { fluentProvideWithSingle } from '@/common/context';
 import { IocContainerService } from '@/common/contract';
-import { StrokeProperty } from '@/shapes/property/StrokeProperty';
+import { StrokeProperty } from '@/shape/property/StrokeProperty';
 
 const MIN_SIZE = 10;
 const HANDLE_HIT_RADIUS = 8;
