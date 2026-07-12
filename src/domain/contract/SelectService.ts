@@ -1,8 +1,19 @@
 import { Stage } from '@/canvas/core/Stage';
 import { BaseShape } from '@/shape/BaseShape';
 import { Graphics } from 'pixi.js';
+import { StoreApi, UseBoundStore } from 'zustand';
+
+export interface SelectionState {
+	selectedShapeIds: string[];
+	setSelectedShapeIds: (ids: string[]) => void;
+	addSelectedShapeId: (id: string) => void;
+	removeSelectedShapeId: (id: string) => void;
+	clearSelectedShapeIds: () => void;
+}
 
 export interface ISelectService {
+	store: UseBoundStore<StoreApi<SelectionState>>;
+
 	setStage(stage: Stage): void;
 
 	setSelectedShape(shape: BaseShape): void;

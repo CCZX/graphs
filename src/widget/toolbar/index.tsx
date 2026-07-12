@@ -1,10 +1,12 @@
 import { useState, useCallback } from 'react';
-import { toolStore, ToolType } from '@/store/tool';
+import { ToolType, IToolService } from '@/domain/contract';
+import { useInject } from '@/common/context';
 import './index.less';
 
 export function Toolbar() {
-	const activeTool = toolStore((s) => s.activeTool);
-	const setActiveTool = toolStore((s) => s.setActiveTool);
+	const toolService = useInject<IToolService>(IToolService);
+	const activeTool = toolService.store((s) => s.activeTool);
+	const setActiveTool = toolService.store((s) => s.setActiveTool);
 	const [zoom, setZoom] = useState(100);
 
 	const handleToolClick = useCallback(

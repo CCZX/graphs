@@ -5,7 +5,6 @@ import { ISelectService } from '@/domain/contract/SelectService';
 import { IViewportService } from '@/domain/contract/ViewportService';
 import { isRectIntersect } from '@/shape/geometry';
 import { ShapeStateEnum } from '@/shape/contract';
-import { selectionStore } from '@/store/selection';
 import { inject } from 'inversify';
 import { fluentProvideWithSingle } from '@/common/context';
 
@@ -152,8 +151,6 @@ export class MarqueeHandler implements IHandler {
 		this.selectService.setMultipleSelectedShapes(intersectingShapes);
 
 		state.selectedShapes = intersectingShapes;
-
-		selectionStore.getState().setSelectedShapeIds(intersectingShapes.map((s) => s.id));
 
 		const targetState =
 			intersectingShapes.length > 1 ? ShapeStateEnum.MultiSelected : ShapeStateEnum.Selected;

@@ -1,6 +1,5 @@
 import { BaseShape } from '@/shape/BaseShape';
 import { ShapeStateEnum } from '@/shape/contract';
-import { selectionStore } from '@/store/selection';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IShapeManager } from '@/domain/contract';
 import { ISelectService } from '@/domain/contract/SelectService';
@@ -51,13 +50,11 @@ export class SelectHandler implements IHandler {
 		// 取消所有选中
 		state.selectedShapes.forEach((s) => s.setState(ShapeStateEnum.Normal));
 		state.selectedShapes = [];
-		selectionStore.getState().clearSelectedShapeIds();
 		this.selectService.clearSelectedShapes();
 
 		if (nextShape) {
 			nextShape.setState(ShapeStateEnum.Selected);
 			state.selectedShapes = [nextShape];
-			selectionStore.getState().addSelectedShapeId(nextShape.id);
 			this.selectService.setSelectedShape(nextShape);
 		}
 

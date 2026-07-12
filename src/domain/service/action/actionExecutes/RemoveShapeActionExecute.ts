@@ -6,7 +6,6 @@ import { IShapeManager } from '@/domain/contract';
 import { ISelectService } from '@/domain/contract/SelectService';
 import { inject } from 'inversify';
 import { fluentProvideWithSingle } from '@/common/context';
-import { selectionStore } from '@/store/selection';
 
 @fluentProvideWithSingle(IActionExecute)
 export class RemoveShapeActionExecute extends AbsActionExecute {
@@ -20,7 +19,6 @@ export class RemoveShapeActionExecute extends AbsActionExecute {
 
 	execute(action: RemoveShapeAction): void {
 		for (const { id } of action.data) {
-			selectionStore.getState().removeSelectedShapeId(id);
 			this.selectService.removeSelectedShapeById(id);
 			this.shapeManager.removeShape(id);
 		}

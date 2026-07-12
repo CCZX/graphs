@@ -5,7 +5,7 @@ import {
 	ShapeStateEnum,
 	ShapeTypeEnum,
 } from '@/shape/contract';
-import { toolStore, ToolType } from '@/store/tool';
+import { ToolType, IToolService } from '@/domain/contract/ToolService';
 import {
 	HandlerEnum,
 	InteractionState,
@@ -19,7 +19,6 @@ import { IActionLogManager, IActionManager } from '@/domain/contract/action';
 import { IShapeManager } from '@/domain/contract';
 import { ISelectService } from '@/domain/contract/SelectService';
 import { IViewportService } from '@/domain/contract/ViewportService';
-import { selectionStore } from '@/store/selection';
 import { inject } from 'inversify';
 import { IocContainerService } from '@/common/contract';
 import { fluentProvideWithSingle } from '@/common/context';
@@ -61,13 +60,16 @@ export class CreateHandler implements IHandler {
 	@inject(IViewportService)
 	private viewportService!: IViewportService;
 
+	@inject(IToolService)
+	private toolService!: IToolService;
+
 	private isCreating = false;
 	private startPoint: { x: number; y: number } | null = null;
 	private creatingId: string | null = null;
 	private creatingType: ShapeTypeEnum | null = null;
 
 	enable(_state: InteractionState): boolean {
-		const tool = toolStore.getState().activeTool;
+		const tool = this.toolService.store.getState().activeTool;
 		return tool === 'rect' || tool === 'circle' || tool === 'text' || tool === 'line';
 	}
 
@@ -90,7 +92,7 @@ export class CreateHandler implements IHandler {
 	}
 
 	private handlePointerDown(payload: EventPayload): boolean {
-		const tool = toolStore.getState().activeTool;
+		const tool = this.toolService.store.getState().activeTool;
 		const localPoint = this.viewportService.clientToViewportLocal(
 			payload.viewportPoint.x,
 			payload.viewportPoint.y,
@@ -172,7 +174,7 @@ export class CreateHandler implements IHandler {
 
 		this.selectCreatedShape(state);
 
-		toolStore.getState().setActiveTool(ToolType.Select);
+		this.toolService.store.getState().setActiveTool(ToolType.Select);
 		this.reset();
 	}
 
@@ -221,7 +223,6 @@ export class CreateHandler implements IHandler {
 
 		shape.setState(ShapeStateEnum.Selected);
 		state.selectedShapes = [shape];
-		selectionStore.getState().setSelectedShapeIds([shape.id]);
 		this.selectService.setSelectedShape(shape);
 		this.selectService.updateMultiSelectOverlay([shape]);
 	}
@@ -266,7 +267,7 @@ export class CreateHandler implements IHandler {
 		}
 
 		// 新建后退出创建模式，回到 select
-		toolStore.getState().setActiveTool(ToolType.Select);
+		this.toolService.store.getState().setActiveTool(ToolType.Select);
 
 		return false;
 	}

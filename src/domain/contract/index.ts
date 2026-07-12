@@ -4,5 +4,7 @@ export * from './eventManager';
 export * from './ShapeManager';
 export * from './SelectService';
 export * from './ViewportService';
+export * from './ToolService';
 export * from './ShortcutKeyManager';
+export * from './ToolService';
 export * from './action';

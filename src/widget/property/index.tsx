@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { selectionStore } from '@/store/selection';
 import { ShapePropertyEnum } from '@/shape/contract';
 import type { FillPropertyValue, StrokePropertyValue } from '@/shape/contract';
 import { STROKE_COLOR_PRESETS, FILL_COLOR_PRESETS } from './const';
@@ -7,6 +6,7 @@ import type { PresetColor } from './const';
 import './index.less';
 import { useInject } from '@/common/context';
 import { IShapeManager } from '@/domain/contract';
+import { ISelectService } from '@/domain/contract/SelectService';
 import { StrokeProperty } from '@/shape/property/StrokeProperty';
 import { FillProperty } from '@/shape/property/FillProperty';
 
@@ -25,7 +25,8 @@ const STROKE_RADIUS_MAP: Record<number, number> = { 0: 1, 1: 2, 3: 5, 5: 7 };
 
 export function Property() {
 	const shapeManager = useInject<IShapeManager>(IShapeManager);
-	const selectedShapeIds = selectionStore((s) => s.selectedShapeIds);
+	const selectService = useInject<ISelectService>(ISelectService);
+	const selectedShapeIds = selectService.store((s) => s.selectedShapeIds);
 	const firstId = selectedShapeIds[0] || null;
 
 	const [strokeColor, setStrokeColor] = useState('#1e1e1e');
@@ -37,7 +38,7 @@ export function Property() {
 	const visibleRef = useRef(false);
 
 	const syncFromShape = useCallback(() => {
-		const ids = selectionStore.getState().selectedShapeIds;
+		const ids = selectService.store.getState().selectedShapeIds;
 		const id = ids[0];
 		if (!id) {
 			return;

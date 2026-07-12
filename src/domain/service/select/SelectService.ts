@@ -2,11 +2,34 @@ import { Graphics } from 'pixi.js';
 import { getShapesAABB } from '@/shape/geometry';
 import { BaseShape } from '@/shape/BaseShape';
 import { Stage } from '@/canvas/core/Stage';
-import { ISelectService } from '@/domain/contract/SelectService';
+import { ISelectService, SelectionState } from '@/domain/contract/SelectService';
 import { provide } from 'inversify-binding-decorators';
+import { create } from 'zustand';
 
 const MULTI_SELECT_COLOR = 0x4a90d9;
 const HANDLE_SIZE = 8;
+
+const selectStore = create<SelectionState>((set) => ({
+	selectedShapeIds: [],
+	setSelectedShapeIds(ids) {
+		set({ selectedShapeIds: ids });
+	},
+	addSelectedShapeId(id) {
+		set((s) => ({
+			selectedShapeIds: s.selectedShapeIds.includes(id)
+				? s.selectedShapeIds
+				: [...s.selectedShapeIds, id],
+		}));
+	},
+	removeSelectedShapeId(id) {
+		set((s) => ({
+			selectedShapeIds: s.selectedShapeIds.filter((i) => i !== id),
+		}));
+	},
+	clearSelectedShapeIds() {
+		set({ selectedShapeIds: [] });
+	},
+}));
 
 @provide(ISelectService)
 export class SelectService implements ISelectService {
@@ -15,21 +38,26 @@ export class SelectService implements ISelectService {
 	private multiSelectOverlay: Graphics | null = null;
 	private overlayRect: Rectangle | null = null;
 
+	public store = selectStore;
+
 	setStage(stage: Stage) {
 		this.stage = stage;
 	}
 
 	setSelectedShape(shape: BaseShape) {
 		this.selectedShapes.set(shape.id, shape);
+		selectStore.getState().addSelectedShapeId(shape.id);
 	}
 
 	setMultipleSelectedShapes(shapes: BaseShape[]) {
 		this.selectedShapes.clear();
 		shapes.forEach((shape) => this.selectedShapes.set(shape.id, shape));
+		selectStore.getState().setSelectedShapeIds(shapes.map((s) => s.id));
 	}
 
 	clearSelectedShapes() {
 		this.selectedShapes.clear();
+		selectStore.getState().clearSelectedShapeIds();
 	}
 
 	getSelectedShapeById(id: string) {
@@ -42,6 +70,7 @@ export class SelectService implements ISelectService {
 
 	removeSelectedShapeById(id: string) {
 		this.selectedShapes.delete(id);
+		selectStore.getState().removeSelectedShapeId(id);
 	}
 
 	showMultiSelectOverlay(rect: Rectangle) {

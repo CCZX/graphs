@@ -2,7 +2,6 @@ import { ShapeStateEnum, ShapeTypeEnum } from '@/shape/contract';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IHandlerWithInteraction, IHandler, IShapeManager } from '@/domain/contract';
 import { ISelectService } from '@/domain/contract/SelectService';
-import { selectionStore } from '@/store/selection';
 import { inject } from 'inversify';
 import { fluentProvideWithSingle } from '@/common/context';
 
@@ -45,13 +44,11 @@ export class TextEditHandler implements IHandler {
 			}
 		});
 
-		selectionStore.getState().clearSelectedShapeIds();
 		this.selectService.clearSelectedShapes();
 
 		// 选中并进入编辑态
 		shapeUnderCursor.setState(ShapeStateEnum.Edit);
 		state.selectedShapes = [shapeUnderCursor];
-		selectionStore.getState().addSelectedShapeId(shapeUnderCursor.id);
 		this.selectService.setSelectedShape(shapeUnderCursor);
 
 		return false;

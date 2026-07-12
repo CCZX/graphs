@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { StoreApi, UseBoundStore } from 'zustand';
 
 export enum ToolType {
 	Select = 'select',
@@ -11,14 +11,12 @@ export enum ToolType {
 	Text = 'text',
 }
 
-interface ToolState {
+export interface ToolState {
 	activeTool: ToolType;
 	setActiveTool: (tool: ToolType) => void;
 }
 
-export const toolStore = create<ToolState>((set) => ({
-	activeTool: ToolType.Select,
-	setActiveTool(tool) {
-		set({ activeTool: tool });
-	},
-}));
+export interface IToolService {
+	store: UseBoundStore<StoreApi<ToolState>>;
+}
+export const IToolService = Symbol('IToolService');
