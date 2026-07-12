@@ -16,6 +16,8 @@ export interface IViewportService {
 	store: UseBoundStore<StoreApi<ViewportState>>;
 
 	setStage(stage: Stage): void;
+	getStage(): Stage;
+
 	clientToViewportLocal(clientX: number, clientY: number): PixiPoint;
 }
 export const IViewportService = Symbol('IViewportService');

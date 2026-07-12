@@ -14,8 +14,6 @@ export interface SelectionState {
 export interface ISelectService {
 	store: UseBoundStore<StoreApi<SelectionState>>;
 
-	setStage(stage: Stage): void;
-
 	setSelectedShape(shape: BaseShape): void;
 	setMultipleSelectedShapes(shapes: BaseShape[]): void;
 	clearSelectedShapes(): void;

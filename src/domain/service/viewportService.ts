@@ -36,12 +36,16 @@ export class ViewportService implements IViewportService {
 		});
 	}
 
-	setStage(stage: Stage) {
+	public setStage(stage: Stage) {
 		this.stage = stage;
 		this.listenViewportEvent();
 	}
 
-	clientToViewportLocal(clientX: number, clientY: number): PixiPoint {
+	public getStage() {
+		return this.stage;
+	}
+
+	public clientToViewportLocal(clientX: number, clientY: number): PixiPoint {
 		const viewport = this.stage.getViewport();
 		const canvasRect = viewport.canvasEl.getBoundingClientRect();
 		const stageX = clientX - canvasRect.left;

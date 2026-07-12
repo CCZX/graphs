@@ -2,21 +2,21 @@ import { Point as PixiPoint } from 'pixi.js';
 import { isPointInRect } from '@/shape/geometry';
 import { BaseShape } from '@/shape/BaseShape';
 import { Stage } from '@/canvas/core/Stage';
-import { IShapeManager } from '../contract';
+import { IShapeManager, IViewportService } from '../contract';
 import { provide } from 'inversify-binding-decorators';
+import { inject } from 'inversify';
 
 @provide(IShapeManager)
 export class ShapeManager implements IShapeManager {
-	private stage!: Stage;
-	private shapes: Map<string, BaseShape> = new Map();
+	@inject(IViewportService)
+	private viewportService!: IViewportService;
 
-	setStage(stage: Stage) {
-		this.stage = stage;
-	}
+	private shapes: Map<string, BaseShape> = new Map();
 
 	setShape(shape: BaseShape, appendToStage = true) {
 		if (appendToStage) {
-			this.stage.appendShape(shape.container);
+			const stage = this.viewportService.getStage();
+			stage.appendShape(shape.container);
 		}
 		this.shapes.set(shape.id, shape);
 	}
@@ -42,7 +42,8 @@ export class ShapeManager implements IShapeManager {
 	removeShape(id: string) {
 		const shape = this.shapes.get(id);
 		if (shape) {
-			this.stage.removeShape(shape.container);
+			const stage = this.viewportService.getStage();
+			stage.removeShape(shape.container);
 			this.shapes.delete(id);
 		}
 	}

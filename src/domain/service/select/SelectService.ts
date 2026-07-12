@@ -5,6 +5,8 @@ import { Stage } from '@/canvas/core/Stage';
 import { ISelectService, SelectionState } from '@/domain/contract/SelectService';
 import { provide } from 'inversify-binding-decorators';
 import { create } from 'zustand';
+import { IViewportService } from '@/domain/contract';
+import { inject } from 'inversify';
 
 const MULTI_SELECT_COLOR = 0x4a90d9;
 const HANDLE_SIZE = 8;
@@ -33,16 +35,14 @@ const selectStore = create<SelectionState>((set) => ({
 
 @provide(ISelectService)
 export class SelectService implements ISelectService {
-	private stage!: Stage;
+	@inject(IViewportService)
+	private viewportService!: IViewportService;
+
 	private selectedShapes: Map<string, BaseShape> = new Map();
 	private multiSelectOverlay: Graphics | null = null;
 	private overlayRect: Rectangle | null = null;
 
 	public store = selectStore;
-
-	setStage(stage: Stage) {
-		this.stage = stage;
-	}
 
 	setSelectedShape(shape: BaseShape) {
 		this.selectedShapes.set(shape.id, shape);
@@ -77,7 +77,8 @@ export class SelectService implements ISelectService {
 		this.overlayRect = rect;
 		if (!this.multiSelectOverlay) {
 			this.multiSelectOverlay = new Graphics();
-			this.stage.getViewport().addChild(this.multiSelectOverlay);
+			const stage = this.viewportService.getStage();
+			stage.getViewport().addChild(this.multiSelectOverlay);
 		}
 		this.drawOverlay(rect);
 	}
@@ -134,6 +135,7 @@ export class SelectService implements ISelectService {
 	}
 
 	addMarqueeGraphics(graphics: Graphics) {
-		this.stage.getViewport().addChild(graphics);
+		const stage = this.viewportService.getStage();
+		stage.getViewport().addChild(graphics);
 	}
 }
