@@ -13,6 +13,7 @@ export enum HandlerEnum {
 	Hover = 'hover',
 	Marquee = 'marquee',
 	TextEdit = 'textEdit',
+	LineEdit = 'lineEdit',
 }
 
 /**

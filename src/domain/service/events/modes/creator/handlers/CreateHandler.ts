@@ -41,6 +41,7 @@ const DRAG_THRESHOLD = 3;
 @fluentProvideWithSingle(IHandlerWithCreator)
 export class CreateHandler implements IHandler {
 	type = HandlerEnum.Select;
+	sort = 10;
 
 	@inject(IocContainerService)
 	private ioc!: IocContainerService;

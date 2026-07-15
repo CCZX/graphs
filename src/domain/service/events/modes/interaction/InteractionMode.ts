@@ -5,7 +5,7 @@ import {
 	IHandlerWithInteraction,
 } from '../../../../contract/eventManager';
 import { ToolType, IToolService } from '@/domain/contract/ToolService';
-import { inject, multiInject } from 'inversify';
+import { inject, multiInject, postConstruct } from 'inversify';
 import { fluentProvideWithSingle } from '@/common/context';
 
 @fluentProvideWithSingle(IEventMode)
@@ -14,6 +14,11 @@ export class InteractionMode implements IEventMode {
 
 	@multiInject(IHandlerWithInteraction)
 	handlerList: IHandler[] = [];
+
+	@postConstruct()
+	sortHandlers() {
+		this.handlerList.sort((a, b) => a.sort - b.sort);
+	}
 
 	@inject(IToolService)
 	private toolService!: IToolService;

@@ -106,6 +106,8 @@ export type LineRoutingType = 'straight' | 'orthogonal' | 'curved';
 export interface LinePropertyValue {
 	start: LineEndpointValue;
 	end: LineEndpointValue;
+	/** 途经点，最多 2 个，世界坐标，线会平滑经过这些点 */
+	midPoints?: Point[];
 	routing?: LineRoutingType;
 	startArrow?: boolean;
 	endArrow?: boolean;

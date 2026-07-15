@@ -5,7 +5,7 @@ import {
 	IHandlerWithCreator,
 } from '../../../../contract/eventManager';
 import { IToolService } from '@/domain/contract/ToolService';
-import { inject, multiInject } from 'inversify';
+import { inject, multiInject, postConstruct } from 'inversify';
 import { fluentProvideWithSingle } from '@/common/context';
 
 @fluentProvideWithSingle(IEventMode)
@@ -14,6 +14,11 @@ export class CreatorMode implements IEventMode {
 
 	@multiInject(IHandlerWithCreator)
 	handlerList: IHandler[] = [];
+
+	@postConstruct()
+	sortHandlers() {
+		this.handlerList.sort((a, b) => a.sort - b.sort);
+	}
 
 	@inject(IToolService)
 	private toolService!: IToolService;

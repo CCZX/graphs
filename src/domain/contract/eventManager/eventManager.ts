@@ -21,6 +21,9 @@ export const IEventMode = Symbol('IEventMode');
 export interface IHandler {
 	type: HandlerEnum;
 
+	/** 越小越优先执行 */
+	sort: number;
+
 	enable(state: InteractionState): boolean;
 
 	execute(e: PointerEvent, state: InteractionState, payload: EventPayload): boolean;

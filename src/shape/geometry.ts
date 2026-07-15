@@ -91,3 +91,78 @@ export function getShapesAABB(shapes: BaseShape[]): Rectangle {
 
 	return { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
 }
+
+export interface BezierSegment {
+	c1: Point;
+	c2: Point;
+	to: Point;
+}
+
+/**
+ * Catmull-Rom 样条转三次贝塞尔（端点 clamp），曲线平滑经过所有输入点。
+ * 返回 points.length - 1 段，第 i 段从 points[i] 到 points[i+1]
+ */
+export function catmullRomToBezier(points: Point[]): BezierSegment[] {
+	const segments: BezierSegment[] = [];
+
+	for (let i = 0; i < points.length - 1; i++) {
+		const p0 = points[i - 1] ?? points[i];
+		const p1 = points[i];
+		const p2 = points[i + 1];
+		const p3 = points[i + 2] ?? points[i + 1];
+
+		segments.push({
+			c1: { x: p1.x + (p2.x - p0.x) / 6, y: p1.y + (p2.y - p0.y) / 6 },
+			c2: { x: p2.x - (p3.x - p1.x) / 6, y: p2.y - (p3.y - p1.y) / 6 },
+			to: p2,
+		});
+	}
+
+	return segments;
+}
+
+/**
+ * 三次贝塞尔曲线上 t 处的点
+ */
+export function cubicBezierPoint(from: Point, c1: Point, c2: Point, to: Point, t: number): Point {
+	const mt = 1 - t;
+	const a = mt * mt * mt;
+	const b = 3 * mt * mt * t;
+	const c = 3 * mt * t * t;
+	const d = t * t * t;
+
+	return {
+		x: a * from.x + b * c1.x + c * c2.x + d * to.x,
+		y: a * from.y + b * c1.y + c * c2.y + d * to.y,
+	};
+}
+
+/**
+ * 点到线段的最短距离
+ */
+export function distToSegment(p: Point, a: Point, b: Point): number {
+	const dx = b.x - a.x;
+	const dy = b.y - a.y;
+	const lenSq = dx * dx + dy * dy;
+	let t = lenSq === 0 ? 0 : ((p.x - a.x) * dx + (p.y - a.y) * dy) / lenSq;
+	t = Math.max(0, Math.min(1, t));
+	return Math.hypot(p.x - (a.x + t * dx), p.y - (a.y + t * dy));
+}
+
+/**
+ * 把经过给定点的路径离散成折线采样点：2 点为直线，多点按 Catmull-Rom 曲线采样
+ */
+export function sampleCurvePoints(points: Point[], samplesPerSegment = 16): Point[] {
+	if (points.length <= 2) {
+		return [...points];
+	}
+
+	const segments = catmullRomToBezier(points);
+	const out: Point[] = [points[0]];
+	segments.forEach((seg, i) => {
+		for (let s = 1; s <= samplesPerSegment; s++) {
+			out.push(cubicBezierPoint(points[i], seg.c1, seg.c2, seg.to, s / samplesPerSegment));
+		}
+	});
+	return out;
+}

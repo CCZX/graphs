@@ -13,6 +13,7 @@ const DRAG_THRESHOLD = 3;
 @fluentProvideWithSingle(IHandlerWithInteraction)
 export class MarqueeHandler implements IHandler {
 	type = HandlerEnum.Marquee;
+	sort = 60;
 
 	@inject(IShapeManager)
 	private shapeManager!: IShapeManager;

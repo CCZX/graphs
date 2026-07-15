@@ -1,5 +1,4 @@
 import { Point as PixiPoint } from 'pixi.js';
-import { isPointInRect } from '@/shape/geometry';
 import { BaseShape } from '@/shape/BaseShape';
 import { Stage } from '@/canvas/core/Stage';
 import { IShapeManager, IViewportService } from '../contract';
@@ -28,8 +27,7 @@ export class ShapeManager implements IShapeManager {
 	getShapeByPoint(point: Point) {
 		for (const [, shape] of this.shapes) {
 			const local = shape.container.toLocal(new PixiPoint(point.x, point.y));
-			const bounds = shape.getBounds();
-			if (isPointInRect({ x: local.x, y: local.y }, bounds)) {
+			if (shape.containsPoint({ x: local.x, y: local.y })) {
 				return shape;
 			}
 		}

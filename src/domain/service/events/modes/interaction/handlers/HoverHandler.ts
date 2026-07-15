@@ -7,6 +7,7 @@ import { fluentProvideWithSingle } from '@/common/context';
 @fluentProvideWithSingle(IHandlerWithInteraction)
 export class HoverHandler implements IHandler {
 	type = HandlerEnum.Hover;
+	sort = 90;
 
 	@inject(IShapeManager)
 	private shapeManager!: IShapeManager;

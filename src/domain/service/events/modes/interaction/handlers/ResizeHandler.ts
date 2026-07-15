@@ -46,6 +46,7 @@ const CURSOR_MAP: Record<Dir, string> = {
 @fluentProvideWithSingle(IHandlerWithInteraction)
 export class ResizeHandler implements IHandler {
 	type = HandlerEnum.Resize;
+	sort = 20;
 
 	@inject(IActionManager)
 	private actionManager!: IActionManager;
@@ -63,7 +64,8 @@ export class ResizeHandler implements IHandler {
 	private originBaseProps: BasePropertyValue | null = null;
 
 	enable(state: InteractionState): boolean {
-		return state.selectedShapes.length === 1;
+		// 线由 LineEditHandler 负责端点/途经点编辑，不走 bbox resize
+		return state.selectedShapes.length === 1 && state.selectedShapes[0].type !== ShapeTypeEnum.Line;
 	}
 
 	execute(e: PointerEvent, state: InteractionState, payload: EventPayload): boolean {

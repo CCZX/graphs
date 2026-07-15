@@ -12,6 +12,7 @@ import { fluentProvideWithSingle } from '@/common/context';
 @fluentProvideWithSingle(IHandlerWithInteraction)
 export class SelectHandler implements IHandler {
 	type = HandlerEnum.Select;
+	sort = 50;
 
 	@inject(IShapeManager)
 	private shapeManager!: IShapeManager;

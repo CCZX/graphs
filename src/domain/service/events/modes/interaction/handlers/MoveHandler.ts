@@ -1,6 +1,14 @@
 import { BaseShape } from '@/shape/BaseShape';
 import { BaseProperty } from '@/shape/property/BaseProperty';
-import { BasePropertyValue, ShapeData, ShapePropertyEnum, ShapeStateEnum } from '@/shape/contract';
+import { LineProperty } from '@/shape/property/LineProperty';
+import {
+	BasePropertyValue,
+	LinePropertyValue,
+	ShapeData,
+	ShapePropertyEnum,
+	ShapeStateEnum,
+	ShapeTypeEnum,
+} from '@/shape/contract';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IShapeManager } from '@/domain/contract';
 import { ISelectService } from '@/domain/contract/SelectService';
@@ -18,6 +26,7 @@ const DRAG_THRESHOLD = 3;
 @fluentProvideWithSingle(IHandlerWithInteraction)
 export class MoveHandler implements IHandler {
 	type = HandlerEnum.Move;
+	sort = 40;
 
 	@inject(IShapeManager)
 	private shapeManager!: IShapeManager;
@@ -41,6 +50,7 @@ export class MoveHandler implements IHandler {
 	private movingShapes: BaseShape[] = [];
 	private startScreenPoint: Point | null = null;
 	private originBasePropsMap: Map<string, BasePropertyValue> = new Map();
+	private originLinePropsMap: Map<string, LinePropertyValue> = new Map();
 
 	enable(state: InteractionState): boolean {
 		return state.selectedShapes.length > 0;
@@ -82,10 +92,23 @@ export class MoveHandler implements IHandler {
 		}
 
 		this.originBasePropsMap.clear();
+		this.originLinePropsMap.clear();
 		for (const shape of state.selectedShapes) {
 			const p = shape.getProperty<BaseProperty>(ShapePropertyEnum.Base).get();
 			if (p) {
 				this.originBasePropsMap.set(shape.id, { ...p });
+			}
+			// 线的 start/end/途经点是世界坐标，移动时需要一并平移，否则数据与容器位置脱节
+			if (shape.type === ShapeTypeEnum.Line) {
+				const line = shape.getProperty<LineProperty>(ShapePropertyEnum.Line)?.get();
+				if (line) {
+					this.originLinePropsMap.set(shape.id, {
+						...line,
+						start: { ...line.start },
+						end: { ...line.end },
+						midPoints: line.midPoints?.map((mp) => ({ ...mp })),
+					});
+				}
 			}
 		}
 		this.startScreenPoint = payload.screenPoint;
@@ -169,13 +192,22 @@ export class MoveHandler implements IHandler {
 			if (!origin) {
 				continue;
 			}
-			shapeDatas.push({
-				id: shape.id,
-				type: shape.type,
-				properties: {
-					base: { ...origin, x: origin.x + dx, y: origin.y + dy },
-				},
-			});
+
+			const properties: ShapeData['properties'] = {
+				base: { ...origin, x: origin.x + dx, y: origin.y + dy },
+			};
+
+			const originLine = this.originLinePropsMap.get(shape.id);
+			if (originLine) {
+				properties.line = {
+					...originLine,
+					start: { ...originLine.start, x: originLine.start.x + dx, y: originLine.start.y + dy },
+					end: { ...originLine.end, x: originLine.end.x + dx, y: originLine.end.y + dy },
+					midPoints: originLine.midPoints?.map((mp) => ({ x: mp.x + dx, y: mp.y + dy })),
+				};
+			}
+
+			shapeDatas.push({ id: shape.id, type: shape.type, properties });
 		}
 		this.actionManager.push(new UpdatePropsAction(shapeDatas, this.ioc));
 
@@ -187,5 +219,6 @@ export class MoveHandler implements IHandler {
 		this.movingShapes = [];
 		this.startScreenPoint = null;
 		this.originBasePropsMap.clear();
+		this.originLinePropsMap.clear();
 	}
 }

@@ -32,6 +32,7 @@ const CURSOR_MAP: Record<Dir, string> = {
 @fluentProvideWithSingle(IHandlerWithInteraction)
 export class MultiResizeHandler implements IHandler {
 	type = HandlerEnum.Resize;
+	sort = 80;
 
 	@inject(ISelectService)
 	private selectService!: ISelectService;

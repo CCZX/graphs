@@ -26,6 +26,8 @@ export class BaseProperty extends AbsProperty<BasePropertyValue> {
 		}
 
 		if (this.shape.type === ShapeTypeEnum.Line) {
+			// 线的渲染与容器定位完全由 LineProperty 负责（初始化期间 Line 属性尚未创建）
+			this.shape.getProperty<AbsProperty>(ShapePropertyEnum.Line)?.draw();
 			return;
 		}
 

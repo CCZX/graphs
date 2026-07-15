@@ -14,6 +14,7 @@ import {
 } from './contract';
 import { AbsDecorate } from './decorate/AbsDecorate';
 import { HoverBorder } from './decorate/HoverBorder';
+import { isPointInRect } from './geometry';
 import { AbsState } from './state/AbsState';
 import { StateFactory } from './state/StateFactory';
 import { StateMachine } from './state/StateMachine';
@@ -40,7 +41,7 @@ export abstract class BaseShape<T extends Container = Container> {
 	abstract get type(): ShapeTypeEnum;
 
 	private stateMap: Map<ShapeStateEnum, AbsState> = new Map();
-	private decorateMap: Map<ShapeDecorateTypeEnum, AbsDecorate> = new Map();
+	protected decorateMap: Map<ShapeDecorateTypeEnum, AbsDecorate> = new Map();
 	protected propertyMap: Map<ShapePropertyEnum, AbsProperty> = new Map();
 	private stateMachine: StateMachine;
 
@@ -119,13 +120,13 @@ export abstract class BaseShape<T extends Container = Container> {
 			| LinePropertyValue
 			| undefined;
 		if (line) {
-			properties.line = { ...line };
+			properties.line = { ...line, midPoints: line.midPoints?.map((p) => ({ ...p })) };
 		}
 
 		return { id: this.id, type: this.type, properties };
 	}
 
-	initDecorate() {
+	protected initDecorate() {
 		this.decorateMap.set(ShapeDecorateTypeEnum.HoverBorder, new HoverBorder(this));
 		this.decorateMap.set(ShapeDecorateTypeEnum.SelectedBorder, new SelectedBorder(this));
 	}
@@ -180,6 +181,11 @@ export abstract class BaseShape<T extends Container = Container> {
 		const { width, height } = this.getWH();
 		// container 的 pivot 设为中心后，local 坐标系下 shape 始终从 (0,0) 开始
 		return { x: 0, y: 0, width, height };
+	}
+
+	/** 本地坐标命中检测，默认为包围盒判断，子类可按实际形状覆写 */
+	containsPoint(localPoint: Point): boolean {
+		return isPointInRect(localPoint, this.getBounds());
 	}
 
 	// 以下三个方法供 EditState 回调，Text 子类 override

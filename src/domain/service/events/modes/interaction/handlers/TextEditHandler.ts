@@ -8,6 +8,7 @@ import { fluentProvideWithSingle } from '@/common/context';
 @fluentProvideWithSingle(IHandlerWithInteraction)
 export class TextEditHandler implements IHandler {
 	type = HandlerEnum.TextEdit;
+	sort = 70;
 
 	@inject(IShapeManager)
 	private shapeManager!: IShapeManager;

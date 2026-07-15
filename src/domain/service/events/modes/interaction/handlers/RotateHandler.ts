@@ -7,6 +7,7 @@ import {
 	ShapeDecorateTypeEnum,
 	ShapePropertyEnum,
 	ShapeStateEnum,
+	ShapeTypeEnum,
 } from '@/shape/contract';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IHandlerWithInteraction, IHandler } from '@/domain/contract';
@@ -17,13 +18,15 @@ const ROTATE_HANDLE_HIT_RADIUS = 12;
 @fluentProvideWithSingle(IHandlerWithInteraction)
 export class RotateHandler implements IHandler {
 	type = HandlerEnum.Rotate;
+	sort = 30;
 
 	private isRotating = false;
 	private rotatingShape: BaseShape | null = null;
 	private originRotation = 0;
 
 	enable(state: InteractionState): boolean {
-		return state.selectedShapes.length === 1;
+		// 线没有旋转手柄（LineSelectedBorder 不提供 getRotateHandleCenter）
+		return state.selectedShapes.length === 1 && state.selectedShapes[0].type !== ShapeTypeEnum.Line;
 	}
 
 	execute(e: PointerEvent, state: InteractionState, payload: EventPayload): boolean {
