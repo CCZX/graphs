@@ -12,7 +12,7 @@ export class BaseProperty extends AbsProperty<BasePropertyValue> {
 		super(shape, value || DEFAULT_VALUE);
 	}
 
-	draw(): void {
+	public draw(): void {
 		const { x, y, width, height, rotation = 0 } = this.value;
 
 		// pivot 设为图形中心，position 也设为中心，rotation 绕中心旋转

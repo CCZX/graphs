@@ -13,7 +13,7 @@ const DEFAULT_VALUE: LinePropertyValue = {
 };
 
 /** 途经点数量上限 */
-export const MAX_MID_POINTS = 2;
+export const MAX_MID_POINTS = 1;
 
 export class LineProperty extends AbsProperty<LinePropertyValue> {
 	constructor(shape: BaseShape, value?: LinePropertyValue) {
@@ -21,13 +21,13 @@ export class LineProperty extends AbsProperty<LinePropertyValue> {
 	}
 
 	/** 世界坐标下的全点序列：start → 途经点 → end */
-	getPoints(): Point[] {
+	public getPoints(): Point[] {
 		const v = this.value;
 		return [v.start, ...(v.midPoints ?? []), v.end];
 	}
 
 	/** 容器本地坐标下的全点序列 */
-	getLocalPoints(): Point[] {
+	public getLocalPoints(): Point[] {
 		return this.toLocal(this.getPoints());
 	}
 
@@ -35,7 +35,7 @@ export class LineProperty extends AbsProperty<LinePropertyValue> {
 	 * 每段线的虚拟中点手柄（世界坐标），拖动它可生成途经点；
 	 * 途经点已满时返回空数组
 	 */
-	getVirtualHandles(): Point[] {
+	public getVirtualHandles(): Point[] {
 		const midCount = this.value.midPoints?.length ?? 0;
 		if (midCount >= MAX_MID_POINTS) {
 			return [];
@@ -52,7 +52,7 @@ export class LineProperty extends AbsProperty<LinePropertyValue> {
 	}
 
 	/** 容器本地坐标下的虚拟中点手柄 */
-	getLocalVirtualHandles(): Point[] {
+	public getLocalVirtualHandles(): Point[] {
 		return this.toLocal(this.getVirtualHandles());
 	}
 
@@ -73,7 +73,7 @@ export class LineProperty extends AbsProperty<LinePropertyValue> {
 		};
 	}
 
-	draw(): void {
+	public draw(): void {
 		const v = this.value;
 		const g = this.shape.graphics as Graphics;
 

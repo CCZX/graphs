@@ -2,7 +2,7 @@ import { ShapeStateEnum } from '../contract';
 import { BaseShape } from '../BaseShape';
 
 export abstract class AbsState {
-	abstract type: ShapeStateEnum;
+	public abstract type: ShapeStateEnum;
 
 	protected shape: BaseShape;
 
@@ -10,9 +10,9 @@ export abstract class AbsState {
 		this.shape = shape;
 	}
 
-	abstract onActivate(): void;
+	public abstract onActivate(): void;
 
-	abstract onDeactivate(): void;
+	public abstract onDeactivate(): void;
 
-	allowNextStateTypes: ShapeStateEnum[] = [];
+	public allowNextStateTypes: ShapeStateEnum[] = [];
 }

@@ -2,15 +2,15 @@ import { ShapeStateEnum } from '../contract';
 import { AbsState } from './AbsState';
 
 export class NormalState extends AbsState {
-	type: ShapeStateEnum = ShapeStateEnum.Normal;
+	public type: ShapeStateEnum = ShapeStateEnum.Normal;
 
-	allowNextStateTypes = [
+	public allowNextStateTypes = [
 		ShapeStateEnum.Hover,
 		ShapeStateEnum.Selected,
 		ShapeStateEnum.MultiSelected,
 	];
 
-	onActivate() {}
+	public onActivate() {}
 
-	onDeactivate(): void {}
+	public onDeactivate(): void {}
 }

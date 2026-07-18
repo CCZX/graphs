@@ -10,7 +10,7 @@ export class FillProperty extends AbsProperty<FillPropertyValue> {
 		super(shape, value || DEFAULT_VALUE);
 	}
 
-	draw(): void {
+	public draw(): void {
 		const { width, height } = this.shape.getWH();
 		const g = this.shape.graphics as Graphics;
 

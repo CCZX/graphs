@@ -12,9 +12,9 @@ const ROTATE_HANDLE_RADIUS = 4;
 const ROTATE_HANDLE_DISTANCE = 16;
 
 export class SelectedBorder extends AbsDecorate {
-	type: ShapeDecorateTypeEnum = ShapeDecorateTypeEnum.SelectedBorder;
+	public type: ShapeDecorateTypeEnum = ShapeDecorateTypeEnum.SelectedBorder;
 
-	graphics: Graphics;
+	public graphics: Graphics;
 
 	constructor(shape: BaseShape) {
 		super(shape);
@@ -59,23 +59,23 @@ export class SelectedBorder extends AbsDecorate {
 		this.graphics.endFill();
 	}
 
-	onActivate() {
+	public onActivate() {
 		this.draw();
 		this.shape.container.addChild(this.graphics);
 	}
 
-	refresh() {
+	public refresh() {
 		this.draw();
 	}
 
-	getRotateHandleCenter(): { x: number; y: number } {
+	public getRotateHandleCenter(): { x: number; y: number } {
 		const { width } = this.shape.getBounds();
 		const strokeWidth = this.getStrokeWidth();
 		const offset = strokeWidth / 2 + BORDER_PADDING;
 		return { x: width / 2, y: 0 - offset - ROTATE_HANDLE_DISTANCE };
 	}
 
-	onDeactivate() {
+	public onDeactivate() {
 		this.shape.container.removeChild(this.graphics);
 	}
 }

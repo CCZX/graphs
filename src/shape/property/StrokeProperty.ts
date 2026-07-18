@@ -11,13 +11,13 @@ export class StrokeProperty extends AbsProperty<StrokePropertyValue> {
 		super(shape, value || DEFAULT_VALUE);
 	}
 
-	update(value: Partial<StrokePropertyValue>): void {
+	public update(value: Partial<StrokePropertyValue>): void {
 		this.value = { ...this.value, ...value };
 		// 触发完整重绘，避免 stroke 叠层
 		this.shape.getProperty<BaseProperty>(ShapePropertyEnum.Base)?.draw();
 	}
 
-	draw(): void {
+	public draw(): void {
 		if (this.value.width <= 0) {
 			return;
 		}

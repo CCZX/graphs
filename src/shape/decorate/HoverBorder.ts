@@ -9,16 +9,16 @@ import { StrokeProperty } from '../property/StrokeProperty';
 const BORDER_PADDING = 2;
 
 export class HoverBorder extends AbsDecorate {
-	type: ShapeDecorateTypeEnum = ShapeDecorateTypeEnum.HoverBorder;
+	public type: ShapeDecorateTypeEnum = ShapeDecorateTypeEnum.HoverBorder;
 
-	graphics: Graphics;
+	public graphics: Graphics;
 
 	constructor(shape: BaseShape) {
 		super(shape);
 		this.graphics = new Graphics();
 	}
 
-	onActivate() {
+	public onActivate() {
 		const { width, height } = this.shape.getBounds();
 
 		const stroke = this.shape.getProperty<StrokeProperty>(ShapePropertyEnum.Stroke).value;
@@ -34,7 +34,7 @@ export class HoverBorder extends AbsDecorate {
 		this.shape.container.addChild(this.graphics);
 	}
 
-	onDeactivate() {
+	public onDeactivate() {
 		this.shape.container.removeChild(this.graphics);
 	}
 }

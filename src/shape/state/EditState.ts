@@ -2,15 +2,15 @@ import { ShapeStateEnum } from '../contract';
 import { AbsState } from './AbsState';
 
 export class EditState extends AbsState {
-	type: ShapeStateEnum = ShapeStateEnum.Edit;
+	public type: ShapeStateEnum = ShapeStateEnum.Edit;
 
-	allowNextStateTypes = [ShapeStateEnum.Normal, ShapeStateEnum.Selected];
+	public allowNextStateTypes = [ShapeStateEnum.Normal, ShapeStateEnum.Selected];
 
-	onActivate() {
+	public onActivate() {
 		this.shape.showTextInput();
 	}
 
-	onDeactivate(): void {
+	public onDeactivate(): void {
 		this.shape.commitTextInput();
 		this.shape.hideTextInput();
 	}

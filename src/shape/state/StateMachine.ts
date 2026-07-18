@@ -12,7 +12,7 @@ export class StateMachine {
 		this.state = new NormalState(shape);
 	}
 
-	setState(state: AbsState, onSuccess?: () => void, onError?: () => void) {
+	public setState(state: AbsState, onSuccess?: () => void, onError?: () => void) {
 		const nextStateType = state.type;
 		const allowNextStateTypes = this.state.allowNextStateTypes;
 
@@ -30,7 +30,7 @@ export class StateMachine {
 		onSuccess && onSuccess();
 	}
 
-	getState() {
+	public getState() {
 		return this.state.type;
 	}
 }

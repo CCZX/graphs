@@ -2,9 +2,9 @@ import { ShapeDecorateTypeEnum, ShapeStateEnum } from '../contract';
 import { AbsState } from './AbsState';
 
 export class SelectedState extends AbsState {
-	type: ShapeStateEnum = ShapeStateEnum.Selected;
+	public type: ShapeStateEnum = ShapeStateEnum.Selected;
 
-	allowNextStateTypes: ShapeStateEnum[] = [
+	public allowNextStateTypes: ShapeStateEnum[] = [
 		ShapeStateEnum.Normal,
 		ShapeStateEnum.Moving,
 		ShapeStateEnum.Resizing,
@@ -13,7 +13,7 @@ export class SelectedState extends AbsState {
 		ShapeStateEnum.Edit,
 	];
 
-	onActivate() {
+	public onActivate() {
 		const selectedBorder = this.shape.getDecorate(ShapeDecorateTypeEnum.SelectedBorder);
 		if (!selectedBorder) {
 			return;
@@ -21,7 +21,7 @@ export class SelectedState extends AbsState {
 		selectedBorder.onActivate();
 	}
 
-	onDeactivate(): void {
+	public onDeactivate(): void {
 		const selectedBorder = this.shape.getDecorate(ShapeDecorateTypeEnum.SelectedBorder);
 		if (!selectedBorder) {
 			return;

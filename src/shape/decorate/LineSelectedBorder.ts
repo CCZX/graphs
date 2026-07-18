@@ -15,9 +15,9 @@ const VIRTUAL_HANDLE_ALPHA = 0.4;
  * 占用 SelectedBorder 槽位，复用状态机对选中装饰的激活逻辑。
  */
 export class LineSelectedBorder extends AbsDecorate {
-	type: ShapeDecorateTypeEnum = ShapeDecorateTypeEnum.SelectedBorder;
+	public type: ShapeDecorateTypeEnum = ShapeDecorateTypeEnum.SelectedBorder;
 
-	graphics: Graphics;
+	public graphics: Graphics;
 
 	constructor(shape: BaseShape) {
 		super(shape);
@@ -62,16 +62,16 @@ export class LineSelectedBorder extends AbsDecorate {
 		}
 	}
 
-	onActivate() {
+	public onActivate() {
 		this.draw();
 		this.shape.container.addChild(this.graphics);
 	}
 
-	refresh() {
+	public refresh() {
 		this.draw();
 	}
 
-	onDeactivate() {
+	public onDeactivate() {
 		this.shape.container.removeChild(this.graphics);
 	}
 }

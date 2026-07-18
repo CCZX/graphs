@@ -22,12 +22,24 @@ export default tseslint.config(
 				cancelAnimationFrame: 'readonly',
 			},
 		},
+		plugins: {
+			'@typescript-eslint': tseslint.plugin,
+		},
 		rules: {
 			curly: ['error', 'all'],
 			'no-redeclare': 'off',
 			'no-unused-vars': 'off',
 			'@typescript-eslint/no-unused-vars': 'off',
 			'no-undef': 'off',
+			'@typescript-eslint/explicit-member-accessibility': [
+				'error',
+				{
+					accessibility: 'explicit',
+					overrides: {
+						constructors: 'no-public',
+					},
+				},
+			],
 		},
 	}
 );

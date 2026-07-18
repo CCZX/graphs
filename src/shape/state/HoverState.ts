@@ -2,15 +2,15 @@ import { ShapeDecorateTypeEnum, ShapeStateEnum } from '../contract';
 import { AbsState } from './AbsState';
 
 export class HoverState extends AbsState {
-	type: ShapeStateEnum = ShapeStateEnum.Hover;
+	public type: ShapeStateEnum = ShapeStateEnum.Hover;
 
-	allowNextStateTypes = [
+	public allowNextStateTypes = [
 		ShapeStateEnum.Normal,
 		ShapeStateEnum.Selected,
 		ShapeStateEnum.MultiSelected,
 	];
 
-	onActivate() {
+	public onActivate() {
 		const hoverBorder = this.shape.getDecorate(ShapeDecorateTypeEnum.HoverBorder);
 		if (!hoverBorder) {
 			return;
@@ -18,7 +18,7 @@ export class HoverState extends AbsState {
 		hoverBorder.onActivate();
 	}
 
-	onDeactivate() {
+	public onDeactivate() {
 		const hoverBorder = this.shape.getDecorate(ShapeDecorateTypeEnum.HoverBorder);
 		if (!hoverBorder) {
 			return;

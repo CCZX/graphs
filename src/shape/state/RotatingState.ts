@@ -2,15 +2,15 @@ import { ShapeDecorateTypeEnum, ShapeStateEnum } from '../contract';
 import { AbsState } from './AbsState';
 
 export class RotatingState extends AbsState {
-	type: ShapeStateEnum = ShapeStateEnum.Rotating;
+	public type: ShapeStateEnum = ShapeStateEnum.Rotating;
 
-	allowNextStateTypes = [ShapeStateEnum.Selected, ShapeStateEnum.MultiSelected];
+	public allowNextStateTypes = [ShapeStateEnum.Selected, ShapeStateEnum.MultiSelected];
 
-	onActivate() {
+	public onActivate() {
 		this.shape.getDecorate(ShapeDecorateTypeEnum.SelectedBorder)?.onActivate();
 	}
 
-	onDeactivate(): void {
+	public onDeactivate(): void {
 		this.shape.getDecorate(ShapeDecorateTypeEnum.SelectedBorder)?.onDeactivate();
 	}
 }

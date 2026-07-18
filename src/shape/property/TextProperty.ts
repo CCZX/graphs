@@ -9,7 +9,7 @@ export class TextProperty extends AbsProperty<TextPropertyValue> {
 		super(shape, value || DEFAULT_VALUE);
 	}
 
-	draw(): void {
+	public draw(): void {
 		(this.shape.graphics as { text?: string }).text = this.value.text;
 	}
 }

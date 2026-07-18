@@ -2,7 +2,7 @@ import { ShapeDecorateTypeEnum } from '../contract';
 import { BaseShape } from '../BaseShape';
 
 export abstract class AbsDecorate {
-	abstract type: ShapeDecorateTypeEnum;
+	public abstract type: ShapeDecorateTypeEnum;
 
 	protected shape: BaseShape;
 
@@ -10,9 +10,9 @@ export abstract class AbsDecorate {
 		this.shape = shape;
 	}
 
-	abstract onActivate(): void;
+	public abstract onActivate(): void;
 
-	abstract onDeactivate(): void;
+	public abstract onDeactivate(): void;
 
-	refresh(): void {}
+	public refresh(): void {}
 }

@@ -10,7 +10,7 @@ import { RotatingState } from './RotatingState';
 import { SelectedState } from './SelectedState';
 
 export class StateFactory {
-	static create(state: ShapeStateEnum, shape: BaseShape) {
+	public static create(state: ShapeStateEnum, shape: BaseShape) {
 		if (state === ShapeStateEnum.Normal) {
 			return new NormalState(shape);
 		} else if (state === ShapeStateEnum.Hover) {
