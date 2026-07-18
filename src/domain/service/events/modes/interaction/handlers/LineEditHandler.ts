@@ -27,8 +27,8 @@ type DragTarget = { kind: 'start' } | { kind: 'end' } | { kind: 'mid'; index: nu
  */
 @fluentProvideWithSingle(IHandlerWithInteraction)
 export class LineEditHandler implements IHandler {
-	type = HandlerEnum.LineEdit;
-	sort = 10;
+	public type: HandlerEnum.LineEdit = HandlerEnum.LineEdit;
+	public sort: number = 10;
 
 	@inject(IActionManager)
 	private actionManager!: IActionManager;
@@ -49,11 +49,11 @@ export class LineEditHandler implements IHandler {
 	private lastDownTime = 0;
 	private lastDownMidIndex: number | null = null;
 
-	enable(state: InteractionState): boolean {
+	public enable(state: InteractionState): boolean {
 		return state.selectedShapes.length === 1 && state.selectedShapes[0].type === ShapeTypeEnum.Line;
 	}
 
-	execute(e: PointerEvent, state: InteractionState, payload: EventPayload): boolean {
+	public execute(e: PointerEvent, state: InteractionState, payload: EventPayload): boolean {
 		switch (e.type) {
 			case 'pointerdown':
 				return this.handlePointerDown(state, payload);

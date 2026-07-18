@@ -1,21 +1,9 @@
 import { InteractionState, EventPayload } from '../../contract/eventManager';
-import { throttle as lodashThrottle } from 'lodash';
-import { provide } from 'inversify-binding-decorators';
 import { IEventManager, IEventMode, IViewportService } from '../../contract';
 import { IocContainerService } from '@/common/contract';
 import { inject, multiInject } from 'inversify';
 import { provideMultiple } from '@/common/context';
 import { IDestroyable } from '@/common/contract/Destroyable';
-
-export function throttle<T extends object>(delay: number) {
-	return function (_target: T, _key: string, descriptor: PropertyDescriptor) {
-		const originalValue = descriptor.value as (...args: any[]) => any;
-
-		descriptor.value = lodashThrottle(originalValue, delay);
-
-		return descriptor;
-	};
-}
 
 @provideMultiple(IEventManager, IDestroyable)
 export class EventManager implements IEventManager, IDestroyable {
@@ -72,40 +60,36 @@ export class EventManager implements IEventManager, IDestroyable {
 		}
 	}
 
-	@throttle<EventManager>(16)
-	private onPointermove(e: PointerEvent) {
+	private onPointermove = (e: PointerEvent) => {
 		this.dispatch(e);
-	}
+	};
 
-	@throttle<EventManager>(17)
-	private onPointerdown(e: PointerEvent) {
+	private onPointerdown = (e: PointerEvent) => {
 		// 仅响应画布区域内的 pointerdown，避免点击属性面板等外部 UI 时触发选中逻辑
 		if (this.canvasEl && !this.canvasEl.contains(e.target as Node)) {
 			return;
 		}
 		this.dispatch(e);
-	}
+	};
 
-	private onPointerup(e: PointerEvent) {
+	private onPointerup = (e: PointerEvent) => {
 		this.dispatch(e);
-	}
-
-	private _onPointermove = this.onPointermove.bind(this);
+	};
 
 	public start(canvasEl: HTMLElement) {
 		this.canvasEl = canvasEl;
 
-		document.addEventListener('pointermove', this._onPointermove);
-		document.addEventListener('pointerdown', this.onPointerdown.bind(this));
-		document.addEventListener('pointerup', this.onPointerup.bind(this));
+		document.addEventListener('pointermove', this.onPointermove);
+		document.addEventListener('pointerdown', this.onPointerdown);
+		document.addEventListener('pointerup', this.onPointerup);
 	}
 
 	public destroy() {
 		this.canvasEl = null;
 		this.activeMode = null;
-		document.removeEventListener('pointermove', this._onPointermove);
-		document.removeEventListener('pointerdown', this.onPointerdown.bind(this));
-		document.removeEventListener('pointerup', this.onPointerup.bind(this));
+		document.removeEventListener('pointermove', this.onPointermove);
+		document.removeEventListener('pointerdown', this.onPointerdown);
+		document.removeEventListener('pointerup', this.onPointerup);
 	}
 
 	public clearSelection() {
