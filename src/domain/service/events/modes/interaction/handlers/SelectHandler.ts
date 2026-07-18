@@ -11,8 +11,8 @@ import { fluentProvideWithSingle } from '@/common/context';
 
 @fluentProvideWithSingle(IHandlerWithInteraction)
 export class SelectHandler implements IHandler {
-	type = HandlerEnum.Select;
-	sort = 50;
+	public type: HandlerEnum = HandlerEnum.Select;
+	public sort = 50;
 
 	@inject(IShapeManager)
 	private shapeManager!: IShapeManager;
@@ -23,16 +23,20 @@ export class SelectHandler implements IHandler {
 	@inject(IViewportService)
 	private viewportService!: IViewportService;
 
-	enable(_state: InteractionState): boolean {
+	public enable(_state: InteractionState): boolean {
 		return true;
 	}
 
-	execute(e: PointerEvent, state: InteractionState, payload: EventPayload): boolean {
+	public execute(e: PointerEvent, state: InteractionState, payload: EventPayload): boolean {
 		if (e.type !== 'pointerdown') {
 			return true;
 		}
 
-		const nextShape = this.shapeManager.getShapeByPoint(payload.viewportPoint);
+		const worldPoint = this.viewportService.clientToViewportLocal(
+			payload.viewportPoint.x,
+			payload.viewportPoint.y,
+		);
+		const nextShape = this.shapeManager.getShapeByPoint(worldPoint);
 
 		// 点击已选中的图形，放行给 MoveHandler
 		if (nextShape && state.selectedShapes.some((s) => s.id === nextShape.id)) {

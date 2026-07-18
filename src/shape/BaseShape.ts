@@ -29,16 +29,22 @@ export abstract class BaseShape<T extends Container = Container> {
 	/**
 	 * 图形、图形装饰的容器节点
 	 */
-	container = new Container();
+	public container = new Container();
 
 	/**
 	 * 真正渲染的图形节点
 	 */
-	graphics: T;
+	public graphics: T;
 
-	id: string;
+	/**
+	 * 图形唯一标识
+	 */
+	public id: string;
 
-	abstract get type(): ShapeTypeEnum;
+	/**
+	 * 图形类型
+	 */
+	public abstract get type(): ShapeTypeEnum;
 
 	private stateMap: Map<ShapeStateEnum, AbsState> = new Map();
 	protected decorateMap: Map<ShapeDecorateTypeEnum, AbsDecorate> = new Map();
@@ -65,7 +71,7 @@ export abstract class BaseShape<T extends Container = Container> {
 		this.propertyMap.set(ShapePropertyEnum.Stroke, new StrokeProperty(this));
 	}
 
-	setProperty<T extends Record<string, any>>(type: ShapePropertyEnum, value: T) {
+	public setProperty<T extends Record<string, any>>(type: ShapePropertyEnum, value: T) {
 		const property = this.propertyMap.get(type);
 		if (property) {
 			property.set(value);
@@ -73,7 +79,7 @@ export abstract class BaseShape<T extends Container = Container> {
 		}
 	}
 
-	updateProperty<T extends Record<string, any>>(type: ShapePropertyEnum, value: T) {
+	public updateProperty<T extends Record<string, any>>(type: ShapePropertyEnum, value: T) {
 		const property = this.propertyMap.get(type);
 		if (property) {
 			property.update(value);
@@ -85,12 +91,12 @@ export abstract class BaseShape<T extends Container = Container> {
 		this.decorateMap.forEach((decorate) => decorate.refresh());
 	}
 
-	getProperty<T>(type: ShapePropertyEnum) {
+	public getProperty<T>(type: ShapePropertyEnum) {
 		return this.propertyMap.get(type) as T;
 	}
 
 	/** 序列化为 ShapeData，用于删除后可撤销地重建图形 */
-	toData(): ShapeData {
+	public toData(): ShapeData {
 		const properties: ShapeData['properties'] = {
 			base: { ...(this.propertyMap.get(ShapePropertyEnum.Base)!.value as BasePropertyValue) },
 		};
@@ -131,11 +137,11 @@ export abstract class BaseShape<T extends Container = Container> {
 		this.decorateMap.set(ShapeDecorateTypeEnum.SelectedBorder, new SelectedBorder(this));
 	}
 
-	getDecorate(type: ShapeDecorateTypeEnum) {
+	public getDecorate(type: ShapeDecorateTypeEnum) {
 		return this.decorateMap.get(type);
 	}
 
-	setState(stateType: ShapeStateEnum, onSuccess?: () => void, onError?: () => void) {
+	public setState(stateType: ShapeStateEnum, onSuccess?: () => void, onError?: () => void) {
 		if (stateType === this.getState()) {
 			return;
 		}
@@ -158,18 +164,18 @@ export abstract class BaseShape<T extends Container = Container> {
 		this.stateMachine.setState(state, onSuccess, onError);
 	}
 
-	getState() {
+	public getState() {
 		return this.stateMachine.getState();
 	}
 
-	getPosition() {
+	public getPosition() {
 		return {
 			x: this.container.x,
 			y: this.container.y,
 		};
 	}
 
-	getWH() {
+	public getWH() {
 		const p = this.getProperty<BaseProperty>(ShapePropertyEnum.Base).get();
 		return {
 			width: p.width,
@@ -177,19 +183,19 @@ export abstract class BaseShape<T extends Container = Container> {
 		};
 	}
 
-	getBounds() {
+	public getBounds() {
 		const { width, height } = this.getWH();
 		// container 的 pivot 设为中心后，local 坐标系下 shape 始终从 (0,0) 开始
 		return { x: 0, y: 0, width, height };
 	}
 
 	/** 本地坐标命中检测，默认为包围盒判断，子类可按实际形状覆写 */
-	containsPoint(localPoint: Point): boolean {
+	public containsPoint(localPoint: Point): boolean {
 		return isPointInRect(localPoint, this.getBounds());
 	}
 
 	// 以下三个方法供 EditState 回调，Text 子类 override
-	showTextInput(): void {}
-	hideTextInput(): void {}
-	commitTextInput(): void {}
+	public showTextInput(): void {}
+	public hideTextInput(): void {}
+	public commitTextInput(): void {}
 }

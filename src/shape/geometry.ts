@@ -1,4 +1,6 @@
 import { BaseShape } from './BaseShape';
+import { BasePropertyValue, LineEndpointValue, ShapePropertyEnum } from './contract';
+import { BaseProperty } from './property/BaseProperty';
 
 /**
  * 点在矩形内
@@ -165,4 +167,64 @@ export function sampleCurvePoints(points: Point[], samplesPerSegment = 16): Poin
 		}
 	});
 	return out;
+}
+
+/** 计算图形某方向锚点的世界坐标 */
+export function getAnchorPoint(
+	base: BasePropertyValue,
+	anchor: LineEndpointValue['anchor'] = 'auto',
+	refPoint?: Point,
+): Point {
+	const { x, y, width, height } = base;
+	const cx = x + width / 2;
+	const cy = y + height / 2;
+
+	if (anchor === 'top') {
+		return { x: cx, y };
+	}
+	if (anchor === 'bottom') {
+		return { x: cx, y: y + height };
+	}
+	if (anchor === 'left') {
+		return { x, y: cy };
+	}
+	if (anchor === 'right') {
+		return { x: x + width, y: cy };
+	}
+	if (anchor === 'center') {
+		return { x: cx, y: cy };
+	}
+
+	// auto: 根据参考点选最近边的中点，无参考点则 center
+	const sides: { anchor: NonNullable<LineEndpointValue['anchor']>; pt: Point }[] = [
+		{ anchor: 'top', pt: { x: cx, y } },
+		{ anchor: 'bottom', pt: { x: cx, y: y + height } },
+		{ anchor: 'left', pt: { x, y: cy } },
+		{ anchor: 'right', pt: { x: x + width, y: cy } },
+	];
+
+	if (!refPoint) {
+		return { x: cx, y: cy };
+	}
+
+	let best = sides[0];
+	let bestDist = Infinity;
+	for (const s of sides) {
+		const d = Math.hypot(s.pt.x - refPoint.x, s.pt.y - refPoint.y);
+		if (d < bestDist) {
+			bestDist = d;
+			best = s;
+		}
+	}
+	return best.pt;
+}
+
+/** 从图形实例获取锚点世界坐标 */
+export function getShapeAnchorPoint(
+	shape: BaseShape,
+	anchor: LineEndpointValue['anchor'] = 'auto',
+	refPoint?: Point,
+): Point {
+	const base = shape.getProperty<BaseProperty>(ShapePropertyEnum.Base).get();
+	return getAnchorPoint(base, anchor, refPoint);
 }

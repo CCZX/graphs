@@ -25,8 +25,8 @@ const DRAG_THRESHOLD = 3;
 
 @fluentProvideWithSingle(IHandlerWithInteraction)
 export class MoveHandler implements IHandler {
-	type = HandlerEnum.Move;
-	sort = 40;
+	public type: HandlerEnum = HandlerEnum.Move;
+	public sort = 40;
 
 	@inject(IShapeManager)
 	private shapeManager!: IShapeManager;
@@ -52,11 +52,11 @@ export class MoveHandler implements IHandler {
 	private originBasePropsMap: Map<string, BasePropertyValue> = new Map();
 	private originLinePropsMap: Map<string, LinePropertyValue> = new Map();
 
-	enable(state: InteractionState): boolean {
+	public enable(state: InteractionState): boolean {
 		return state.selectedShapes.length > 0;
 	}
 
-	execute(e: PointerEvent, state: InteractionState, payload: EventPayload): boolean {
+	public execute(e: PointerEvent, state: InteractionState, payload: EventPayload): boolean {
 		switch (e.type) {
 			case 'pointerdown':
 				return this.handlePointerDown(state, payload);
@@ -81,7 +81,11 @@ export class MoveHandler implements IHandler {
 	}
 
 	private handlePointerDown(state: InteractionState, payload: EventPayload): boolean {
-		const shapeUnderCursor = this.shapeManager.getShapeByPoint(payload.viewportPoint);
+		const worldPoint = this.viewportService.clientToViewportLocal(
+			payload.viewportPoint.x,
+			payload.viewportPoint.y,
+		);
+		const shapeUnderCursor = this.shapeManager.getShapeByPoint(worldPoint);
 		const isOnSelected =
 			shapeUnderCursor && state.selectedShapes.some((s) => s.id === shapeUnderCursor.id);
 
@@ -209,6 +213,7 @@ export class MoveHandler implements IHandler {
 
 			shapeDatas.push({ id: shape.id, type: shape.type, properties });
 		}
+
 		this.actionManager.push(new UpdatePropsAction(shapeDatas, this.ioc));
 
 		this.selectService.updateMultiSelectOverlay(this.movingShapes);

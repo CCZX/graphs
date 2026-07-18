@@ -2,13 +2,14 @@ import { ShapeStateEnum, ShapeTypeEnum } from '@/shape/contract';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IHandlerWithInteraction, IHandler, IShapeManager } from '@/domain/contract';
 import { ISelectService } from '@/domain/contract/SelectService';
+import { IViewportService } from '@/domain/contract/ViewportService';
 import { inject } from 'inversify';
 import { fluentProvideWithSingle } from '@/common/context';
 
 @fluentProvideWithSingle(IHandlerWithInteraction)
 export class TextEditHandler implements IHandler {
-	type = HandlerEnum.TextEdit;
-	sort = 70;
+	public type: HandlerEnum = HandlerEnum.TextEdit;
+	public sort = 70;
 
 	@inject(IShapeManager)
 	private shapeManager!: IShapeManager;
@@ -16,11 +17,14 @@ export class TextEditHandler implements IHandler {
 	@inject(ISelectService)
 	private selectService!: ISelectService;
 
-	enable(_state: InteractionState): boolean {
+	@inject(IViewportService)
+	private viewportService!: IViewportService;
+
+	public enable(_state: InteractionState): boolean {
 		return true;
 	}
 
-	execute(e: PointerEvent, state: InteractionState, payload: EventPayload): boolean {
+	public execute(e: PointerEvent, state: InteractionState, payload: EventPayload): boolean {
 		if (e.type !== 'pointerdown') {
 			return true;
 		}
@@ -29,7 +33,11 @@ export class TextEditHandler implements IHandler {
 			return true;
 		}
 
-		const shapeUnderCursor = this.shapeManager.getShapeByPoint(payload.viewportPoint);
+		const worldPoint = this.viewportService.clientToViewportLocal(
+			payload.viewportPoint.x,
+			payload.viewportPoint.y,
+		);
+		const shapeUnderCursor = this.shapeManager.getShapeByPoint(worldPoint);
 		if (!shapeUnderCursor || shapeUnderCursor.type !== ShapeTypeEnum.Text) {
 			return true;
 		}

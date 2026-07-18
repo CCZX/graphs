@@ -14,7 +14,7 @@ import { fluentProvideWithSingle } from '@/common/context';
 
 @fluentProvideWithSingle(IActionExecute)
 export class CreateShapeActionExecute extends AbsActionExecute {
-	type = ActionTypeEnum.CreateShape;
+	public type: ActionTypeEnum = ActionTypeEnum.CreateShape;
 
 	@inject(IShapeManager)
 	private shapeManager!: IShapeManager;
@@ -22,7 +22,7 @@ export class CreateShapeActionExecute extends AbsActionExecute {
 	@inject(IocContainerService)
 	private iocContainerService!: IocContainerService;
 
-	execute(action: CreateShapeAction): void {
+	public execute(action: CreateShapeAction): void {
 		for (const { id, type, properties } of action.data) {
 			const { base, fill, stroke, text, line } = properties;
 

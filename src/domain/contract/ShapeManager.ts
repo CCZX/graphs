@@ -6,6 +6,7 @@ export interface IShapeManager {
 
 	getShapeById(id: string): BaseShape | undefined;
 
+	/** point 为 viewport 世界坐标（clientToViewportLocal 的结果），非屏幕坐标 */
 	getShapeByPoint(point: Point): BaseShape | undefined;
 
 	getAllShapes(): BaseShape[];

@@ -12,8 +12,8 @@ const DRAG_THRESHOLD = 3;
 
 @fluentProvideWithSingle(IHandlerWithInteraction)
 export class MarqueeHandler implements IHandler {
-	type = HandlerEnum.Marquee;
-	sort = 60;
+	public type: HandlerEnum = HandlerEnum.Marquee;
+	public sort = 60;
 
 	@inject(IShapeManager)
 	private shapeManager!: IShapeManager;
@@ -32,11 +32,11 @@ export class MarqueeHandler implements IHandler {
 	private lastViewportX = 0;
 	private lastViewportY = 0;
 
-	enable(_state: InteractionState): boolean {
+	public enable(_state: InteractionState): boolean {
 		return true;
 	}
 
-	execute(e: PointerEvent, state: InteractionState, payload: EventPayload): boolean {
+	public execute(e: PointerEvent, state: InteractionState, payload: EventPayload): boolean {
 		switch (e.type) {
 			case 'pointerdown':
 				return this.handlePointerDown(payload);
@@ -57,16 +57,16 @@ export class MarqueeHandler implements IHandler {
 	}
 
 	private handlePointerDown(payload: EventPayload): boolean {
-		const shapeUnderCursor = this.shapeManager.getShapeByPoint(payload.viewportPoint);
+		const startLocal = this.viewportService.clientToViewportLocal(
+			payload.viewportPoint.x,
+			payload.viewportPoint.y,
+		);
+		const shapeUnderCursor = this.shapeManager.getShapeByPoint(startLocal);
 
 		if (shapeUnderCursor) {
 			return true;
 		}
 
-		const startLocal = this.viewportService.clientToViewportLocal(
-			payload.viewportPoint.x,
-			payload.viewportPoint.y,
-		);
 		this.startClientX = startLocal.x;
 		this.startClientY = startLocal.y;
 		this.hasStart = true;

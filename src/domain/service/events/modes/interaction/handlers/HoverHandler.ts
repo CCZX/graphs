@@ -1,27 +1,35 @@
 import { ShapeStateEnum } from '@/shape/contract';
 import { HandlerEnum, InteractionState, EventPayload } from '../../../../../contract/eventManager';
 import { IHandler, IHandlerWithInteraction, IShapeManager } from '@/domain/contract';
+import { IViewportService } from '@/domain/contract/ViewportService';
 import { inject } from 'inversify';
 import { fluentProvideWithSingle } from '@/common/context';
 
 @fluentProvideWithSingle(IHandlerWithInteraction)
 export class HoverHandler implements IHandler {
-	type = HandlerEnum.Hover;
-	sort = 90;
+	public type: HandlerEnum = HandlerEnum.Hover;
+	public sort: number = 90;
 
 	@inject(IShapeManager)
 	private shapeManager!: IShapeManager;
 
-	enable(_state: InteractionState): boolean {
+	@inject(IViewportService)
+	private viewportService!: IViewportService;
+
+	public enable(_state: InteractionState): boolean {
 		return true;
 	}
 
-	execute(e: PointerEvent, state: InteractionState, payload: EventPayload): boolean {
+	public execute(e: PointerEvent, state: InteractionState, payload: EventPayload): boolean {
 		if (e.type !== 'pointermove') {
 			return true;
 		}
 
-		const nextShape = this.shapeManager.getShapeByPoint(payload.viewportPoint);
+		const worldPoint = this.viewportService.clientToViewportLocal(
+			payload.viewportPoint.x,
+			payload.viewportPoint.y,
+		);
+		const nextShape = this.shapeManager.getShapeByPoint(worldPoint);
 
 		document.body.style.cursor = 'default';
 

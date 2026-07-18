@@ -1,5 +1,6 @@
 import {
 	BasePropertyValue,
+	LineEndpointValue,
 	ShapeData,
 	ShapePropertyEnum,
 	ShapeStateEnum,
@@ -19,6 +20,9 @@ import { IActionLogManager, IActionManager } from '@/domain/contract/action';
 import { IShapeManager } from '@/domain/contract';
 import { ISelectService } from '@/domain/contract/SelectService';
 import { IViewportService } from '@/domain/contract/ViewportService';
+import { getShapeAnchorPoint } from '@/shape/geometry';
+import { BaseProperty } from '@/shape/property/BaseProperty';
+import { LineProperty } from '@/shape/property/LineProperty';
 import { inject } from 'inversify';
 import { IocContainerService } from '@/common/contract';
 import { fluentProvideWithSingle } from '@/common/context';
@@ -40,8 +44,8 @@ const DRAG_THRESHOLD = 3;
 
 @fluentProvideWithSingle(IHandlerWithCreator)
 export class CreateHandler implements IHandler {
-	type = HandlerEnum.Select;
-	sort = 10;
+	public type: HandlerEnum = HandlerEnum.Select;
+	public sort: number = 10;
 
 	@inject(IocContainerService)
 	private ioc!: IocContainerService;
@@ -69,12 +73,12 @@ export class CreateHandler implements IHandler {
 	private creatingId: string | null = null;
 	private creatingType: ShapeTypeEnum | null = null;
 
-	enable(_state: InteractionState): boolean {
+	public enable(_state: InteractionState): boolean {
 		const tool = this.toolService.store.getState().activeTool;
 		return tool === 'rect' || tool === 'circle' || tool === 'text' || tool === 'line';
 	}
 
-	execute(e: PointerEvent, state: InteractionState, payload: EventPayload): boolean {
+	public execute(e: PointerEvent, state: InteractionState, payload: EventPayload): boolean {
 		switch (e.type) {
 			case 'pointerdown':
 				return this.handlePointerDown(payload);
@@ -99,33 +103,64 @@ export class CreateHandler implements IHandler {
 			payload.viewportPoint.y,
 		);
 
-		// 矩形/圆：进入拖拽创建流程，从 0 尺寸开始，随 pointermove 生长
-		if (tool === 'rect' || tool === 'circle') {
-			const type = tool === 'rect' ? ShapeTypeEnum.Rectangle : ShapeTypeEnum.Circle;
+		// 矩形/圆/线：进入拖拽创建流程
+		if (tool === 'rect' || tool === 'circle' || tool === 'line') {
+			const type =
+				tool === 'rect'
+					? ShapeTypeEnum.Rectangle
+					: tool === 'circle'
+					? ShapeTypeEnum.Circle
+					: ShapeTypeEnum.Line;
 
 			this.actionLogManager.setStreamStart();
 
-			const shapeData: ShapeData = {
-				id: nextId(),
-				type,
-				properties: {
-					base: { x: localPoint.x, y: localPoint.y, width: 0, height: 0 },
-					fill: { ...DEFAULT_PROPS.fill },
-					stroke: { ...DEFAULT_PROPS.stroke },
-				},
-			};
+			if (type === ShapeTypeEnum.Line) {
+				const startEndpoint = this.trySnapEndpoint(localPoint, null);
 
-			this.actionManager.push(new CreateShapeAction([shapeData], this.ioc));
+				const shapeData: ShapeData = {
+					id: nextId(),
+					type: ShapeTypeEnum.Line,
+					properties: {
+						base: { x: localPoint.x, y: localPoint.y, width: 0, height: 0 },
+						fill: { ...DEFAULT_PROPS.fill },
+						stroke: { ...DEFAULT_PROPS.stroke },
+						line: {
+							start: startEndpoint,
+							end: { ...startEndpoint },
+							routing: 'straight' as const,
+						},
+					},
+				};
 
-			this.isCreating = true;
-			this.startPoint = { x: localPoint.x, y: localPoint.y };
-			this.creatingId = shapeData.id;
-			this.creatingType = type;
+				this.actionManager.push(new CreateShapeAction([shapeData], this.ioc));
+
+				this.isCreating = true;
+				this.startPoint = { x: localPoint.x, y: localPoint.y };
+				this.creatingId = shapeData.id;
+				this.creatingType = ShapeTypeEnum.Line;
+			} else {
+				const shapeData: ShapeData = {
+					id: nextId(),
+					type,
+					properties: {
+						base: { x: localPoint.x, y: localPoint.y, width: 0, height: 0 },
+						fill: { ...DEFAULT_PROPS.fill },
+						stroke: { ...DEFAULT_PROPS.stroke },
+					},
+				};
+
+				this.actionManager.push(new CreateShapeAction([shapeData], this.ioc));
+
+				this.isCreating = true;
+				this.startPoint = { x: localPoint.x, y: localPoint.y };
+				this.creatingId = shapeData.id;
+				this.creatingType = type;
+			}
 
 			return false;
 		}
 
-		// 文本/直线：保持点击即创建
+		// 文本：保持点击即创建
 		return this.createImmediate(tool, localPoint);
 	}
 
@@ -138,7 +173,12 @@ export class CreateHandler implements IHandler {
 			payload.viewportPoint.x,
 			payload.viewportPoint.y,
 		);
-		this.pushBase(this.computeBase(cur));
+
+		if (this.creatingType === ShapeTypeEnum.Line) {
+			this.pushLineUpdate(cur);
+		} else {
+			this.pushBase(this.computeBase(cur));
+		}
 		return false;
 	}
 
@@ -160,17 +200,26 @@ export class CreateHandler implements IHandler {
 		const dx = cur.x - start.x;
 		const dy = cur.y - start.y;
 
-		const isClick = Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD;
-		const base: BasePropertyValue = isClick
-			? {
-					x: start.x - DEFAULT_PROPS.width / 2,
-					y: start.y - DEFAULT_PROPS.height / 2,
-					width: DEFAULT_PROPS.width,
-					height: DEFAULT_PROPS.height,
-			  }
-			: this.computeBase(cur);
+		if (this.creatingType === ShapeTypeEnum.Line) {
+			const isClick = Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD;
+			if (isClick) {
+				this.pushLineUpdate({ x: start.x + 100, y: start.y });
+			} else {
+				this.pushLineUpdate(cur);
+			}
+		} else {
+			const isClick = Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD;
+			const base: BasePropertyValue = isClick
+				? {
+						x: start.x - DEFAULT_PROPS.width / 2,
+						y: start.y - DEFAULT_PROPS.height / 2,
+						width: DEFAULT_PROPS.width,
+						height: DEFAULT_PROPS.height,
+				  }
+				: this.computeBase(cur);
+			this.pushBase(base);
+		}
 
-		this.pushBase(base);
 		this.actionLogManager.setStreamEnd();
 
 		this.selectCreatedShape(state);
@@ -210,6 +259,45 @@ export class CreateHandler implements IHandler {
 				this.ioc,
 			),
 		);
+	}
+
+	private pushLineUpdate(cur: Point) {
+		const shape = this.shapeManager.getShapeById(this.creatingId!);
+		if (!shape) {
+			return;
+		}
+
+		const line = shape.getProperty<LineProperty>(ShapePropertyEnum.Line)?.value;
+		if (!line) {
+			return;
+		}
+
+		const endEndpoint = this.trySnapEndpoint(cur, line.start);
+		const base = shape.getProperty<BaseProperty>(ShapePropertyEnum.Base).get();
+
+		this.actionManager.push(
+			new UpdatePropsAction(
+				[
+					{
+						id: this.creatingId!,
+						type: ShapeTypeEnum.Line,
+						properties: { base, line: { ...line, end: endEndpoint } },
+					},
+				],
+				this.ioc,
+			),
+		);
+	}
+
+	/** 检测点是否在某图形上，返回带 shapeId/anchor 的端点，否则返回自由坐标端点 */
+	private trySnapEndpoint(point: Point, refEndpoint: LineEndpointValue | null): LineEndpointValue {
+		const snapShape = this.shapeManager.getShapeByPoint(point);
+		if (snapShape && snapShape.type !== ShapeTypeEnum.Line && snapShape.id !== this.creatingId) {
+			const ref = refEndpoint ?? point;
+			const anchorPt = getShapeAnchorPoint(snapShape, 'auto', ref);
+			return { x: anchorPt.x, y: anchorPt.y, shapeId: snapShape.id, anchor: 'auto' };
+		}
+		return { x: point.x, y: point.y };
 	}
 
 	private selectCreatedShape(state: InteractionState) {

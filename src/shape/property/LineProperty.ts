@@ -1,10 +1,12 @@
 import { AbsProperty } from './AbsProperty';
-import { LinePropertyValue, ShapePropertyEnum } from '../contract';
+import { LineEndpointValue, LinePropertyValue, ShapePropertyEnum } from '../contract';
 import { BaseShape } from '../BaseShape';
 import { BaseProperty } from './BaseProperty';
 import { StrokeProperty } from './StrokeProperty';
-import { catmullRomToBezier, cubicBezierPoint } from '../geometry';
+import { catmullRomToBezier, cubicBezierPoint, getShapeAnchorPoint } from '../geometry';
 import { Graphics } from 'pixi.js';
+import { IShapeManager } from '@/domain/contract';
+import { IocContainerService } from '@/common/contract';
 
 const DEFAULT_VALUE: LinePropertyValue = {
 	start: { x: 0, y: 0 },
@@ -20,10 +22,25 @@ export class LineProperty extends AbsProperty<LinePropertyValue> {
 		super(shape, value || DEFAULT_VALUE);
 	}
 
-	/** 世界坐标下的全点序列：start → 途经点 → end */
+	/** 解析端点：锚定时计算图形上的实际坐标，否则返回自由坐标 */
+	public resolveEndpoint(endpoint: LineEndpointValue, refPoint?: Point): Point {
+		if (endpoint.shapeId) {
+			const ioc = (this.shape as any).context.ioc as IocContainerService;
+			const shapeManager = ioc.get<IShapeManager>(IShapeManager);
+			const target = shapeManager.getShapeById(endpoint.shapeId);
+			if (target) {
+				return getShapeAnchorPoint(target, endpoint.anchor, refPoint);
+			}
+		}
+		return { x: endpoint.x, y: endpoint.y };
+	}
+
+	/** 世界坐标下的全点序列：start → 途经点 → end（锚定端点自动解析坐标） */
 	public getPoints(): Point[] {
 		const v = this.value;
-		return [v.start, ...(v.midPoints ?? []), v.end];
+		const start = this.resolveEndpoint(v.start, v.end);
+		const end = this.resolveEndpoint(v.end, v.start);
+		return [start, ...(v.midPoints ?? []), end];
 	}
 
 	/** 容器本地坐标下的全点序列 */

@@ -12,7 +12,7 @@ export class ShapeManager implements IShapeManager {
 
 	private shapes: Map<string, BaseShape> = new Map();
 
-	setShape(shape: BaseShape, appendToStage = true) {
+	public setShape(shape: BaseShape, appendToStage = true) {
 		if (appendToStage) {
 			const stage = this.viewportService.getStage();
 			stage.appendShape(shape.container);
@@ -20,24 +20,26 @@ export class ShapeManager implements IShapeManager {
 		this.shapes.set(shape.id, shape);
 	}
 
-	getShapeById(id: string) {
+	public getShapeById(id: string) {
 		return this.shapes.get(id);
 	}
 
-	getShapeByPoint(point: Point) {
+	public getShapeByPoint(point: Point) {
+		const viewport = this.viewportService.getStage().getViewport();
 		for (const [, shape] of this.shapes) {
-			const local = shape.container.toLocal(new PixiPoint(point.x, point.y));
+			// 将 viewport 点转换为 shape 容器坐标系
+			const local = shape.container.toLocal(new PixiPoint(point.x, point.y), viewport);
 			if (shape.containsPoint({ x: local.x, y: local.y })) {
 				return shape;
 			}
 		}
 	}
 
-	getAllShapes(): BaseShape[] {
+	public getAllShapes(): BaseShape[] {
 		return Array.from(this.shapes.values());
 	}
 
-	removeShape(id: string) {
+	public removeShape(id: string) {
 		const shape = this.shapes.get(id);
 		if (shape) {
 			const stage = this.viewportService.getStage();

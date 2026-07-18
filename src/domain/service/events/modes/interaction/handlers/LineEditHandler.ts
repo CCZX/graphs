@@ -1,6 +1,7 @@
 import { BaseShape } from '@/shape/BaseShape';
 import { LineProperty } from '@/shape/property/LineProperty';
 import {
+	LineEndpointValue,
 	LinePropertyValue,
 	ShapePropertyEnum,
 	ShapeStateEnum,
@@ -11,6 +12,8 @@ import { IActionLogManager, IActionManager } from '@/domain/contract/action';
 import { UpdatePropsAction } from '@/domain/service/action/actions/UpdatePropsAction';
 import { IHandlerWithInteraction, IHandler } from '@/domain/contract';
 import { IViewportService } from '@/domain/contract/ViewportService';
+import { IShapeManager } from '@/domain/contract';
+import { getShapeAnchorPoint } from '@/shape/geometry';
 import { inject } from 'inversify';
 import { fluentProvideWithSingle } from '@/common/context';
 import { IocContainerService } from '@/common/contract';
@@ -38,6 +41,9 @@ export class LineEditHandler implements IHandler {
 
 	@inject(IViewportService)
 	private viewportService!: IViewportService;
+
+	@inject(IShapeManager)
+	private shapeManager!: IShapeManager;
 
 	@inject(IocContainerService)
 	private ioc!: IocContainerService;
@@ -176,9 +182,19 @@ export class LineEditHandler implements IHandler {
 		const newValue = this.cloneValue(line.value);
 		const target = this.dragTarget;
 		if (target.kind === 'start') {
-			newValue.start = { ...newValue.start, x: point.x, y: point.y };
+			const snapped = this.trySnapToShape(point, shape.id, newValue.end);
+			if (snapped) {
+				newValue.start = snapped;
+			} else {
+				newValue.start = { x: point.x, y: point.y };
+			}
 		} else if (target.kind === 'end') {
-			newValue.end = { ...newValue.end, x: point.x, y: point.y };
+			const snapped = this.trySnapToShape(point, shape.id, newValue.start);
+			if (snapped) {
+				newValue.end = snapped;
+			} else {
+				newValue.end = { x: point.x, y: point.y };
+			}
 		} else if (newValue.midPoints?.[target.index]) {
 			newValue.midPoints[target.index] = { x: point.x, y: point.y };
 		}
@@ -269,6 +285,25 @@ export class LineEditHandler implements IHandler {
 			start: { ...v.start },
 			end: { ...v.end },
 			midPoints: v.midPoints?.map((p) => ({ ...p })),
+		};
+	}
+
+	/** 检测世界坐标点是否在某图形内，返回带 shapeId/anchor 的端点；否则返回 null */
+	private trySnapToShape(
+		point: Point,
+		excludeId: string,
+		refEndpoint: LineEndpointValue,
+	): LineEndpointValue | null {
+		const snapShape = this.shapeManager.getShapeByPoint(point);
+		if (!snapShape || snapShape.id === excludeId || snapShape.type === ShapeTypeEnum.Line) {
+			return null;
+		}
+		const anchorPt = getShapeAnchorPoint(snapShape, 'auto', refEndpoint);
+		return {
+			x: anchorPt.x,
+			y: anchorPt.y,
+			shapeId: snapShape.id,
+			anchor: 'auto',
 		};
 	}
 

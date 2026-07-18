@@ -1,6 +1,5 @@
 import { InteractionState, EventPayload } from '../../contract/eventManager';
 import { IEventManager, IEventMode, IViewportService } from '../../contract';
-import { IocContainerService } from '@/common/contract';
 import { inject, multiInject } from 'inversify';
 import { provideMultiple } from '@/common/context';
 import { IDestroyable } from '@/common/contract/Destroyable';
@@ -15,11 +14,10 @@ export class EventManager implements IEventManager, IDestroyable {
 
 	@multiInject(IEventMode)
 	private eventModeList: IEventMode[] = [];
-	private activeMode: IEventMode | null = null;
-	private canvasEl: HTMLElement | null = null;
 
-	@inject(IocContainerService)
-	private ioc!: IocContainerService;
+	private activeMode: IEventMode | null = null;
+
+	private canvasEl: HTMLElement | null = null;
 
 	@inject(IViewportService)
 	private viewportService!: IViewportService;
@@ -50,8 +48,6 @@ export class EventManager implements IEventManager, IDestroyable {
 		for (const handler of this.activeMode.handlerList) {
 			if (!handler.enable(this.state)) {
 				continue;
-			} else {
-				console.log(handler.constructor.name);
 			}
 			const shouldContinue = handler.execute(e, this.state, payload);
 			if (!shouldContinue) {

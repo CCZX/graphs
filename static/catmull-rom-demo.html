@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catmull-Rom → Bezier 转换演示</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #1a1a2e, #16213e); color: #fff; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { text-align: center; background: linear-gradient(90deg, #4facfe, #00f2fe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { text-align: center; color: #888; margin-bottom: 30px; font-size: 14px; }
+        canvas { display: block; margin: 0 auto; background: #0f0f1a; border-radius: 12px; }
+        .legend { display: flex; justify-content: center; gap: 30px; margin-top: 20px; flex-wrap: wrap; }
+        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+        .legend-color { width: 20px; height: 3px; border-radius: 2px; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .legend-square { width: 8px; height: 8px; border-radius: 2px; }
+        .info-panel { margin-top: 30px; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        .info-panel h3 { margin-top: 0; color: #4facfe; }
+        .formula { font-family: monospace; background: rgba(0,0,0,0.3); padding: 10px 15px; border-radius: 6px; margin: 10px 0; }
+        .section { margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; }
+        .section h4 { margin: 0 0 10px 0; color: #ffe66d; }
+        .section p { margin: 5px 0; font-size: 14px; color: #ccc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Catmull-Rom → 三次贝塞尔 转换演示</h1>
+        <p class="subtitle">3个输入点 → 2段贝塞尔曲线</p>
+        
+        <canvas id="canvas" width="900" height="500"></canvas>
+        
+        <div class="legend">
+            <div class="legend-item"><div class="legend-dot" style="background: #ff6b6b;"></div><span>输入点 (P0-P2)</span></div>
+            <div class="legend-item"><div class="legend-color" style="background: #4ecdc4;"></div><span>Catmull-Rom 曲线</span></div>
+            <div class="legend-item"><div class="legend-square" style="background: #a855f7;"></div><span>返回值 c1（紫色）</span></div>
+            <div class="legend-item"><div class="legend-square" style="background: #00ff88;"></div><span>返回值 c2（绿色）</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background: #ffd700;"></div><span>返回值 to（金色）</span></div>
+        </div>
+
+        <div class="info-panel">
+            <h3>核心概念：控制点是算出来的！</h3>
+            
+            <div class="section">
+                <h4>图一（二次贝塞尔）vs 我们的（三次贝塞尔）</h4>
+                <p>图一的曲线是 <strong>二次贝塞尔</strong>：3个点（起点、控制点、终点），控制点需要人为指定</p>
+                <p>我们的曲线是 <strong>三次贝塞尔</strong>：4个点（起点、C1、C2、终点），C1/C2 由算法自动计算</p>
+            </div>
+
+            <div class="section">
+                <h4>返回值结构</h4>
+                <p>函数返回 BezierSegment[]，每个元素包含三个点：</p>
+                <div class="formula">{ c1: Point, c2: Point, to: Point }</div>
+                <p>• <strong>c1</strong>（紫色方块）：第一个控制点</p>
+                <p>• <strong>c2</strong>（绿色方块）：第二个控制点</p>
+                <p>• <strong>to</strong>（金色圆点）：曲线终点</p>
+                <p>起点隐含为上一段的 to（或第一个输入点）</p>
+            </div>
+
+            <div class="section">
+                <h4>曲线为什么经过 P0 和 P1？</h4>
+                <p>三次贝塞尔曲线公式：</p>
+                <div class="formula">B(t) = (1-t)³×P0 + 3(1-t)²t×C1 + 3(1-t)t²×C2 + t³×P1</div>
+                <p>当 t=0（起点）：B(0) = P0，曲线经过起点</p>
+                <p>当 t=1（终点）：B(1) = P1，曲线经过终点</p>
+                <p>**控制点 C1/C2 只影响曲线形状，不影响端点！**</p>
+            </div>
+
+            <div class="section">
+                <h4>控制点怎么算的？</h4>
+                <p>公式：C1 = P1 + (P2 - P0) / 6，C2 = P2 - (P3 - P1) / 6</p>
+                <p>首段特殊处理：P0=P1，末段特殊处理：P3=P2</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        const points = [
+            { x: 150, y: 350 },
+            { x: 450, y: 150 },
+            { x: 750, y: 350 }
+        ];
+        
+        function catmullRomToBezier(points) {
+            const segments = [];
+            for (let i = 0; i < points.length - 1; i++) {
+                const p0 = points[i - 1] ?? points[i];
+                const p1 = points[i];
+                const p2 = points[i + 1];
+                const p3 = points[i + 2] ?? points[i + 1];
+                segments.push({
+                    c1: { x: p1.x + (p2.x - p0.x) / 6, y: p1.y + (p2.y - p0.y) / 6 },
+                    c2: { x: p2.x - (p3.x - p1.x) / 6, y: p2.y - (p3.y - p1.y) / 6 },
+                    to: p2,
+                    from: p1,
+                    index: i
+                });
+            }
+            return segments;
+        }
+        
+        function drawCurve(ctx, segments) {
+            ctx.beginPath();
+            ctx.moveTo(segments[0].from.x, segments[0].from.y);
+            segments.forEach(seg => {
+                ctx.bezierCurveTo(seg.c1.x, seg.c1.y, seg.c2.x, seg.c2.y, seg.to.x, seg.to.y);
+            });
+            ctx.strokeStyle = '#4ecdc4';
+            ctx.lineWidth = 4;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+        }
+        
+        function drawPoints(ctx) {
+            points.forEach((p, i) => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 10, 0, Math.PI * 2);
+                ctx.fillStyle = '#ff6b6b';
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(`P${i}`, p.x, p.y - 22);
+            });
+        }
+        
+        function drawControlPoints(ctx, segments) {
+            segments.forEach(seg => {
+                ctx.fillStyle = '#a855f7';
+                ctx.fillRect(seg.c1.x - 6, seg.c1.y - 6, 12, 12);
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 10px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('c1', seg.c1.x, seg.c1.y + 3);
+                
+                ctx.fillStyle = '#00ff88';
+                ctx.fillRect(seg.c2.x - 6, seg.c2.y - 6, 12, 12);
+                ctx.fillStyle = '#000';
+                ctx.font = 'bold 10px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('c2', seg.c2.x, seg.c2.y + 3);
+                
+                ctx.strokeStyle = 'rgba(168, 85, 247, 0.4)';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([4, 4]);
+                ctx.beginPath();
+                ctx.moveTo(seg.from.x, seg.from.y);
+                ctx.lineTo(seg.c1.x, seg.c1.y);
+                ctx.stroke();
+                
+                ctx.strokeStyle = 'rgba(0, 255, 136, 0.4)';
+                ctx.beginPath();
+                ctx.moveTo(seg.to.x, seg.to.y);
+                ctx.lineTo(seg.c2.x, seg.c2.y);
+                ctx.stroke();
+                
+                ctx.setLineDash([]);
+            });
+        }
+        
+        function drawToPoints(ctx, segments) {
+            segments.forEach(seg => {
+                ctx.fillStyle = '#ffd700';
+                ctx.beginPath();
+                ctx.arc(seg.to.x, seg.to.y, 5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.fillStyle = '#000';
+                ctx.font = 'bold 10px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('to', seg.to.x + 12, seg.to.y + 3);
+            });
+        }
+        
+        function drawSegmentLabels(ctx, segments) {
+            segments.forEach(seg => {
+                const midX = (seg.from.x + seg.to.x) / 2;
+                const midY = (seg.from.y + seg.to.y) / 2 - 30;
+                ctx.fillStyle = '#ffe66d';
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(`${seg.index === 0 ? '第1段' : '第2段'}: ${seg.from.x},${seg.from.y} → ${seg.to.x},${seg.to.y}`, midX, midY);
+            });
+        }
+        
+        function drawGrid(ctx) {
+            ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+            ctx.lineWidth = 1;
+            for (let x = 0; x < canvas.width; x += 50) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+            }
+            for (let y = 0; y < canvas.height; y += 50) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+            }
+        }
+        
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawGrid(ctx);
+            const segments = catmullRomToBezier(points);
+            drawControlPoints(ctx, segments);
+            drawCurve(ctx, segments);
+            drawPoints(ctx);
+            drawToPoints(ctx, segments);
+            drawSegmentLabels(ctx, segments);
+        }
+        
+        draw();
+    </script>
+</body>
+</html>

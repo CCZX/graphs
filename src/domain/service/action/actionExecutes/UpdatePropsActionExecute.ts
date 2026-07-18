@@ -1,6 +1,7 @@
 import { AbsActionExecute } from '../AbsActionExecute';
 import { ActionTypeEnum, IActionExecute } from '../../../contract/action';
 import { IShapeManager } from '@/domain/contract';
+import { ILineAnchorService } from '@/domain/contract/LineAnchorService';
 import { ISelectService } from '@/domain/contract/SelectService';
 import { ShapePropertyEnum } from '@/shape/contract';
 import { inject } from 'inversify';
@@ -10,15 +11,18 @@ import { BaseShape } from '@/shape/BaseShape';
 
 @fluentProvideWithSingle(IActionExecute)
 export class UpdatePropsActionExecute extends AbsActionExecute {
-	type = ActionTypeEnum.UpdateShapeProps;
+	public type: ActionTypeEnum = ActionTypeEnum.UpdateShapeProps;
 
 	@inject(IShapeManager)
 	private shapeManager!: IShapeManager;
 
+	@inject(ILineAnchorService)
+	private lineAnchorService!: ILineAnchorService;
+
 	@inject(ISelectService)
 	private selectService!: ISelectService;
 
-	execute(action: UpdatePropsAction): void {
+	public execute(action: UpdatePropsAction): void {
 		const shapes: BaseShape[] = [];
 		for (const { id, properties } of action.data) {
 			const shape = this.shapeManager.getShapeById(id);
@@ -42,6 +46,8 @@ export class UpdatePropsActionExecute extends AbsActionExecute {
 
 			shapes.push(shape);
 		}
+
+		this.lineAnchorService.reanchor(new Set(shapes.map((s) => s.id)));
 
 		this.selectService.updateMultiSelectOverlay(shapes);
 	}

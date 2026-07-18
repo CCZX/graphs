@@ -9,6 +9,7 @@ const ENDPOINT_RADIUS = 5;
 const MID_POINT_RADIUS = 5;
 const VIRTUAL_HANDLE_RADIUS = 4;
 const VIRTUAL_HANDLE_ALPHA = 0.4;
+const ANCHOR_COLOR = 0x4caf50;
 
 /**
  * 线的选中装饰：端点手柄 + 途经点手柄 + 虚拟中点手柄（拖动可生成途经点）。
@@ -34,6 +35,7 @@ export class LineSelectedBorder extends AbsDecorate {
 		const start = points[0];
 		const end = points[points.length - 1];
 		const midPoints = points.slice(1, -1);
+		const v = line.value;
 
 		this.graphics.clear();
 
@@ -53,13 +55,22 @@ export class LineSelectedBorder extends AbsDecorate {
 			this.graphics.endFill();
 		}
 
-		// 端点（白底描边）
-		for (const p of [start, end]) {
+		// 起点
+		this.drawEndpoint(start, !!v.start.shapeId);
+		// 终点
+		this.drawEndpoint(end, !!v.end.shapeId);
+	}
+
+	private drawEndpoint(p: Point, anchored: boolean) {
+		if (anchored) {
+			this.graphics.lineStyle(1, ANCHOR_COLOR, 1);
+			this.graphics.beginFill(ANCHOR_COLOR, 1);
+		} else {
 			this.graphics.lineStyle(1, HOVER_BORDER, 1);
 			this.graphics.beginFill(0xffffff, 1);
-			this.graphics.drawCircle(p.x, p.y, ENDPOINT_RADIUS);
-			this.graphics.endFill();
 		}
+		this.graphics.drawCircle(p.x, p.y, ENDPOINT_RADIUS);
+		this.graphics.endFill();
 	}
 
 	public onActivate() {
