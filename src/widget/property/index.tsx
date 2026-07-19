@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { ShapePropertyEnum } from '@/shape/contract';
+import { ShapePropertyEnum, type FillStyle, type StrokeStyle } from '@/shape/contract';
 import type { FillPropertyValue, StrokePropertyValue } from '@/shape/contract';
 import { STROKE_COLOR_PRESETS, FILL_COLOR_PRESETS } from './const';
 import type { PresetColor } from './const';
@@ -31,8 +31,10 @@ export function Property() {
 
 	const [strokeColor, setStrokeColor] = useState('#1e1e1e');
 	const [strokeWidth, setStrokeWidth] = useState(1);
+	const [strokeStyle, setStrokeStyle] = useState<StrokeStyle>('regular');
 	const [fillColor, setFillColor] = useState('#ffffff');
 	const [fillAlpha, setFillAlpha] = useState(100);
+	const [fillStyle, setFillStyle] = useState<FillStyle>('solid');
 	const [isTransparent, setIsTransparent] = useState(false);
 	const [visible, setVisible] = useState(false);
 	const visibleRef = useRef(false);
@@ -52,10 +54,12 @@ export function Property() {
 		if (stroke) {
 			setStrokeColor(numberToHex(stroke.color));
 			setStrokeWidth(stroke.width);
+			setStrokeStyle(stroke.style ?? 'regular');
 		}
 
 		const fill = shape.getProperty<FillProperty>(ShapePropertyEnum.Fill).value;
 		if (fill) {
+			setFillStyle(fill.style ?? 'solid');
 			if (fill.alpha === 0) {
 				setIsTransparent(true);
 				setFillColor('#ffffff');
@@ -102,6 +106,11 @@ export function Property() {
 		shape?.updateProperty(ShapePropertyEnum.Stroke, { width: w });
 	};
 
+	const handleStrokeStyle = (style: StrokeStyle) => {
+		setStrokeStyle(style);
+		shape?.updateProperty(ShapePropertyEnum.Stroke, { style });
+	};
+
 	const handleFillColor = (preset: PresetColor & { transparent?: boolean }) => {
 		if (preset.transparent) {
 			setIsTransparent(true);
@@ -121,6 +130,11 @@ export function Property() {
 		setFillAlpha(alpha);
 		setIsTransparent(alpha === 0);
 		shape?.updateProperty(ShapePropertyEnum.Fill, { alpha: alpha / 100 });
+	};
+
+	const handleFillStyle = (style: FillStyle) => {
+		setFillStyle(style);
+		shape?.updateProperty(ShapePropertyEnum.Fill, { style });
 	};
 
 	const previewR = STROKE_RADIUS_MAP[strokeWidth] ?? 2;
@@ -181,6 +195,31 @@ export function Property() {
 
 				<div className='ctx-sep' />
 
+				{/* 描边样式 */}
+				<div className='ctx-section'>
+					<span className='ctx-label'>描边样式</span>
+					<div className='ctx-style-row'>
+						<button
+							className={`ctx-style-btn${
+								strokeStyle === 'regular' ? ' ctx-style-btn--active' : ''
+							}`}
+							onClick={() => handleStrokeStyle('regular')}
+						>
+							规正
+						</button>
+						<button
+							className={`ctx-style-btn${
+								strokeStyle === 'sketchy' ? ' ctx-style-btn--active' : ''
+							}`}
+							onClick={() => handleStrokeStyle('sketchy')}
+						>
+							手绘
+						</button>
+					</div>
+				</div>
+
+				<div className='ctx-sep' />
+
 				{/* 背景色 */}
 				<div className='ctx-section'>
 					<span className='ctx-label'>背景色</span>
@@ -218,6 +257,33 @@ export function Property() {
 							onChange={(e) => handleFillAlpha(parseInt(e.target.value))}
 						/>
 						<span className='ctx-alpha-value'>{fillAlpha}%</span>
+					</div>
+				</div>
+
+				<div className='ctx-sep' />
+
+				{/* 填充样式 */}
+				<div className='ctx-section'>
+					<span className='ctx-label'>填充样式</span>
+					<div className='ctx-style-row'>
+						<button
+							className={`ctx-style-btn${fillStyle === 'solid' ? ' ctx-style-btn--active' : ''}`}
+							onClick={() => handleFillStyle('solid')}
+						>
+							纯色
+						</button>
+						<button
+							className={`ctx-style-btn${fillStyle === 'hatch' ? ' ctx-style-btn--active' : ''}`}
+							onClick={() => handleFillStyle('hatch')}
+						>
+							斜线
+						</button>
+						<button
+							className={`ctx-style-btn${fillStyle === 'sketchy' ? ' ctx-style-btn--active' : ''}`}
+							onClick={() => handleFillStyle('sketchy')}
+						>
+							手绘
+						</button>
 					</div>
 				</div>
 			</div>

@@ -3,8 +3,14 @@ import { AbsProperty } from './AbsProperty';
 import { StrokePropertyValue, ShapePropertyEnum, ShapeTypeEnum } from '../contract';
 import { BaseShape } from '../BaseShape';
 import { BaseProperty } from './BaseProperty';
+import { applyLineStyle, drawSketchyCircle, drawSketchyRect } from './style';
 
-const DEFAULT_VALUE: StrokePropertyValue = { color: 0x000000, width: 0, alpha: 1 };
+const DEFAULT_VALUE: StrokePropertyValue = {
+	color: 0x000000,
+	width: 0,
+	alpha: 1,
+	style: 'regular',
+};
 
 export class StrokeProperty extends AbsProperty<StrokePropertyValue> {
 	constructor(shape: BaseShape, value?: StrokePropertyValue) {
@@ -12,7 +18,11 @@ export class StrokeProperty extends AbsProperty<StrokePropertyValue> {
 	}
 
 	public update(value: Partial<StrokePropertyValue>): void {
-		this.value = { ...this.value, ...value };
+		const merged = { ...this.value, ...value };
+		if (merged.style === 'sketchy' && merged.seed == null) {
+			merged.seed = Math.floor(Math.random() * 1_000_000_000);
+		}
+		this.value = merged;
 		// 触发完整重绘，避免 stroke 叠层
 		this.shape.getProperty<BaseProperty>(ShapePropertyEnum.Base)?.draw();
 	}
@@ -24,15 +34,28 @@ export class StrokeProperty extends AbsProperty<StrokePropertyValue> {
 
 		const { width, height } = this.shape.getWH();
 		const g = this.shape.graphics as Graphics;
+		const style = this.value.style ?? 'regular';
 
-		g.lineStyle(this.value.width, this.value.color, this.value.alpha);
+		applyLineStyle(g, {
+			width: this.value.width,
+			color: this.value.color,
+			alpha: this.value.alpha,
+		});
 
 		if (this.shape.type === ShapeTypeEnum.Rectangle) {
-			g.drawRect(0, 0, width, height);
+			if (style === 'sketchy' && this.value.seed != null) {
+				drawSketchyRect(g, 0, 0, width, height, this.value.seed);
+			} else {
+				g.drawRect(0, 0, width, height);
+			}
 		}
 
 		if (this.shape.type === ShapeTypeEnum.Circle) {
-			g.drawCircle(0, 0, width / 2);
+			if (style === 'sketchy' && this.value.seed != null) {
+				drawSketchyCircle(g, 0, 0, width / 2, this.value.seed);
+			} else {
+				g.drawCircle(0, 0, width / 2);
+			}
 		}
 
 		g.lineStyle(0);

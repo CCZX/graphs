@@ -1,8 +1,9 @@
 import { AbsProperty } from './AbsProperty';
-import { LineEndpointValue, LinePropertyValue, ShapePropertyEnum } from '../contract';
+import { LineEndpointValue, LinePropertyValue, ShapePropertyEnum, StrokeStyle } from '../contract';
 import { BaseShape } from '../BaseShape';
 import { BaseProperty } from './BaseProperty';
 import { StrokeProperty } from './StrokeProperty';
+import { applyLineStyle, drawSketchyLine } from './style';
 import { catmullRomToBezier, cubicBezierPoint, getShapeAnchorPoint } from '../geometry';
 import { Graphics } from 'pixi.js';
 import { IShapeManager } from '@/domain/contract';
@@ -124,21 +125,28 @@ export class LineProperty extends AbsProperty<LinePropertyValue> {
 		const color = sv?.color ?? 0x000000;
 		const alpha = sv?.alpha ?? 1;
 		const width = sv?.width ?? 1;
+		const strokeStyle: StrokeStyle = sv?.style ?? 'regular';
+		const seed = sv?.seed;
 
 		// 画线：无途经点为直线，有途经点为平滑曲线
-		g.lineStyle(width, color, alpha);
+		applyLineStyle(g, { width, color, alpha });
 		const start = points[0];
 		const end = points[points.length - 1];
-		g.moveTo(start.x, start.y);
 
 		// 箭头切线方向的参考点
 		let startTangentFrom = end;
 		let endTangentFrom = start;
 
-		if (points.length === 2) {
+		if (strokeStyle === 'sketchy' && seed != null) {
+			drawSketchyLine(g, points, seed);
+			startTangentFrom = end;
+			endTangentFrom = start;
+		} else if (points.length === 2) {
+			g.moveTo(start.x, start.y);
 			g.lineTo(end.x, end.y);
 		} else {
 			const segments = catmullRomToBezier(points);
+			g.moveTo(start.x, start.y);
 			for (const seg of segments) {
 				g.bezierCurveTo(seg.c1.x, seg.c1.y, seg.c2.x, seg.c2.y, seg.to.x, seg.to.y);
 			}

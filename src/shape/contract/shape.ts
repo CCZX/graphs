@@ -73,18 +73,26 @@ export interface BasePropertyValue {
 	rotation?: number;
 }
 
+export type FillStyle = 'solid' | 'hatch' | 'sketchy';
+
 export interface FillPropertyValue {
 	color: number;
 	/**
 	 * 透明度
 	 */
 	alpha: number;
+	style?: FillStyle;
+	seed?: number;
 }
+
+export type StrokeStyle = 'regular' | 'sketchy';
 
 export interface StrokePropertyValue {
 	color: number;
 	width: number;
 	alpha: number;
+	style?: StrokeStyle;
+	seed?: number;
 }
 
 export interface TextPropertyValue {

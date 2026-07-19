@@ -36,7 +36,7 @@ export class BaseProperty extends AbsProperty<BasePropertyValue> {
 
 		if (this.shape.type === ShapeTypeEnum.Rectangle) {
 			g.position.set(0, 0);
-			g.beginFill();
+			g.beginFill(0, 0);
 			g.drawRect(0, 0, width, height);
 			g.endFill();
 		}

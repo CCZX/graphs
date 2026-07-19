@@ -130,3 +130,30 @@
 	min-width: 32px;
 	text-align: right;
 }
+
+.ctx-style-row {
+	display: flex;
+	gap: 6px;
+	width: 100%;
+}
+
+.ctx-style-btn {
+	flex: 1;
+	padding: 4px 6px;
+	font-size: 12px;
+	color: #1e1e1e;
+	background: #ffffff;
+	border: 1px solid #e0e0e0;
+	border-radius: 6px;
+	cursor: pointer;
+
+	&:hover {
+		border-color: #bdbdbd;
+	}
+
+	&--active {
+		color: #5b5ea6;
+		border-color: #5b5ea6;
+		background: #f4f4fb;
+	}
+}
